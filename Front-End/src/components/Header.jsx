@@ -7,7 +7,7 @@ export default function Header({ titulo, subtitulo }) {
       {/* LOGO */}
       <div className="header-logo">
         <img
-          src="/assets/Logo-CCM (2).png"
+          src="Public/assets/Logo-CCM (2).png"
           alt="CCM Soluções Industriais"
         />
       </div>

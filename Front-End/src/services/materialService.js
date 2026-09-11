@@ -24,7 +24,24 @@ export const materialService = {
 
   selecionar: async () => {
     const response = await fetch(API_URL);
-    if (!response.ok) throw new Error("Erro ao buscar materiais.");
+
+    if (!response.ok) {
+      throw new Error("Erro ao buscar materiais.");
+    }
+
+    return await response.json();
+  },
+
+  deletar: async (idMaterial) => {
+    const response = await fetch(`${API_URL}/${idMaterial}`, {
+      method: 'DELETE'
+    });
+
+    if (!response.ok) {
+      const erroBody = await response.json().catch(() => ({}));
+      throw new Error(erroBody.errorMessage || erroBody.message || "Erro ao deletar material.");
+    }
+
     return await response.json();
   },
 
@@ -32,6 +49,7 @@ export const materialService = {
   listar: async function () {
     return this.selecionar();
   },
+
   listarMateriais: async function () {
     return this.selecionar();
   }

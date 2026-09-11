@@ -1,157 +1,146 @@
 import React, { useState, useEffect } from 'react';
-import Header from '../components/Header';
-import { materialService } from '../services/materialService.js';
+import { materialService } from '../services/materialService';
 
-export default function Materiais() {
+export default function FormMaterial() {
   const [nome, setNome] = useState('');
   const [densidade, setDensidade] = useState('');
-  const [custo, setCusto] = useState('');
+  const [custoPerKg, setCustoPerKg] = useState('');
+  const [materiais, setMateriais] = useState([]);
 
-  // Busca os materiais salvos no localStorage ao carregar a página
-  const [listaMateriais, setListaMateriais] = useState(() => {
-    const salvos = localStorage.getItem('materiais');
-    return salvos ? JSON.parse(salvos) : [];
-  });
-
-  // Salva no localStorage sempre que a lista for alterada
   useEffect(() => {
-    localStorage.setItem('materiais', JSON.stringify(listaMateriais));
-  }, [listaMateriais]);
+    carregarMateriais();
+  }, []);
 
-const handleCadastrar = async (e) => {
-  e.preventDefault();
+  const carregarMateriais = async () => {
+    try {
+      const resposta = await materialService.selecionar();
+      setMateriais(resposta.result);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  if (!nome || !densidade || !custo) {
-    alert('Por favor, preencha todos os campos!');
-    return;
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  try {
-    const dados = {
-      nome: nome.trim(),
-      densidade: parseFloat(densidade),
-      custoPerKg: parseFloat(custo),
-    };
+    try {
+      await materialService.criar({
+        nome,
+        densidade,
+        custoPerKg
+      });
 
-    console.log(' Enviando material:', dados);
+      alert('Material cadastrado!');
 
-    const resposta = await materialService.criar(dados);
+      setNome('');
+      setDensidade('');
+      setCustoPerKg('');
 
-    console.log(' Resposta do servidor:', resposta);
+      carregarMateriais();
 
-    const novoMaterial = {
-      id: Date.now(),
-      nome: nome.trim(),
-      densidade: parseFloat(densidade),
-      custo: parseFloat(custo),
-    };
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-    setListaMateriais((listaAtual) => [
-      ...listaAtual,
-      novoMaterial
-    ]);
+  const handleDelete = async (idMaterial) => {
+    try {
+      await materialService.deletar(idMaterial);
 
-    setNome('');
-    setDensidade('');
-    setCusto('');
+      alert('Material excluído!');
 
-    alert('Material cadastrado com sucesso!');
+      carregarMateriais();
 
-  } catch (error) {
-    console.error(' Erro ao cadastrar material:', error);
-
-    alert(error.message || 'Erro ao cadastrar material.');
-  }
-};
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
-    <div className="page-content">
-      <Header
-        titulo="Cadastro de Materiais"
-        subtitulo="Gerencie os custos, densidades e especificações dos materiais de usinagem."
-      />
+    <div>
 
-      {/* FORMULÁRIO DE CADASTRO */}
-      <div className="card">
-        <div className="card-body">
-          <h3 className="section-title">CADASTRAR NOVO MATERIAL</h3>
+      <form onSubmit={handleSubmit} className="form-container">
+        <h2>Cadastrar Material</h2>
 
-          <form onSubmit={handleCadastrar}>
-            <div className="form-row">
-              <div className="form-col">
-                <label className="form-label">Nome do Material</label>
-                <input
-                  type="text"
-                  className="input-box"
-                  placeholder="Ex: Aço 1045"
-                  value={nome}
-                  onChange={(e) => setNome(e.target.value)}
-                />
-              </div>
+        <div className="form-group">
+          <label>Nome do Material:</label>
 
-              <div className="form-col">
-                <label className="form-label">Densidade (g/cm³)</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  className="input-box"
-                  placeholder="Ex: 7.85"
-                  value={densidade}
-                  onChange={(e) => setDensidade(e.target.value)}
-                />
-              </div>
-
-              <div className="form-col">
-                <label className="form-label">Custo por kg (R$)</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  className="input-box"
-                  placeholder="Ex: 15.50"
-                  value={custo}
-                  onChange={(e) => setCusto(e.target.value)}
-                />
-              </div>
-            </div>
-
-            <div className="btn-actions" style={{ marginTop: '15px' }}>
-              <button type="submit" className="btn-add">
-                Cadastrar Material
-              </button>
-            </div>
-          </form>
+          <input
+            type="text"
+            value={nome}
+            onChange={(e) => setNome(e.target.value)}
+            required
+          />
         </div>
+
+        <div className="form-group">
+          <label>Densidade (g/cm³):</label>
+
+          <input
+            type="number"
+            step="0.01"
+            value={densidade}
+            onChange={(e) => setDensidade(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Custo por Kg (R$):</label>
+
+          <input
+            type="number"
+            step="0.01"
+            value={custoPerKg}
+            onChange={(e) => setCustoPerKg(e.target.value)}
+            required
+          />
+        </div>
+
+        <button type="submit">
+          Salvar Material
+        </button>
+      </form>
+
+
+      <div className="materiais-lista">
+
+        <h2>
+          MATERIAIS CADASTRADOS ({materiais.length})
+        </h2>
+
+        {materiais.map((material) => (
+
+          <div className="material-item" key={material.idMaterial}>
+
+            <div className="material-info">
+
+              <strong>{material.nome}</strong>
+
+              <span>
+                Densidade: {material.densidade} g/cm³
+              </span>
+
+              <span>
+                R$ {Number(material.custoPerKg).toFixed(2)} / kg
+              </span>
+
+            </div>
+
+            <button
+              type="button"
+              className="botao-excluir"
+              onClick={() => handleDelete(material.idMaterial)}
+            >
+              Excluir
+            </button>
+
+          </div>
+
+        ))}
+
       </div>
 
-      {/* LISTA DE MATERIAIS CADASTRADOS */}
-      <div className="card">
-        <div className="card-body">
-          <h3 className="section-title">MATERIAIS CADASTRADOS ({listaMateriais.length})</h3>
-
-          {listaMateriais.length === 0 ? (
-            <p style={{ color: 'var(--text-gray)', fontSize: '0.85rem' }}>
-              Nenhum material cadastrado ainda.
-            </p>
-          ) : (
-            <div className="results-grid">
-              {listaMateriais.map((item) => (
-                <div key={item.id} className="res-box">
-                  <div className="res-icon">
-                    <span className="material-symbols-outlined">inventory_2</span>
-                  </div>
-                  <div>
-                    <div className="res-val">{item.nome}</div>
-                    <div className="res-label">Densidade: {item.densidade} g/cm³</div>
-                    <div className="res-label" style={{ fontWeight: 600, marginTop: '2px' }}>
-                      R$ {item.custo.toFixed(2)} / kg
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
     </div>
   );
 }
