@@ -2,34 +2,46 @@ import { connection } from "../configs/Database.js";
 
 const materialPecaRepositories = {
     criar: async (material) => {
-        const sql = 'INSERT INTO MaterialPeca (nome, medidas, custoPerKg) VALUES (?, ?, ?)';
-        const values = [material.nome, material.medidas, material.custoPerKg];
-        const [result] = await connection.execute(sql, values);
-        return result;
+        const sql = 'INSERT INTO MaterialPeca (nome, densidade, custoPerKg) VALUES (?, ?, ?)';
+        const values = [
+            material.nome, 
+            material.densidade ?? 0, 
+            material.custoPerKg ?? 0
+        ];
+        const [rows] = await connection.execute(sql, values);
+        return rows;
     },
     
     editar: async (material) => {
-        const sql = 'UPDATE MaterialPeca SET nome = ?, medidas = ?, custoPerKg = ? WHERE idMaterial = ?';
-        const values = [material.nome, material.medidas, material.custoPerKg, material.idMaterial];
-        const [result] = await connection.execute(sql, values);
-        return result;
+        const sql = 'UPDATE MaterialPeca SET nome = ?, densidade = ?, custoPerKg = ? WHERE idMaterial = ?';
+        const values = [
+            material.nome, 
+            material.densidade ?? 0, 
+            material.custoPerKg ?? 0, 
+            material.idMaterial
+        ];
+        const [rows] = await connection.execute(sql, values);
+        return rows;
     },
     
-    deletar: async (id) => {
+    deletar: async (idMaterial) => {
         const sql = 'DELETE FROM MaterialPeca WHERE idMaterial = ?';
-        const [result] = await connection.execute(sql, [id]);
-        return result;
+        const values = [idMaterial];
+        const [rows] = await connection.execute(sql, values);
+        return rows;
     },
     
     selecionar: async () => {
         const sql = 'SELECT * FROM MaterialPeca';
-        const [result] = await connection.execute(sql);
-        return result;
+        const [rows] = await connection.execute(sql);
+        return rows;
     },
-    selecionarUm: async (id) => {
+    
+    selecionarUm: async (idMaterial) => {
         const sql = 'SELECT * FROM MaterialPeca WHERE idMaterial = ?';
-        const [result] = await connection.execute(sql, [id]);
-        return result;
+        const values = [idMaterial];
+        const [rows] = await connection.execute(sql, values);
+        return rows;
     }
 };
 

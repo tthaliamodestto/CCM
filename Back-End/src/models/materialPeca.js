@@ -1,12 +1,12 @@
 export class MaterialPeca {
     #idMaterial;
     #nome;
-    #medidas;
+    #densidade;
     #custoPerKg;
 
-    constructor(pNome, pMedidas, pCustoPerKg, pIdMaterial) {
+    constructor(pNome, pDensidade, pCustoPerKg, pIdMaterial) {
         this.nome = pNome;
-        this.medidas = pMedidas;
+        this.densidade = pDensidade;
         this.custoPerKg = pCustoPerKg;
         this.idMaterial = pIdMaterial;
     }
@@ -27,12 +27,12 @@ export class MaterialPeca {
         this.#nome = value;
     }
 
-    get medidas() {
-        return this.#medidas;
+    get densidade() {
+        return this.#densidade;
     }
-    set medidas(value) {
-        this.#validarMedidas(value);
-        this.#medidas = value;
+    set densidade(value) {
+        this.#validarDensidade(value);
+        this.#densidade = value;
     }
 
     get custoPerKg() {
@@ -48,14 +48,14 @@ export class MaterialPeca {
     }
 
     #validarNome(value) {
-        if (value !== null && value !== undefined && typeof value === 'string' && value.trim() === '') {
+        if (!value || value.trim().length < 3 || value.trim().length > 100) {
             throw new Error("O Nome do material não pode ser vazio.");
         }
     }
 
-    #validarMedidas(value) {
-        if (value && typeof value !== 'string') {
-            throw new Error("As medidas devem ser em formato de texto.");
+    #validarDensidade(value) {
+        if (value && (isNaN(Number(value)) || Number(value) <= 0)) {
+            throw new Error("A Densidade deve ser um número e deve ser maior que zero.");
         }
     }
 
@@ -66,10 +66,10 @@ export class MaterialPeca {
     }
 
     static criar(dados) {
-        return new MaterialPeca(dados.nome, dados.medidas, dados.custoPerKg, null);
+        return new MaterialPeca(dados.nome, dados.densidade, dados.custoPerKg, null);
     }
 
     static editar(dados) {
-        return new MaterialPeca(dados.nome, dados.medidas, dados.custoPerKg, dados.idMaterial);
+        return new MaterialPeca(dados.nome, dados.densidade, dados.custoPerKg, dados.idMaterial);
     }
 }

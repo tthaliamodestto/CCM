@@ -3,29 +3,53 @@ import materialPecaRepositories from "../repositories/materialPecaRepositories.j
 
 const materialPecaController = {
     criar: async (req, res) => {
+      console.log("🔥 CHEGOU NO BACK-END! Dados recebidos:", req.body);
         try {
-            const { nome, medidas, custoPerKg } = req.body;
-            const material = MaterialPeca.criar({ nome, medidas, custoPerKg });
+            const { nome, densidade, custoPerKg, custo, precoKg } = req.body;
+
+            // Aceita variações de nome do front-end e garante tipo número
+            const densidadeNum = Number(densidade) || 0;
+            const custoNum = Number(custoPerKg ?? custo ?? precoKg) || 0;
+
+            const material = MaterialPeca.criar({ 
+                nome: nome?.trim(), 
+                densidade: densidadeNum, 
+                custoPerKg: custoNum 
+            });
+
             const result = await materialPecaRepositories.criar(material);
 
-            res.status(201).json({ result });
+            return res.status(201).json({ result });
         } catch (error) {
-            console.log(error);
-            res.status(500).json({ message: 'Ocorreu um erro no servidor', errorMessage: error.message });
+            console.error("Erro no cadastro de material:", error);
+            return res.status(500).json({ 
+                message: 'Ocorreu um erro no servidor', 
+                errorMessage: error.message 
+            });
         }
     },
     
     editar: async (req, res) => {
         try {
             const id = req.params.idMaterial;
-            const { nome, medidas, custoPerKg } = req.body;
-            const material = MaterialPeca.editar({ idMaterial: id, nome, medidas, custoPerKg });
+            const { nome, densidade, custoPerKg, custo, precoKg } = req.body;
+
+            const densidadeNum = Number(densidade) || 0;
+            const custoNum = Number(custoPerKg ?? custo ?? precoKg) || 0;
+
+            const material = MaterialPeca.editar({ 
+                idMaterial: id, 
+                nome: nome?.trim(), 
+                densidade: densidadeNum, 
+                custoPerKg: custoNum 
+            });
+
             const result = await materialPecaRepositories.editar(material);
 
-            res.status(200).json({ result });
+            return res.status(200).json({ result });
         } catch (error) {
-            console.log(error);
-            res.status(500).json({ message: 'Ocorreu um erro no servidor', errorMessage: error.message });
+            console.error(error);
+            return res.status(500).json({ message: 'Ocorreu um erro no servidor', errorMessage: error.message });
         }
     },
     
@@ -34,20 +58,20 @@ const materialPecaController = {
             const id = req.params.idMaterial;
             const result = await materialPecaRepositories.deletar(id);
 
-            res.status(200).json({ result });
+            return res.status(200).json({ result });
         } catch (error) {
-            console.log(error);
-            res.status(500).json({ message: 'Ocorreu um erro no servidor', errorMessage: error.message });
+            console.error(error);
+            return res.status(500).json({ message: 'Ocorreu um erro no servidor', errorMessage: error.message });
         }
     },
     
     selecionar: async (req, res) => {
         try {
             const result = await materialPecaRepositories.selecionar();
-            res.status(200).json({ result });
+            return res.status(200).json({ result });
         } catch (error) {
-            console.log(error);
-            res.status(500).json({ message: 'Ocorreu um erro no servidor', errorMessage: error.message });
+            console.error(error);
+            return res.status(500).json({ message: 'Ocorreu um erro no servidor', errorMessage: error.message });
         }
     },
 
@@ -55,10 +79,10 @@ const materialPecaController = {
         try {
             const id = req.params.idMaterial;
             const result = await materialPecaRepositories.selecionarUm(id);
-            res.status(200).json({ result });
+            return res.status(200).json({ result });
         } catch (error) {
-            console.log(error);
-            res.status(500).json({ message: 'Ocorreu um erro no servidor', errorMessage: error.message });
+            console.error(error);
+            return res.status(500).json({ message: 'Ocorreu um erro no servidor', errorMessage: error.message });
         }
     }
 };

@@ -3,14 +3,14 @@ export class Maquina {
     #nome;
     #tipo;
     #custoHora
-    #potenciaKw;
+    #potencialKw;
 
-    constructor(pNome, pTipo, pCustoHora, pPotenciaKw, pIdMaquina) {
+    constructor(pNome, pTipo, pCustoHora, pPotencialKw, pIdMaquina) {
         this.nome = pNome;
         this.tipo = pTipo;
         this.custoHora = pCustoHora;
-        this.potenciaKw = pPotenciaKw;
-        this.idMaquinaKw = pIdMaquina;
+        this.potencialKw = pPotencialKw;
+        this.idMaquina = pIdMaquina;
     }
 
     get idMaquina() { 
@@ -44,12 +44,12 @@ export class Maquina {
         this.#validarCusto(value);
         this.#custoHora = value;
     }
-    get potenciaKw() { 
-        return this.#potenciaKw; 
+    get potencialKw() { 
+        return this.#potencialKw; 
     }
-    set potenciaKw(value) {
+    set potencialKw(value) {
         this.#validarPotencia(value);
-        this.#potenciaKw = value;
+        this.#potencialKw = value;
     }
 
 
@@ -84,10 +84,10 @@ export class Maquina {
     }
 
     static criar(dados) {
-        return new Maquina(dados.nome, dados.tipo, dados.custoHora, dados.potenciaKw, null);
+        return new Maquina(dados.nome, dados.tipo, dados.custoHora, dados.potencialKw, null);
     }
 
     static editar(dados) {
-        return new Maquina(dados.nome, dados.tipo, dados.custoHora, dados.potenciaKw, dados.idMaquina);
+        return new Maquina(dados.nome, dados.tipo, dados.custoHora, dados.potencialKw, dados.idMaquina);
     }
 }
