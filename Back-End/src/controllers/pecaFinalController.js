@@ -60,6 +60,60 @@ const pecaFinalController = {
             console.log(error);
             res.status(500).json({ message: 'Ocorreu um erro no servidor', errorMessage: error.message });
         }
+    },
+
+    // A validação de tipo/tamanho do arquivo já é feita pela uploadImagemMiddleware
+    // (multer), então aqui só cuidamos de checar se a peça existe e persistir o BLOB.
+    uploadImagem: async (req, res) => {
+        try {
+            const id = req.params.idPecaFinal;
+
+            if (!req.file) {
+                return res.status(400).json({ message: 'Nenhuma imagem foi enviada. Envie o arquivo no campo "imagem".' });
+            }
+
+            const pecaExistente = await pecaFinalRepositories.selecionarUm(id);
+            if (!pecaExistente || pecaExistente.length === 0) {
+                return res.status(404).json({ message: 'Peça final não encontrada.' });
+            }
+
+            await pecaFinalRepositories.salvarImagem(id, req.file.buffer, req.file.mimetype);
+
+            res.status(200).json({ message: 'Imagem salva com sucesso.' });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ message: 'Ocorreu um erro no servidor', errorMessage: error.message });
+        }
+    },
+
+    buscarImagem: async (req, res) => {
+        try {
+            const id = req.params.idPecaFinal;
+            const registro = await pecaFinalRepositories.buscarImagem(id);
+
+            if (!registro || !registro.imagem) {
+                return res.status(404).json({ message: 'Esta peça final não possui imagem cadastrada.' });
+            }
+
+            res.status(200);
+            res.set('Content-Type', registro.imagemTipo || 'application/octet-stream');
+            res.send(registro.imagem);
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ message: 'Ocorreu um erro no servidor', errorMessage: error.message });
+        }
+    },
+
+    deletarImagem: async (req, res) => {
+        try {
+            const id = req.params.idPecaFinal;
+            await pecaFinalRepositories.removerImagem(id);
+
+            res.status(200).json({ message: 'Imagem removida com sucesso.' });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ message: 'Ocorreu um erro no servidor', errorMessage: error.message });
+        }
     }
 };
 
