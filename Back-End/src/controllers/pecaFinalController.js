@@ -5,7 +5,8 @@ const pecaFinalController = {
     criar: async (req, res) => {
         try {
             const { idPeca, nome, profundidadeFinal, alturaFinal, diametroFinal, larguraFinal } = req.body;
-            const peca = PecaFinal.criar({ idPeca, nome, profundidadeFinal, alturaFinal, diametroFinal, larguraFinal });
+            const imagem = `/uploads/images/${req.file.filename}`
+            const peca = PecaFinal.criar({ idPeca, nome, profundidadeFinal, alturaFinal, diametroFinal, larguraFinal, imagem });
             const result = await pecaFinalRepositories.criar(peca);
 
             res.status(201).json({ result });

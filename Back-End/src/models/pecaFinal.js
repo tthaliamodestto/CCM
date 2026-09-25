@@ -6,14 +6,16 @@ export class PecaFinal {
     #alturaFinal;
     #diametroFinal;
     #larguraFinal;
+    #imagem;
 
-    constructor(pIdPeca, pNome, pProfundidadeFinal, pAlturaFinal, pDiametroFinal, pLarguraFinal, pIdPecaFinal) {
+    constructor(pIdPeca, pNome, pProfundidadeFinal, pAlturaFinal, pDiametroFinal, pLarguraFinal, pIdPecaFinal, pImagem) {
         this.idPeca = pIdPeca;
         this.nome = pNome;
         this.profundidadeFinal = pProfundidadeFinal;
         this.alturaFinal = pAlturaFinal;
         this.diametroFinal = pDiametroFinal;
         this.larguraFinal = pLarguraFinal;
+        this.imagem = pImagem;
         this.idPecaFinal = pIdPecaFinal;
     }
 
@@ -69,6 +71,13 @@ export class PecaFinal {
         this.#larguraFinal = value ? Number(value) : null;
     }
 
+    get imagem() {
+        return this.#imagem;
+    }
+    set imagem(value) {
+        this.#imagem = value;
+    }
+
     #validarId(value, nomeCampo) {
         if (value !== null && value !== undefined && value <= 0) {
             throw new Error(`Verifique o Id da ${nomeCampo} informado.`);
@@ -105,11 +114,20 @@ export class PecaFinal {
         }
     }
 
+    #validarImagem(value) {
+        if (value) {
+            if(value.string < 3){
+                throw new Error('O campo imagem não pode ficar vazio')
+            }
+            
+        }
+    }
+
     static criar(dados) {
-        return new PecaFinal(dados.idPeca, dados.nome, dados.profundidadeFinal, dados.alturaFinal, dados.diametroFinal, dados.larguraFinal, null);
+        return new PecaFinal(dados.idPeca, dados.nome, dados.profundidadeFinal, dados.alturaFinal, dados.diametroFinal, dados.larguraFinal, dados.imagem, null);
     }
 
     static editar(dados) {
-        return new PecaFinal(dados.idPeca, dados.nome, dados.profundidadeFinal, dados.alturaFinal, dados.diametroFinal, dados.larguraFinal, dados.idPecaFinal);
+        return new PecaFinal(dados.idPeca, dados.nome, dados.profundidadeFinal, dados.alturaFinal, dados.diametroFinal, dados.larguraFinal, dados.imagem, dados.idPecaFinal);
     }
 }
