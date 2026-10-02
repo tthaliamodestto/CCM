@@ -65,6 +65,8 @@ export default function App() {
         return <Materiais />;
       case "Máquinas":
         return <Maquinas />;
+      case 'Configurações':
+        return <Configuracoes />;
       default:
         return (
           <div style={{ padding: "20px" }}>
@@ -93,10 +95,9 @@ export default function App() {
           </button>
         </div>
 
-        {/* ITENS DO MENU */}
-        <nav className="sidebar-menu">
-          {itensMenu.map((item) => {
-            const Icone = item.icone;
+          <nav className="sidebar-menu">
+            {itensMenu.map((item) => {
+              const Icone = item.icone;
 
             return (
               <button
