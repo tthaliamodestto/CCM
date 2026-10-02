@@ -95,6 +95,8 @@ function formatarTempo(minutosTotais) {
 }
 
 export default function Pecas() {
+  
+  const [desenhosPecas, setDesenhosPecas] = useState({});
   const [form, setForm] = useState(FORM_INICIAL);
   const [resultados, setResultados] = useState(RESULTADOS_INICIAIS);
   const [materiais, setMateriais] = useState([]);
@@ -103,6 +105,9 @@ export default function Pecas() {
   const [carregandoDados, setCarregandoDados] = useState(true);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState("");
+
+  // NOVO: desenho técnico somente no Front-end
+  const [desenhoTecnico, setDesenhoTecnico] = useState(null);
 
   const buscarFilaPecas = async () => {
     try {
@@ -201,6 +206,24 @@ export default function Pecas() {
     }));
   };
 
+  // NOVO: seleção do desenho técnico
+  const handleDesenhoChange = (e) => {
+    const arquivo = e.target.files[0];
+
+    if (!arquivo) {
+      setDesenhoTecnico(null);
+      return;
+    }
+
+    if (!arquivo.type.startsWith("image/")) {
+      setErro("Selecione somente um arquivo de imagem.");
+      return;
+    }
+
+    setErro("");
+    setDesenhoTecnico(arquivo);
+  };
+
   const limparFormulario = () => {
     const listaMateriaisValida = Array.isArray(materiais) ? materiais : [];
     const listaMaquinasValida = Array.isArray(maquinas) ? maquinas : [];
@@ -215,8 +238,10 @@ export default function Pecas() {
       precoKg: primeiroMaterial?.custoPerKg ?? primeiroMaterial?.custo ?? "",
       maquina: primeiraMaquina ? primeiraMaquina.nome : "",
     });
+
     setResultados(RESULTADOS_INICIAIS);
     setErro("");
+    setDesenhoTecnico(null);
   };
 
   const salvarPeca = async () => {
@@ -269,18 +294,42 @@ export default function Pecas() {
       tempoUsinagem: Number(resultados.tempoMinutos) || 0,
     };
 
-    try {
-      setSalvando(true);
-      await pecaService.cadastrar(payload);
-      
-      await buscarFilaPecas();
-      limparFormulario();
-      alert("Peça cadastrada com sucesso com todos os parâmetros de usinagem!");
-    } catch (error) {
-      setErro(`Não foi possível cadastrar a peça: ${error.message}`);
-    } finally {
-      setSalvando(false);
-    }
+   try {
+  setSalvando(true);
+
+  const resposta = await pecaService.cadastrar(payload);
+
+  // NOVO: salva o desenho somente no Front-end
+if (desenhoTecnico) {
+  const leitor = new FileReader();
+
+  leitor.onload = () => {
+    const desenhosSalvos = JSON.parse(
+      localStorage.getItem("ccm_desenhos_tecnicos") || "{}"
+    );
+
+    desenhosSalvos[form.nome.trim()] = leitor.result;
+
+    localStorage.setItem(
+      "ccm_desenhos_tecnicos",
+      JSON.stringify(desenhosSalvos)
+    );
+
+    setDesenhosPecas(desenhosSalvos);
+  };
+
+  leitor.readAsDataURL(desenhoTecnico);
+}
+
+  await buscarFilaPecas();
+  limparFormulario();
+
+  alert("Peça cadastrada com sucesso com todos os parâmetros de usinagem!");
+} catch (error) {
+  setErro(`Não foi possível cadastrar a peça: ${error.message}`);
+} finally {
+  setSalvando(false);
+}
   };
 
   const excluirPeca = async (idPeca) => {
@@ -646,6 +695,101 @@ export default function Pecas() {
         </div>
       </div>
 
+
+      {/* NOVO BLOCO 3: DESENHO TÉCNICO */}
+      <div className="card" style={{ marginTop: "24px" }}>
+        <div className="card-body">
+          <h2 className="section-title">3. DESENHO TÉCNICO</h2>
+
+          <div
+            style={{
+              border: "2px dashed #cbd5e1",
+              borderRadius: "10px",
+              padding: "25px",
+              textAlign: "center",
+              background: "#f8fafc",
+            }}
+          >
+            <span
+              className="material-symbols-outlined"
+              style={{
+                fontSize: "45px",
+                color: "#64748b",
+                marginBottom: "10px",
+              }}
+            >
+              image
+            </span>
+
+            <div
+              style={{
+                fontSize: "0.9rem",
+                color: "#475569",
+                marginBottom: "15px",
+              }}
+            >
+              Selecione o desenho técnico da peça
+            </div>
+
+            <input
+              type="file"
+              accept="image/png, image/jpeg, image/jpg"
+              onChange={handleDesenhoChange}
+              style={{
+                display: "block",
+                margin: "0 auto",
+                fontSize: "0.85rem",
+              }}
+            />
+
+            {desenhoTecnico && (
+              <div style={{ marginTop: "20px" }}>
+                <div
+                  style={{
+                    fontSize: "0.85rem",
+                    color: "#475569",
+                    marginBottom: "10px",
+                    fontWeight: "600",
+                  }}
+                >
+                  Desenho selecionado:
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  <img
+                    src={URL.createObjectURL(desenhoTecnico)}
+                    alt="Desenho técnico"
+                    style={{
+                      maxWidth: "100%",
+                      maxHeight: "300px",
+                      objectFit: "contain",
+                      border: "1px solid #e2e8f0",
+                      borderRadius: "8px",
+                      background: "#ffffff",
+                    }}
+                  />
+                </div>
+
+                <div
+                  style={{
+                    marginTop: "10px",
+                    fontSize: "0.8rem",
+                    color: "#64748b",
+                  }}
+                >
+                  {desenhoTecnico.name}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
       {/* Bloco 3: FILA DE PEÇAS CADASTRADAS */}
       <div className="card" style={{ marginTop: "24px" }}>
         <div className="card-body">
@@ -655,45 +799,150 @@ export default function Pecas() {
           </div>
 
           {filaPecas.length === 0 ? (
-            <p style={{ color: "#64748b", fontSize: "0.9rem", textAlign: "center", padding: "20px 0" }}>
+            <p
+              style={{
+                color: "#64748b",
+                fontSize: "0.9rem",
+                textAlign: "center",
+                padding: "20px 0",
+              }}
+            >
               Nenhuma peça cadastrada na fila até o momento.
             </p>
           ) : (
             <div style={{ overflowX: "auto" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem", textAlign: "left" }}>
-                <thead>
-                  <tr style={{ borderBottom: "2px solid #e2e8f0", color: "#475569" }}>
-                    <th style={{ padding: "10px" }}>ID</th>
-                    <th style={{ padding: "10px" }}>Nome</th>
-                    <th style={{ padding: "10px" }}>Forma</th>
-                    <th style={{ padding: "10px" }}>Dimensões</th>
-                    <th style={{ padding: "10px" }}>Máquina</th>
-                    <th style={{ padding: "10px" }}>Operação</th>
-                    <th style={{ padding: "10px" }}>Tempo Usinagem</th>
-                    <th style={{ padding: "10px", textAlign: "center" }}>Ação</th>
-                  </tr>
-                </thead>
+              <table
+                style={{
+                  width: "100%",
+                  borderCollapse: "collapse",
+                  fontSize: "0.85rem",
+                  textAlign: "left",
+                }}
+              >
+             <thead>
+  <tr
+    style={{
+      borderBottom: "2px solid #e2e8f0",
+      color: "#475569",
+    }}
+  >
+    <th style={{ padding: "10px" }}>ID</th>
+    <th style={{ padding: "10px" }}>Nome</th>
+    <th style={{ padding: "10px" }}>Desenho</th>
+    <th style={{ padding: "10px" }}>Forma</th>
+    <th style={{ padding: "10px" }}>Dimensões</th>
+    <th style={{ padding: "10px" }}>Máquina</th>
+    <th style={{ padding: "10px" }}>Operação</th>
+    <th style={{ padding: "10px" }}>Tempo Usinagem</th>
+    <th
+      style={{
+        padding: "10px",
+        textAlign: "center",
+      }}
+    >
+      Ação
+    </th>
+  </tr>
+</thead>
+
                 <tbody>
                   {filaPecas.map((peca) => {
                     const id = peca.idPeca ?? peca.id;
-                    const tempo = peca.tempoMinutos ?? peca.tempoUsinagem ?? peca.tempo ?? 0;
+                    const tempo =
+                      peca.tempoMinutos ??
+                      peca.tempoUsinagem ??
+                      peca.tempo ??
+                      0;
+
                     const dimensoes =
                       peca.forma === "cilindro"
-                        ? `Ø${peca.diametro ?? 0} x ${peca.comprimento ?? 0}mm`
-                        : `${peca.comprimento ?? 0}x${peca.largura ?? 0}x${peca.altura ?? 0}mm`;
+                        ? `Ø${peca.diametro ?? 0} x ${
+                            peca.comprimento ?? 0
+                          }mm`
+                        : `${peca.comprimento ?? 0}x${
+                            peca.largura ?? 0
+                          }x${peca.altura ?? 0}mm`;
 
                     return (
-                      <tr key={id} style={{ borderBottom: "1px solid #f1f5f9" }}>
-                        <td style={{ padding: "10px", fontWeight: "bold" }}>#{id}</td>
-                        <td style={{ padding: "10px" }}>{peca.nome}</td>
-                        <td style={{ padding: "10px", textTransform: "capitalize" }}>{peca.forma}</td>
-                        <td style={{ padding: "10px" }}>{dimensoes}</td>
-                        <td style={{ padding: "10px" }}>{peca.maquina || "-"}</td>
-                        <td style={{ padding: "10px" }}>{peca.operacao || "-"}</td>
-                        <td style={{ padding: "10px", fontWeight: "600", color: "#2563eb" }}>
+                      <tr
+                        key={id}
+                        style={{
+                          borderBottom: "1px solid #f1f5f9",
+                        }}
+                      >
+                        <td
+                          style={{
+                            padding: "10px",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          #{id}
+                        </td>
+
+                        <td style={{ padding: "10px" }}>
+                          {peca.nome}
+                        </td>
+
+                        <td style={{ padding: "10px" }}>
+{desenhosPecas[peca.nome] ? (
+    <img
+src={desenhosPecas[peca.nome]}
+      alt={`Desenho técnico de ${peca.nome}`}
+      style={{
+        width: "70px",
+        height: "50px",
+        objectFit: "contain",
+        border: "1px solid #e2e8f0",
+        borderRadius: "6px",
+        cursor: "pointer",
+        background: "#ffffff",
+      }}
+      onClick={() => window.open(desenhosPecas[id], "_blank")}
+    />
+  ) : (
+    <span style={{ color: "#94a3b8" }}>
+      Sem desenho
+    </span>
+  )}
+</td>
+
+                        <td
+                          style={{
+                            padding: "10px",
+                            textTransform: "capitalize",
+                          }}
+                        >
+                          {peca.forma}
+                        </td>
+
+                        <td style={{ padding: "10px" }}>
+                          {dimensoes}
+                        </td>
+
+                        <td style={{ padding: "10px" }}>
+                          {peca.maquina || "-"}
+                        </td>
+
+                        <td style={{ padding: "10px" }}>
+                          {peca.operacao || "-"}
+                        </td>
+
+                        <td
+                          style={{
+                            padding: "10px",
+                            fontWeight: "600",
+                            color: "#2563eb",
+                          }}
+                        >
                           {formatarTempo(tempo)}
                         </td>
-                        <td style={{ padding: "10px", textAlign: "center" }}>
+
+                        <td
+                          style={{
+                            padding: "10px",
+                            textAlign: "center",
+                          }}
+                        >
                           <button
                             type="button"
                             onClick={() => excluirPeca(id)}
@@ -705,7 +954,10 @@ export default function Pecas() {
                             }}
                             title="Remover Peça"
                           >
-                            <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>
+                            <span
+                              className="material-symbols-outlined"
+                              style={{ fontSize: "18px" }}
+                            >
                               delete
                             </span>
                           </button>
@@ -722,3 +974,4 @@ export default function Pecas() {
     </div>
   );
 }
+
