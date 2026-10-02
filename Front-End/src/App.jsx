@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { ThemeProvider } from './contexts/ThemeContext';
 
 import Pecas from './Pages/Pecas';
 import Materiais from './Pages/Materiais';
@@ -17,6 +18,7 @@ import {
 import { FaCalculator } from 'react-icons/fa';
 
 import './index.css';
+import Configuracoes from './Pages/Configuracoes';
 
 export default function App() {
   const [menuAberto, setMenuAberto] = useState(false);
@@ -65,6 +67,8 @@ export default function App() {
         return <Materiais />;
       case 'Máquinas':
         return <Maquinas />;
+      case 'Configurações':
+        return <Configuracoes />;
       default:
         return (
           <div style={{ padding: '20px' }}>
@@ -76,53 +80,50 @@ export default function App() {
   };
 
   return (
-    <div className="app-layout">
-      {/* MENU LATERAL */}
-      <aside
-        className={`sidebar ${menuAberto ? 'sidebar-open' : ''}`}
-        onMouseEnter={() => setMenuAberto(true)}
-        onMouseLeave={() => setMenuAberto(false)}
-      >
-        {/* BOTÃO DO MENU */}
-        <div className="sidebar-top">
-          <button
-            className="sidebar-toggle"
-            onClick={() => setMenuAberto(!menuAberto)}
-          >
-            <FiMenu />
-          </button>
-        </div>
+    <ThemeProvider>
+      <div className="app-layout">
+        {/* MENU LATERAL */}
+        <aside
+          className={`sidebar ${menuAberto ? 'sidebar-open' : ''}`}
+          onMouseEnter={() => setMenuAberto(true)}
+          onMouseLeave={() => setMenuAberto(false)}
+        >
+          <div className="sidebar-top">
+            <button
+              className="sidebar-toggle"
+              onClick={() => setMenuAberto(!menuAberto)}
+            >
+              <FiMenu />
+            </button>
+          </div>
 
-        {/* ITENS DO MENU */}
-        <nav className="sidebar-menu">
-          {itensMenu.map((item) => {
-            const Icone = item.icone;
+          <nav className="sidebar-menu">
+            {itensMenu.map((item) => {
+              const Icone = item.icone;
 
-            return (
-              <button
-                key={item.nome}
-                className={`menu-item ${
-                  itemAtivo === item.nome ? 'active' : ''
-                }`}
-                onClick={() => handleMenuClick(item.nome)}
-              >
-                <Icone className="menu-icon" />
+              return (
+                <button
+                  key={item.nome}
+                  className={`menu-item ${
+                    itemAtivo === item.nome ? 'active' : ''
+                  }`}
+                  onClick={() => handleMenuClick(item.nome)}
+                >
+                  <Icone className="menu-icon" />
+                  <span className="menu-text">{item.nome}</span>
+                </button>
+              );
+            })}
+          </nav>
+        </aside>
 
-                <span className="menu-text">
-                  {item.nome}
-                </span>
-              </button>
-            );
-          })}
-        </nav>
-      </aside>
-
-      {/* ÁREA PRINCIPAL */}
-      <main className="main-content">
-        <div className="page-content">
-          {renderConteudo()}
-        </div>
-      </main>
-    </div>
+        {/* ÁREA PRINCIPAL */}
+        <main className="main-content">
+          <div className="page-content">
+            {renderConteudo()}
+          </div>
+        </main>
+      </div>
+    </ThemeProvider>
   );
 }
