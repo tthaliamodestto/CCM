@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import Header from '../components/Header';
-import { ThemeContext } from '../contexts/ThemeContext';
+import { ThemeContext } from '../context/ThemeContext';
 
 export default function Configuracoes() {
   const { theme, toggleTheme } = useContext(ThemeContext);
