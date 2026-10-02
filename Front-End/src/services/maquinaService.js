@@ -52,6 +52,7 @@ export const maquinaService = {
       }
 
       const resultado = await response.json();
+      console.log("RESPOSTA DO CADASTRO DE MÁQUINA:", resultado);
 
       const idGerado =
         resultado?.result?.insertId ??
@@ -71,6 +72,8 @@ export const maquinaService = {
         tempoOperacao: tempo,
         imagem: resultado?.result?.imagem ?? resultado?.imagem ?? null
       };
+      
+      console.log("MÁQUINA CRIADA NO FRONT:", maquinaCriada);
 
       maquinasLocais.unshift(maquinaCriada);
 
@@ -183,6 +186,7 @@ export const maquinaService = {
       }
 
       const dados = await response.json();
+      console.log("RESPOSTA COMPLETA DA API (listar):", dados);
 
       if (Array.isArray(dados)) {
         maquinasLocais = dados;
@@ -191,6 +195,7 @@ export const maquinaService = {
 
       if (Array.isArray(dados.result)) {
         maquinasLocais = dados.result;
+        console.log("MÁQUINAS COM IMAGEM (listar):", dados.result);
         return dados.result;
       }
 

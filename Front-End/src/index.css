@@ -1243,7 +1243,7 @@ body {
    ========================================================================== */
 .card-body-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
 }
 
@@ -1436,5 +1436,54 @@ button.status-item-btn.selected {
   align-items: center;
   gap: 6px;
   color: var(--text-gray);
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   CARD INFO - COMPONENTE REUTILIZÁVEL
+   ========================================================================== */
+.card-info {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-info:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+
+.card-info-image-container {
+  width: 100%;
+  height: 200px;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  background: var(--box-subtle);
+}
+
+.card-info-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-info h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 12px;
+}
+
+.card-info p {
+  font-size: 13px;
+  color: var(--text-gray);
+  margin-bottom: 8px;
+}
+
+.card-info p strong {
+  color: var(--text-dark);
   font-weight: 500;
 }

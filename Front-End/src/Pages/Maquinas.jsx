@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Header from "../components/Header";
+import CardInfo from "../components/CardInfo";
 import { maquinaService } from "../services/maquinaService";
 
 const LISTA_TIPOS = [
@@ -358,15 +359,15 @@ export default function Maquinas() {
                   <div className="card-top-info">
                     <div className="thumb-container">
                       {imagemMaquina ? (
-  <img
-    src={`http://localhost:8000${imagemMaquina}`}
-    alt={nomeMaquina}
-  />
-) : (
-  <span className="material-symbols-outlined thumb-icon">
-    precision_manufacturing
-  </span>
-)}
+                        <img
+                          src={`http://localhost:8000${imagemMaquina}`}
+                          alt={nomeMaquina}
+                        />
+                      ) : (
+                        <span className="material-symbols-outlined thumb-icon">
+                          precision_manufacturing
+                        </span>
+                      )}
                     </div>
                     <div>
                       <h3 className="card-machine-title">{nomeMaquina}</h3>
@@ -434,6 +435,18 @@ export default function Maquinas() {
 
                 {/* CORPO EM 3 COLUNAS */}
                 <div className="card-body-grid">
+                  {/* COLUNA 0 - IMAGEM DA MÁQUINA */}
+                  {imagemMaquina && (
+                    <div className="grid-col-box">
+                      <CardInfo 
+                        titulo={nomeMaquina}
+                        valor={tipoMaquina}
+                        detalhe={potencia + " kW"}
+                        imagem={imagemMaquina.startsWith('http') ? imagemMaquina : `http://localhost:8000${imagemMaquina}`}
+                      />
+                    </div>
+                  )}
+
                   {/* COLUNA 1 - DADOS DA MÁQUINA */}
                   <div className="grid-col-box">
                     <h4 className="col-title">Dados da Máquina</h4>

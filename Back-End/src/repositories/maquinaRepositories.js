@@ -4,8 +4,13 @@ const maquinaRepositories = {
     criar: async (maquina) => {
         const sql = `INSERT INTO maquina (nome, tipo, custoHora, potencialKw, imagem) VALUES (?, ?, ?, ?, ?);`;
         const values = [maquina.nome, maquina.tipo, maquina.custoHora, maquina.potencialKw, maquina.imagem];
-        const [rows] = await connection.execute(sql, values);
-        return rows;
+        const [result] = await connection.execute(sql, values);
+        
+        // Retorna a máquina que foi inserida
+        const sqlSelect = `SELECT idMaquina, nome, tipo, custoHora, potencialKw, imagem FROM maquina WHERE idMaquina = ?;`;
+        const [maquinaInserida] = await connection.execute(sqlSelect, [result.insertId]);
+        
+        return maquinaInserida[0] || { insertId: result.insertId };
     },
 
     editar: async (maquina = {}) => {
@@ -23,13 +28,13 @@ const maquinaRepositories = {
     },
 
     selecionar: async () => {
-        const sql = 'SELECT * FROM maquina;';
+        const sql = 'SELECT idMaquina, nome, tipo, custoHora, potencialKw, imagem FROM maquina;';
         const [rows] = await connection.execute(sql);
         return rows;
     },
 
     selecionarUm: async (idMaquina) => {
-        const sql = 'SELECT * FROM maquina WHERE idMaquina = ?;';
+        const sql = 'SELECT idMaquina, nome, tipo, custoHora, potencialKw, imagem FROM maquina WHERE idMaquina = ?;';
         const values = [idMaquina ?? null];
         const [rows] = await connection.execute(sql, values);
         return rows;
