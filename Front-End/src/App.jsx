@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-import Pecas from './Pages/Pecas';
-import Materiais from './Pages/Materiais';
-import Maquinas from './Pages/Maquinas';
+import Pecas from "./Pages/Pecas";
+import Materiais from "./Pages/Materiais";
+import Maquinas from "./Pages/Maquinas";
 
 import {
   FiMenu,
@@ -11,46 +11,46 @@ import {
   FiPackage,
   FiSettings,
   FiUser,
-  FiCpu
-} from 'react-icons/fi';
+  FiCpu,
+} from "react-icons/fi";
 
-import { FaCalculator } from 'react-icons/fa';
+import { FaCalculator } from "react-icons/fa";
 
-import './index.css';
+import "./index.css";
 
 export default function App() {
   const [menuAberto, setMenuAberto] = useState(false);
-  const [itemAtivo, setItemAtivo] = useState('Calculadora');
+  const [itemAtivo, setItemAtivo] = useState("Calculadora");
 
   const itensMenu = [
     {
-      nome: 'Home',
-      icone: FiHome
+      nome: "Home",
+      icone: FiHome,
     },
     {
-      nome: 'Calculadora',
-      icone: FaCalculator
+      nome: "Calculadora",
+      icone: FaCalculator,
     },
     {
-      nome: 'Orçamento',
-      icone: FiDollarSign
+      nome: "Orçamento",
+      icone: FiDollarSign,
     },
     {
-      nome: 'Materiais',
-      icone: FiPackage
+      nome: "Materiais",
+      icone: FiPackage,
     },
     {
-      nome: 'Máquinas',
-      icone: FiCpu
+      nome: "Máquinas",
+      icone: FiCpu,
     },
     {
-      nome: 'Configurações',
-      icone: FiSettings
+      nome: "Configurações",
+      icone: FiSettings,
     },
     {
-      nome: 'Perfil',
-      icone: FiUser
-    }
+      nome: "Perfil",
+      icone: FiUser,
+    },
   ];
 
   const handleMenuClick = (nome) => {
@@ -59,15 +59,15 @@ export default function App() {
 
   const renderConteudo = () => {
     switch (itemAtivo) {
-      case 'Calculadora':
+      case "Calculadora":
         return <Pecas />;
-      case 'Materiais':
+      case "Materiais":
         return <Materiais />;
-      case 'Máquinas':
+      case "Máquinas":
         return <Maquinas />;
       default:
         return (
-          <div style={{ padding: '20px' }}>
+          <div style={{ padding: "20px" }}>
             <h2>{itemAtivo}</h2>
             <p>Página em desenvolvimento...</p>
           </div>
@@ -79,7 +79,7 @@ export default function App() {
     <div className="app-layout">
       {/* MENU LATERAL */}
       <aside
-        className={`sidebar ${menuAberto ? 'sidebar-open' : ''}`}
+        className={`sidebar ${menuAberto ? "sidebar-open" : ""}`}
         onMouseEnter={() => setMenuAberto(true)}
         onMouseLeave={() => setMenuAberto(false)}
       >
@@ -102,15 +102,13 @@ export default function App() {
               <button
                 key={item.nome}
                 className={`menu-item ${
-                  itemAtivo === item.nome ? 'active' : ''
+                  itemAtivo === item.nome ? "active" : ""
                 }`}
                 onClick={() => handleMenuClick(item.nome)}
               >
                 <Icone className="menu-icon" />
 
-                <span className="menu-text">
-                  {item.nome}
-                </span>
+                <span className="menu-text">{item.nome}</span>
               </button>
             );
           })}
@@ -119,9 +117,7 @@ export default function App() {
 
       {/* ÁREA PRINCIPAL */}
       <main className="main-content">
-        <div className="page-content">
-          {renderConteudo()}
-        </div>
+        <div className="page-content">{renderConteudo()}</div>
       </main>
     </div>
   );
