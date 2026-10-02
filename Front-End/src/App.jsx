@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ThemeProvider } from './contexts/ThemeContext';
+import { ThemeProvider } from '../src/context/ThemeContext';
 
 import Pecas from './Pages/Pecas';
 import Materiais from './Pages/Materiais';
