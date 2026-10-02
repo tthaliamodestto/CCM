@@ -80,20 +80,71 @@ export const maquinaService = {
       throw error;
     }
   },
+selecionar: async () => {
+  try {
+    const response = await fetch(API_URL);
 
-  selecionar: async () => {
-    try {
-      const response = await fetch(API_URL);
-      if (!response.ok) throw new Error("Erro ao buscar máquinas.");
-      const dados = await response.json();
-      let lista = Array.isArray(dados) ? dados : (dados.content || dados.data || []);
-      return lista.length > 0 ? lista : maquinasLocais;
-    } catch (error) {
-      return maquinasLocais;
+    if (!response.ok) {
+      throw new Error("Erro ao buscar máquinas.");
     }
-  },
 
-  listar: async function () {
-    return this.selecionar();
+    const dados = await response.json();
+
+    let lista = [];
+
+    if (Array.isArray(dados)) {
+      lista = dados;
+    } else if (Array.isArray(dados.result)) {
+      lista = dados.result;
+    } else if (Array.isArray(dados.data)) {
+      lista = dados.data;
+    } else if (Array.isArray(dados.content)) {
+      lista = dados.content;
+    }
+
+    if (lista.length > 0) {
+      maquinasLocais = lista;
+      return lista;
+    }
+
+    return maquinasLocais;
+
+  } catch (error) {
+    console.error("Erro ao listar máquinas:", error.message);
+    return maquinasLocais;
   }
+},
+
+listar: async () => {
+  try {
+    const response = await fetch(API_URL);
+
+    if (!response.ok) {
+      throw new Error("Erro ao buscar máquinas.");
+    }
+
+    const dados = await response.json();
+
+    if (Array.isArray(dados)) {
+      maquinasLocais = dados;
+      return dados;
+    }
+
+    if (Array.isArray(dados.result)) {
+      maquinasLocais = dados.result;
+      return dados.result;
+    }
+
+    if (Array.isArray(dados.data)) {
+      maquinasLocais = dados.data;
+      return dados.data;
+    }
+
+    return maquinasLocais;
+
+  } catch (error) {
+    console.error("Erro ao listar máquinas:", error.message);
+    return maquinasLocais;
+  }
+}
 };
