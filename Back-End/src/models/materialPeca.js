@@ -3,11 +3,13 @@ export class MaterialPeca {
     #nome;
     #densidade;
     #custoPerKg;
+    #imagem;
 
-    constructor(pNome, pDensidade, pCustoPerKg, pIdMaterial) {
+    constructor(pNome, pDensidade, pCustoPerKg, pIdMaterial, pImagem) {
         this.nome = pNome;
         this.densidade = pDensidade;
         this.custoPerKg = pCustoPerKg;
+        this.imagem = pImagem;
         this.idMaterial = pIdMaterial;
     }
 
@@ -43,6 +45,14 @@ export class MaterialPeca {
         this.#custoPerKg = value;
     }
 
+    get imagem() {
+        return this.#imagem;
+    }
+    set imagem(value) {
+        this.#validarImagem(value);
+        this.#imagem = value;
+    }  
+
     #validarIdMaterial(value) {
         if (value && value <= 0) throw new Error("Verifique o Id do Material informado.");
     }
@@ -65,11 +75,20 @@ export class MaterialPeca {
         }
     }
 
+    #validarImagem(value) {
+        if (value) {
+            if(value.string < 3){
+                throw new Error('O campo imagem não pode ficar vazio')
+            }
+            
+        }
+    }
+
     static criar(dados) {
-        return new MaterialPeca(dados.nome, dados.densidade, dados.custoPerKg, null);
+        return new MaterialPeca(dados.nome, dados.densidade, dados.custoPerKg, dados.imagem, null);
     }
 
     static editar(dados) {
-        return new MaterialPeca(dados.nome, dados.densidade, dados.custoPerKg, dados.idMaterial);
+        return new MaterialPeca(dados.nome, dados.densidade, dados.custoPerKg, dados.imagem, dados.idMaterial);
     }
 }

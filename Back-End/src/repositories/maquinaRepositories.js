@@ -1,6 +1,7 @@
 import { connection } from "../configs/Database.js";
 
 const maquinaRepositories = {
+<<<<<<< HEAD
     criar: async (maquina = {}) => {
         const sql = `INSERT INTO maquina (nome, tipo, custoHora, potencialKw) VALUES (?, ?, ?, ?);`;
         
@@ -12,6 +13,11 @@ const maquinaRepositories = {
             maquina.potencialKw ?? maquina.potenciaKw ?? maquina.potencia_kw ?? 0
         ];
 
+=======
+    criar: async (maquina) => {
+        const sql = `INSERT INTO maquina (nome, tipo, custoHora, potencialKw, imagem) VALUES (?, ?, ?, ?, ?);`;
+        const values = [maquina.nome, maquina.tipo, maquina.custoHora, maquina.potencialKw, maquina.imagem];
+>>>>>>> 2e3716a757bc3f0013ade2840625f3c83a1cef36
         const [rows] = await connection.execute(sql, values);
         return rows;
     },

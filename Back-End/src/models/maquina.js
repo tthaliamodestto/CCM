@@ -2,14 +2,16 @@ export class Maquina {
     #idMaquina;
     #nome;
     #tipo;
-    #custoHora
+    #custoHora;
     #potencialKw;
+    #imagem;
 
-    constructor(pNome, pTipo, pCustoHora, pPotencialKw, pIdMaquina) {
+    constructor(pNome, pTipo, pCustoHora, pPotencialKw, pImagem, pIdMaquina) {
         this.nome = pNome;
         this.tipo = pTipo;
         this.custoHora = pCustoHora;
         this.potencialKw = pPotencialKw;
+        this.imagem = pImagem;
         this.idMaquina = pIdMaquina;
     }
 
@@ -44,12 +46,21 @@ export class Maquina {
         this.#validarCusto(value);
         this.#custoHora = value;
     }
+
     get potencialKw() { 
         return this.#potencialKw; 
     }
     set potencialKw(value) {
         this.#validarPotencia(value);
         this.#potencialKw = value;
+    }
+
+    get imagem() {
+        return this.#imagem;
+    }
+    set imagem(value) {
+        this.#validarImagem(value);
+        this.#imagem = value;
     }
 
 
@@ -83,11 +94,20 @@ export class Maquina {
         }
     }
 
+    #validarImagem(value) {
+        if (value) {
+            if(value.string < 3){
+                throw new Error('O campo imagem não pode ficar vazio')
+            }
+            
+        }
+    }
+
     static criar(dados) {
-        return new Maquina(dados.nome, dados.tipo, dados.custoHora, dados.potencialKw, null);
+        return new Maquina(dados.nome, dados.tipo, dados.custoHora, dados.potencialKw, dados.imagem, null);
     }
 
     static editar(dados) {
-        return new Maquina(dados.nome, dados.tipo, dados.custoHora, dados.potencialKw, dados.idMaquina);
+        return new Maquina(dados.nome, dados.tipo, dados.custoHora, dados.potencialKw, dados.imagem, dados.idMaquina);
     }
 }
