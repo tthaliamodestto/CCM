@@ -10,15 +10,7 @@ const maquinaRepositories = {
 
     editar: async (maquina = {}) => {
         const sql = `UPDATE maquina SET nome = ?, tipo = ?, custoHora = ?, potencialKw = ? WHERE idMaquina = ?;`;
-        
-        const values = [
-            maquina.nome ?? maquina.nomeMaquina ?? null,
-            maquina.tipo ?? "Torno CNC",
-            maquina.custoHora ?? maquina.custo_hora ?? 0,
-            maquina.potencialKw ?? maquina.potenciaKw ?? maquina.potencia_kw ?? 0,
-            maquina.idMaquina ?? maquina.id ?? null
-        ];
-
+        const values = [maquina.nome, maquina.tipo, maquina.custoHora, maquina.potencialKw, maquina.imagem];
         const [rows] = await connection.execute(sql, values);
         return rows;
     },

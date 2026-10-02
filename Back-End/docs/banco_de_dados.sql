@@ -5,7 +5,7 @@ USE ccm_db;
 CREATE TABLE IF NOT EXISTS MaterialPeca (
     idMaterial INT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(100) NOT NULL,
-    medidas VARCHAR(100),
+    densidade DECIMAL(10, 2) NOT NULL,
     custoPerKg DECIMAL(10, 2) NOT NULL,
     imagem VARCHAR(255)
 );
