@@ -75,6 +75,7 @@ export class PecaFinal {
         return this.#imagem;
     }
     set imagem(value) {
+        this.#validarImagem(value);
         this.#imagem = value;
     }
 
