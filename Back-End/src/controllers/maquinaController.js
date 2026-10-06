@@ -6,11 +6,14 @@ const maquinaController = {
     try {
       const { nome, tipo, custoHora, potencialKw } = req.body;
       const imagem = req.file ? `/uploads/images/${req.file.filename}` : null;
+      console.log("ARQUIVO RECEBIDO:", req.file);
+      console.log("CAMINHO DA IMAGEM:", imagem);
       const maquina = Maquina.criar({ nome, tipo, custoHora, potencialKw, imagem });
       const result = await maquinaRepositories.criar(maquina);
+      console.log("RESULTADO DO BANCO AO CRIAR:", result);
       res.status(201).json({ result });
     } catch (error) {
-      console.log(error);
+      console.log("ERRO AO CRIAR MÁQUINA:", error);
       res
         .status(500)
         .json({
@@ -63,6 +66,7 @@ const maquinaController = {
   selecionar: async (req, res) => {
     try {
       const result = await maquinaRepositories.selecionar();
+      console.log("MÁQUINAS DO BANCO (selecionar):", result);
       res.status(200).json({ result });
     } catch (error) {
       console.log(error);
