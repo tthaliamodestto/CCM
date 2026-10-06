@@ -23,13 +23,13 @@ const pecaFinalRepositories = {
     },
 
     selecionar: async () => {
-        const sql = 'SELECT idPecaFinal, idPeca, nome, profundidadeFinal, diametroFinal, larguraFinal, alturaFinal, (imagem IS NOT NULL) AS possuiImagem FROM PecaFinal';
+        const sql = 'SELECT idPecaFinal, idPeca, nome, profundidadeFinal, diametroFinal, larguraFinal, alturaFinal, imagem FROM PecaFinal';
         const [rows] = await connection.execute(sql);
         return rows;
     },
 
     selecionarUm: async (idPecaFinal) => {
-        const sql = 'SELECT idPecaFinal, idPeca, nome, profundidadeFinal, diametroFinal, larguraFinal, alturaFinal, (imagem IS NOT NULL) AS possuiImagem FROM PecaFinal WHERE idPecaFinal = ?';
+        const sql = 'SELECT idPecaFinal, idPeca, nome, profundidadeFinal, diametroFinal, larguraFinal, alturaFinal, imagem FROM PecaFinal WHERE idPecaFinal = ?';
         const values = [idPecaFinal];
         const [rows] = await connection.execute(sql, values);
         return rows;
