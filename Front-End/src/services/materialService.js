@@ -19,4 +19,8 @@ export const materialService = {
         return resposta.data;
     }
 
+<<<<<<< HEAD
 };
+=======
+};
+>>>>>>> 887df370eab94a799fd46d0a21126ee7e48c5bd9

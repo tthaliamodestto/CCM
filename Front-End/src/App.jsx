@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
+import { ThemeProvider } from '../src/context/ThemeContext';
 
 import Pecas from "./Pages/Pecas";
 import Materiais from "./Pages/Materiais";
@@ -27,38 +28,47 @@ export default function App() {
     {
       nome: "Home",
       icone: FiHome,
+      desabilitado: true, // Em desenvolvimento
     },
     {
       nome: "Calculadora",
       icone: FaCalculator,
+      desabilitado: false,
     },
     {
       nome: "Orçamento",
       icone: FiDollarSign,
+      desabilitado: true, // Em desenvolvimento
     },
     {
       nome: "Materiais",
       icone: FiPackage,
+      desabilitado: false,
     },
     {
       nome: "Máquinas",
       icone: FiCpu,
+      desabilitado: false,
     },
     {
       nome: "Configurações",
       icone: FiSettings,
+      desabilitado: false,  
     },
     {
       nome: "Perfil",
       icone: FiUser,
+      desabilitado: true, // Em desenvolvimento
     },
   ];
 
-  const handleMenuClick = (nome) => {
-    setItemAtivo(nome);
+  const handleMenuClick = (item) => {
+    if (item.desabilitado) return; // Garante que não altera a página se estiver desabilitado
+    setItemAtivo(item.nome);
   };
 
   const renderConteudo = () => {
+    // AQUI ESTÁ O SWITCH CASE:
     switch (itemAtivo) {
       case "Calculadora":
         return <Pecas />;
@@ -66,7 +76,7 @@ export default function App() {
         return <Materiais />;
       case "Máquinas":
         return <Maquinas />;
-      case 'Configurações':
+      case "Configurações": 
         return <Configuracoes />;
       default:
         return (
@@ -96,20 +106,20 @@ export default function App() {
           </button>
         </div>
 
-          <nav className="sidebar-menu">
-            {itensMenu.map((item) => {
-              const Icone = item.icone;
+        <nav className="sidebar-menu">
+          {itensMenu.map((item) => {
+            const Icone = item.icone;
 
             return (
               <button
                 key={item.nome}
+                disabled={item.desabilitado}
                 className={`menu-item ${
                   itemAtivo === item.nome ? "active" : ""
-                }`}
-                onClick={() => handleMenuClick(item.nome)}
+                } ${item.desabilitado ? "disabled" : ""}`}
+                onClick={() => handleMenuClick(item)}
               >
                 <Icone className="menu-icon" />
-
                 <span className="menu-text">{item.nome}</span>
               </button>
             );
