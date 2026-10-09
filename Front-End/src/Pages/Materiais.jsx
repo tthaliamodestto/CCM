@@ -1,11 +1,13 @@
+
 import { useState, useEffect } from "react";
 import Header from "../components/Header";
 import { materialService } from "../services/materialService";
 
 export default function FormMaterial() {
-  const [nome, setNome] = useState('');
-  const [densidade, setDensidade] = useState('');
-  const [custoPerKg, setCustoPerKg] = useState('');
+  const [nome, setNome] = useState("");
+  const [densidade, setDensidade] = useState("");
+  const [custoPerKg, setCustoPerKg] = useState("");
+  const [imagem, setImagem] = useState(null);
   const [materiais, setMateriais] = useState([]);
 
   useEffect(() => {
@@ -25,17 +27,24 @@ export default function FormMaterial() {
     e.preventDefault();
 
     try {
-      await materialService.criar({
-        nome,
-        densidade,
-        custoPerKg
-      });
+      const material = new FormData();
 
-      alert('Material cadastrado!');
+      material.append("nome", nome);
+      material.append("densidade", densidade);
+      material.append("custoPerKg", custoPerKg);
 
-      setNome('');
-      setDensidade('');
-      setCustoPerKg('');
+      if (imagem) {
+        material.append("image", imagem);
+      }
+
+      await materialService.criar(material);
+
+      alert("Material cadastrado!");
+
+      setNome("");
+      setDensidade("");
+      setCustoPerKg("");
+      setImagem(null);
 
       carregarMateriais();
 
@@ -48,7 +57,7 @@ export default function FormMaterial() {
     try {
       await materialService.deletar(idMaterial);
 
-      alert('Material excluído!');
+      alert("Material excluído!");
 
       carregarMateriais();
 
@@ -59,8 +68,8 @@ export default function FormMaterial() {
 
   return (
     <div>
-
       <form onSubmit={handleSubmit} className="form-container">
+
         <h2>Cadastrar Material</h2>
 
         <div className="form-group">
@@ -98,11 +107,21 @@ export default function FormMaterial() {
           />
         </div>
 
+        <div className="form-group">
+          <label>Imagem do Material:</label>
+
+          <input
+            type="file"
+            accept="image/png, image/jpeg"
+            onChange={(e) => setImagem(e.target.files[0])}
+          />
+        </div>
+
         <button type="submit">
           Salvar Material
         </button>
-      </form>
 
+      </form>
 
       <div className="materiais-lista">
 
@@ -111,10 +130,20 @@ export default function FormMaterial() {
         </h2>
 
         {materiais.map((material) => (
-
-          <div className="material-item" key={material.idMaterial}>
+          <div
+            className="material-item"
+            key={material.idMaterial}
+          >
 
             <div className="material-info">
+
+              {material.imagem && (
+                <img
+                  src={`http://localhost:8000${material.imagem}`}
+                  alt={material.nome}
+                  width="100"
+                />
+              )}
 
               <strong>{material.nome}</strong>
 
@@ -137,11 +166,9 @@ export default function FormMaterial() {
             </button>
 
           </div>
-
         ))}
 
       </div>
-
     </div>
   );
 }
