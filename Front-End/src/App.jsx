@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { ThemeProvider } from '../src/context/ThemeContext';
 
-import Pecas from './Pages/Pecas';
-import Materiais from './Pages/Materiais';
-import Maquinas from './Pages/Maquinas';
+import Pecas from "./Pages/Pecas";
+import Materiais from "./Pages/Materiais";
+import Maquinas from "./Pages/Maquinas";
 
 import {
   FiMenu,
@@ -12,66 +12,74 @@ import {
   FiPackage,
   FiSettings,
   FiUser,
-  FiCpu
-} from 'react-icons/fi';
+  FiCpu,
+} from "react-icons/fi";
 
-import { FaCalculator } from 'react-icons/fa';
+import { FaCalculator } from "react-icons/fa";
 
-import './index.css';
-import Configuracoes from './Pages/Configuracoes';
+import "./index.css";
 
 export default function App() {
   const [menuAberto, setMenuAberto] = useState(false);
-  const [itemAtivo, setItemAtivo] = useState('Calculadora');
+  const [itemAtivo, setItemAtivo] = useState("Calculadora");
 
   const itensMenu = [
     {
-      nome: 'Home',
-      icone: FiHome
+      nome: "Home",
+      icone: FiHome,
+      desabilitado: true, // Em desenvolvimento
     },
     {
-      nome: 'Calculadora',
-      icone: FaCalculator
+      nome: "Calculadora",
+      icone: FaCalculator,
+      desabilitado: false,
     },
     {
-      nome: 'Orçamento',
-      icone: FiDollarSign
+      nome: "Orçamento",
+      icone: FiDollarSign,
+      desabilitado: true, // Em desenvolvimento
     },
     {
-      nome: 'Materiais',
-      icone: FiPackage
+      nome: "Materiais",
+      icone: FiPackage,
+      desabilitado: false,
     },
     {
-      nome: 'Máquinas',
-      icone: FiCpu
+      nome: "Máquinas",
+      icone: FiCpu,
+      desabilitado: false,
     },
     {
-      nome: 'Configurações',
-      icone: FiSettings
+      nome: "Configurações",
+      icone: FiSettings,
+      desabilitado: false,  
     },
     {
-      nome: 'Perfil',
-      icone: FiUser
-    }
+      nome: "Perfil",
+      icone: FiUser,
+      desabilitado: true, // Em desenvolvimento
+    },
   ];
 
-  const handleMenuClick = (nome) => {
-    setItemAtivo(nome);
+  const handleMenuClick = (item) => {
+    if (item.desabilitado) return; // Garante que não altera a página se estiver desabilitado
+    setItemAtivo(item.nome);
   };
 
   const renderConteudo = () => {
+    // AQUI ESTÁ O SWITCH CASE:
     switch (itemAtivo) {
-      case 'Calculadora':
+      case "Calculadora":
         return <Pecas />;
-      case 'Materiais':
+      case "Materiais":
         return <Materiais />;
-      case 'Máquinas':
+      case "Máquinas":
         return <Maquinas />;
-      case 'Configurações':
+      case "Configurações": 
         return <Configuracoes />;
       default:
         return (
-          <div style={{ padding: '20px' }}>
+          <div style={{ padding: "20px" }}>
             <h2>{itemAtivo}</h2>
             <p>Página em desenvolvimento...</p>
           </div>
@@ -80,50 +88,48 @@ export default function App() {
   };
 
   return (
-    <ThemeProvider>
-      <div className="app-layout">
-        {/* MENU LATERAL */}
-        <aside
-          className={`sidebar ${menuAberto ? 'sidebar-open' : ''}`}
-          onMouseEnter={() => setMenuAberto(true)}
-          onMouseLeave={() => setMenuAberto(false)}
-        >
-          <div className="sidebar-top">
-            <button
-              className="sidebar-toggle"
-              onClick={() => setMenuAberto(!menuAberto)}
-            >
-              <FiMenu />
-            </button>
-          </div>
+    <div className="app-layout">
+      {/* MENU LATERAL */}
+      <aside
+        className={`sidebar ${menuAberto ? "sidebar-open" : ""}`}
+        onMouseEnter={() => setMenuAberto(true)}
+        onMouseLeave={() => setMenuAberto(false)}
+      >
+        {/* BOTÃO DO MENU */}
+        <div className="sidebar-top">
+          <button
+            className="sidebar-toggle"
+            onClick={() => setMenuAberto(!menuAberto)}
+          >
+            <FiMenu />
+          </button>
+        </div>
 
-          <nav className="sidebar-menu">
-            {itensMenu.map((item) => {
-              const Icone = item.icone;
+        <nav className="sidebar-menu">
+          {itensMenu.map((item) => {
+            const Icone = item.icone;
 
-              return (
-                <button
-                  key={item.nome}
-                  className={`menu-item ${
-                    itemAtivo === item.nome ? 'active' : ''
-                  }`}
-                  onClick={() => handleMenuClick(item.nome)}
-                >
-                  <Icone className="menu-icon" />
-                  <span className="menu-text">{item.nome}</span>
-                </button>
-              );
-            })}
-          </nav>
-        </aside>
+            return (
+              <button
+                key={item.nome}
+                disabled={item.desabilitado}
+                className={`menu-item ${
+                  itemAtivo === item.nome ? "active" : ""
+                } ${item.desabilitado ? "disabled" : ""}`}
+                onClick={() => handleMenuClick(item)}
+              >
+                <Icone className="menu-icon" />
+                <span className="menu-text">{item.nome}</span>
+              </button>
+            );
+          })}
+        </nav>
+      </aside>
 
-        {/* ÁREA PRINCIPAL */}
-        <main className="main-content">
-          <div className="page-content">
-            {renderConteudo()}
-          </div>
-        </main>
-      </div>
-    </ThemeProvider>
+      {/* ÁREA PRINCIPAL */}
+      <main className="main-content">
+        <div className="page-content">{renderConteudo()}</div>
+      </main>
+    </div>
   );
 }
