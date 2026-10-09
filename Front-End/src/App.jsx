@@ -4,6 +4,9 @@ import Pecas from "./Pages/Pecas";
 import Materiais from "./Pages/Materiais";
 import Maquinas from "./Pages/Maquinas";
 import Configuracoes from "./pages/Configuracoes";
+import Operacoes from "./Pages/Operacoes";
+import { FiTool } from "react-icons/fi";
+
 
 import {
   FiMenu,
@@ -24,6 +27,7 @@ export default function App() {
   const [itemAtivo, setItemAtivo] = useState("Calculadora");
 
   const itensMenu = [
+   
     {
       nome: "Home",
       icone: FiHome,
@@ -43,6 +47,10 @@ export default function App() {
     {
       nome: "Máquinas",
       icone: FiCpu,
+    },
+     {
+   nome: "Operações",
+   icone: FiTool,
     },
     {
       nome: "Configurações",
@@ -68,6 +76,8 @@ export default function App() {
         return <Maquinas />;
       case 'Configurações':
         return <Configuracoes />;
+      case "Opereções":
+        return <Operacoes />;
       default:
         return (
           <div style={{ padding: "20px" }}>
