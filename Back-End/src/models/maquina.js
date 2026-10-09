@@ -1,14 +1,14 @@
 export class Maquina {
     #idMaquina;
     #nome;
-    #tipo;
+    #tipoUtilizacao;
     #custoHora;
     #potencialKw;
     #imagem;
 
-    constructor(pNome, pTipo, pCustoHora, pPotencialKw, pImagem, pIdMaquina) {
+    constructor(pNome, pTipoUtilizacao, pCustoHora, pPotencialKw, pImagem, pIdMaquina) {
         this.nome = pNome;
-        this.tipo = pTipo;
+        this.tipoUtilizacao = pTipoUtilizacao;
         this.custoHora = pCustoHora;
         this.potencialKw = pPotencialKw;
         this.imagem = pImagem;
@@ -31,12 +31,12 @@ export class Maquina {
         this.#nome = value;
     }
 
-    get tipo() { 
-        return this.#tipo; 
+    get tipoUtilizacao() { 
+        return this.#tipoUtilizacao; 
     }
-    set tipo(value) {
-        this.#validarTipo(value);
-        this.#tipo = value;
+    set tipoUtilizacao(value) {
+        this.#validarTipoUtilizacao(value);
+        this.#tipoUtilizacao = value;
     }
     
     get custoHora() { 
@@ -76,7 +76,7 @@ export class Maquina {
         }
     }
 
-    #validarTipo(value) {
+    #validarTipoUtilizacao(value) {
         if (!value || value.trim().length < 3 || value.trim().length > 100) {
             throw new Error("O tipo da máquina deve ter entre 3 e 100 caracteres.");
         }
