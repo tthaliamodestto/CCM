@@ -167,6 +167,13 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
+/* Botão desabilitado / em desenvolvimento */
+.menu-item.disabled {
+  opacity: 0.35;
+  pointer-events: none; /* Impede o clique e hover */
+  cursor: not-allowed;
+}
+
 /* ============================= */
 /* CONTEÚDO PRINCIPAL & HEADER */
 /* ============================= */
