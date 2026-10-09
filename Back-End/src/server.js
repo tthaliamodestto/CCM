@@ -1,21 +1,18 @@
-import express from 'express';
-import cors from 'cors'; 
 import 'dotenv/config';
-
-// Importa o arquivo central de rotas
-import routes from './routes/routes.js'; 
+import express from 'express';
+import routes from './routes/routes.js';
+import cors from 'cors';
+import path from 'path';
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5173'
+}));
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 app.use(express.json());
+app.use('/', routes);
 
-// Cadastra todas as rotas ativas do projeto
-app.use(routes);
-
-// Define a porta do .env ou usa 3000 como fallback
-const port = process.env.SERVER_PORT || 8000;
-
-app.listen(port, () => {
-    console.log(`Servidor rodando em: http://localhost:${port}`);
+app.listen(process.env.SERVER_PORT, () => {
+    console.log(`Servidor rodando em http://localhost:${process.env.SERVER_PORT}`);
 });

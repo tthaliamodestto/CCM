@@ -918,8 +918,7 @@ body {
   max-width: 1280px;
   margin: 0 auto;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  color: #334155;
-  background-color: #f8fafc;
+  color: var(--text-dark);
   min-height: 100vh;
 }
 
@@ -930,9 +929,9 @@ body {
 
 /* Alerta de Erro */
 .alerta-erro {
-  background-color: #fef2f2;
-  border: 1px solid #fca5a5;
-  color: #991b1b;
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid var(--accent-color);
+  color: var(--accent-color);
   padding: 12px 16px;
   border-radius: 8px;
   margin-bottom: 20px;
@@ -944,18 +943,16 @@ body {
    CARD FORMULÁRIO (DADOS DA MÁQUINA)
    ========================================================================== */
 .card-form-container {
-  background: #ffffff;
   border-radius: 12px;
   padding: 24px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   margin-bottom: 28px;
-  border: 1px solid #e2e8f0;
 }
 
 .section-title {
   font-size: 13px;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--text-dark);
   letter-spacing: 0.6px;
   margin-top: 0;
   margin-bottom: 20px;
@@ -976,7 +973,7 @@ body {
 .form-group label {
   font-size: 13px;
   font-weight: 600;
-  color: #475569;
+  color: var(--text-gray);
   margin-bottom: 6px;
 }
 
@@ -984,11 +981,8 @@ body {
 .form-group select {
   width: 100%;
   padding: 10px 14px;
-  border: 1px solid #cbd5e1;
   border-radius: 6px;
   font-size: 14px;
-  color: #0f172a;
-  background-color: #ffffff;
   box-sizing: border-box;
   transition: border-color 0.15s, box-shadow 0.15s;
 }
@@ -996,8 +990,8 @@ body {
 .form-group input:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #a38446;
-  box-shadow: 0 0 0 3px rgba(163, 132, 70, 0.15);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(170, 142, 82, 0.15);
 }
 
 .input-with-badge {
@@ -1009,7 +1003,7 @@ body {
 .badge-unit {
   position: absolute;
   right: 12px;
-  color: #94a3b8;
+  color: var(--text-gray);
   font-size: 13px;
   font-weight: 500;
   pointer-events: none;
@@ -1032,7 +1026,7 @@ body {
 }
 
 .btn-dourado {
-  background-color: #a38446;
+  background-color: var(--accent-color);
   color: #ffffff;
   border: none;
   padding: 12px 20px;
@@ -1048,7 +1042,7 @@ body {
 }
 
 .btn-dourado:hover {
-  background-color: #8c7038;
+  background-color: rgba(170, 142, 82, 0.8);
 }
 
 .btn-dourado:active {
@@ -1077,8 +1071,7 @@ body {
 }
 
 .icon-list-box {
-  background-color: #1e293b;
-  color: #ffffff;
+  background-color: white;
   padding: 8px;
   border-radius: 6px;
   display: flex;
@@ -1090,21 +1083,20 @@ body {
   margin: 0;
   font-size: 18px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--text-dark);
 }
 
 .list-header-title p {
   margin: 2px 0 0 0;
   font-size: 13px;
-  color: #64748b;
+  color: var(--text-gray);
 }
 
 /* Busca e Filtro Limpos */
 .search-box {
   display: flex;
   align-items: center;
-  background-color: #ffffff;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 6px 12px;
   gap: 8px;
@@ -1115,19 +1107,19 @@ body {
   border: none;
   outline: none;
   font-size: 14px;
-  color: #334155;
+  color: var(--text-dark);
   width: 100%;
 }
 
 .search-icon {
-  color: #94a3b8;
+  color: var(--text-gray);
   font-size: 20px;
 }
 
 .btn-filter-icon {
   background: transparent;
   border: none;
-  color: #64748b;
+  color: var(--text-gray);
   cursor: pointer;
   padding: 2px;
   display: flex;
@@ -1136,7 +1128,7 @@ body {
 }
 
 .btn-filter-icon:hover {
-  background-color: #f1f5f9;
+  background-color: var(--box-subtle);
 }
 
 /* ==========================================================================
@@ -1150,8 +1142,8 @@ body {
 }
 
 .maquina-card-item {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 20px 24px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
@@ -1175,8 +1167,8 @@ body {
   width: 72px;
   height: 52px;
   border-radius: 8px;
-  background-color: #f1f5f9;
-  border: 1px solid #e2e8f0;
+  background-color: var(--box-subtle);
+  border: 1px solid var(--border-color);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1191,13 +1183,13 @@ body {
 
 .thumb-icon {
   font-size: 28px !important;
-  color: #94a3b8;
+  color: var(--text-gray);
 }
 
 .card-machine-title {
   font-size: 17px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--text-dark);
   margin: 0 0 6px 0;
 }
 
@@ -1205,7 +1197,7 @@ body {
   display: flex;
   gap: 16px;
   font-size: 13px;
-  color: #64748b;
+  color: var(--text-gray);
   font-weight: 500;
 }
 
@@ -1258,13 +1250,13 @@ body {
    ========================================================================== */
 .card-body-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
 }
 
 .grid-col-box {
-  background: #f8fafc;
-  border: 1px solid #f1f5f9;
+  background: var(--box-subtle);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 16px;
   display: flex;
@@ -1275,7 +1267,7 @@ body {
 .col-title {
   font-size: 13px;
   font-weight: 700;
-  color: #334155;
+  color: var(--text-dark);
   margin-top: 0;
   margin-bottom: 14px;
 }
@@ -1289,21 +1281,21 @@ body {
 }
 
 .info-row span {
-  color: #64748b;
+  color: var(--text-gray);
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .info-row strong {
-  color: #0f172a;
+  color: var(--text-dark);
   font-weight: 600;
 }
 
 /* Caixa Azul de Destaque para Custo Total */
 .total-highlight-box {
-  background-color: #eff6ff;
-  border: 1px solid #dbeafe;
+  background-color: rgba(3, 102, 214, 0.08);
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   padding: 12px 14px;
   display: flex;
@@ -1314,7 +1306,7 @@ body {
 
 .total-highlight-box span {
   font-weight: 600;
-  color: #1d4ed8;
+  color: var(--accent-color);
   font-size: 13px;
   display: flex;
   align-items: center;
@@ -1324,7 +1316,7 @@ body {
 .total-value {
   font-size: 16px;
   font-weight: 800;
-  color: #1d4ed8;
+  color: var(--accent-color);
 }
 
 /* ==========================================================================
@@ -1354,14 +1346,14 @@ button.status-item-btn {
 /* Passar o rato sobre os itens opacos dá um leve realce */
 button.status-item-btn:hover {
   opacity: 0.8 !important;
-  background-color: #f1f5f9 !important;
+  background-color: var(--box-subtle) !important;
 }
 
 /* ESTADO SELECIONADO: Ganha destaque total com fundo branco e sombra leve */
 button.status-item-btn.selected {
   opacity: 1 !important;
-  background-color: #ffffff !important;
-  border-color: #e2e8f0 !important;
+  background-color: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06) !important;
 }
 
@@ -1382,21 +1374,21 @@ button.status-item-btn.selected {
 .status-item-name {
   font-size: 13px;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--text-dark);
   line-height: 1.2;
 }
 
 .status-item-desc {
   font-size: 11px;
-  color: #64748b;
+  color: var(--text-gray);
   margin-top: 2px;
   line-height: 1.3;
 }
 
 /* Estado selecionado */
 .status-item-btn.selected {
-  background-color: #ffffff;
-  border-color: #cbd5e1;
+  background-color: var(--card-bg);
+  border-color: var(--border-color);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
@@ -1408,12 +1400,12 @@ button.status-item-btn.selected {
 .status-item-name {
   font-size: 13px;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--text-dark);
 }
 
 .status-item-desc {
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--text-gray);
   margin-top: 1px;
 }
 
@@ -1421,8 +1413,8 @@ button.status-item-btn.selected {
    LEGENDA FIXA NO RODAPÉ
    ========================================================================== */
 .footer-legend-bar {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 12px 20px;
   display: flex;
@@ -1434,7 +1426,7 @@ button.status-item-btn.selected {
 
 .legend-title {
   font-weight: 700;
-  color: #334155;
+  color: var(--text-dark);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -1450,6 +1442,55 @@ button.status-item-btn.selected {
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #475569;
+  color: var(--text-gray);
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   CARD INFO - COMPONENTE REUTILIZÁVEL
+   ========================================================================== */
+.card-info {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-info:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+
+.card-info-image-container {
+  width: 100%;
+  height: 200px;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  background: var(--box-subtle);
+}
+
+.card-info-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-info h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 12px;
+}
+
+.card-info p {
+  font-size: 13px;
+  color: var(--text-gray);
+  margin-bottom: 8px;
+}
+
+.card-info p strong {
+  color: var(--text-dark);
   font-weight: 500;
 }

@@ -4,6 +4,7 @@ import { ThemeProvider } from '../src/context/ThemeContext';
 import Pecas from "./Pages/Pecas";
 import Materiais from "./Pages/Materiais";
 import Maquinas from "./Pages/Maquinas";
+import Configuracoes from "./pages/Configuracoes";
 
 import {
   FiMenu,

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Header from "../components/Header";
+import CardInfo from "../components/CardInfo";
 import { maquinaService } from "../services/maquinaService";
 
 const LISTA_TIPOS = [
@@ -14,11 +15,36 @@ const LISTA_TIPOS = [
 
 // Cada status/bandeira possui uma taxa adicional por kWh
 const STATUS_OPCOES = [
-  { cor: "#10b981", nome: "Normal", desc: "Operação dentro do padrão (sem adicional).", adicionalTarifa: 0.00 },
-  { cor: "#f59e0b", nome: "Atenção", desc: "Bandeira Amarela (+R$ 0,02/kWh).", adicionalTarifa: 0.02 },
-  { cor: "#f97316", nome: "Alerta", desc: "Bandeira Vermelha 1 (+R$ 0,05/kWh).", adicionalTarifa: 0.05 },
-  { cor: "#ef4444", nome: "Crítico", desc: "Bandeira Vermelha 2 (+R$ 0,08/kWh).", adicionalTarifa: 0.08 },
-  { cor: "#1e293b", nome: "Vida útil em risco", desc: "Sobretaxa de risco industrial (+R$ 0,15/kWh).", adicionalTarifa: 0.15 }
+  {
+    cor: "#10b981",
+    nome: "Normal",
+    desc: "Operação dentro do padrão (sem adicional).",
+    adicionalTarifa: 0.0,
+  },
+  {
+    cor: "#f59e0b",
+    nome: "Atenção",
+    desc: "Bandeira Amarela (+R$ 0,02/kWh).",
+    adicionalTarifa: 0.02,
+  },
+  {
+    cor: "#f97316",
+    nome: "Alerta",
+    desc: "Bandeira Vermelha 1 (+R$ 0,05/kWh).",
+    adicionalTarifa: 0.05,
+  },
+  {
+    cor: "#ef4444",
+    nome: "Crítico",
+    desc: "Bandeira Vermelha 2 (+R$ 0,08/kWh).",
+    adicionalTarifa: 0.08,
+  },
+  {
+    cor: "#1e293b",
+    nome: "Vida útil em risco",
+    desc: "Sobretaxa de risco industrial (+R$ 0,15/kWh).",
+    adicionalTarifa: 0.15,
+  },
 ];
 
 const FORM_INICIAL = {
@@ -29,7 +55,7 @@ const FORM_INICIAL = {
   tarifaCpfl: "0.72",
   tempoOperacao: "2",
   status: "Normal",
-  imagem: ""
+  imagem: "",
 };
 
 export default function Maquinas() {
@@ -61,12 +87,12 @@ export default function Maquinas() {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setForm((atual) => ({ ...atual, imagem: reader.result }));
-      };
-      reader.readAsDataURL(file);
+      setForm((atual) => ({
+        ...atual,
+        imagem: file,
+      }));
     }
   };
 
@@ -76,7 +102,7 @@ export default function Maquinas() {
       prev.map((m) => {
         const idItem = m.id || m.idMaquina;
         return idItem === idMaquina ? { ...m, status: novoStatus } : m;
-      })
+      }),
     );
   };
 
@@ -87,7 +113,9 @@ export default function Maquinas() {
         if (maquinaService.deletar) {
           await maquinaService.deletar(idMaquina);
         }
-        setMaquinas((prev) => prev.filter((m) => (m.id || m.idMaquina) !== idMaquina));
+        setMaquinas((prev) =>
+          prev.filter((m) => (m.id || m.idMaquina) !== idMaquina),
+        );
       } catch (err) {
         console.error("Erro ao excluir máquina:", err);
       }
@@ -133,7 +161,10 @@ export default function Maquinas() {
   });
 
   const formatarMoeda = (val) =>
-    Number(val || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    Number(val || 0).toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
 
   return (
     <div className="maquinas-container">
@@ -163,7 +194,9 @@ export default function Maquinas() {
             <label>Tipo de Máquina</label>
             <select name="tipo" value={form.tipo} onChange={handleChange}>
               {LISTA_TIPOS.map((t) => (
-                <option key={t} value={t}>{t}</option>
+                <option key={t} value={t}>
+                  {t}
+                </option>
               ))}
             </select>
           </div>
@@ -222,17 +255,33 @@ export default function Maquinas() {
 
         <div className="form-group margin-top-sm">
           <label>Foto / Imagem da Máquina</label>
-          <input type="file" accept="image/*" onChange={handleImageChange} className="file-input" />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="file-input"
+          />
         </div>
 
         <div className="btn-row">
-          <button onClick={limparFormulario} className="btn-dourado" type="button">
+          <button
+            onClick={limparFormulario}
+            className="btn-dourado"
+            type="button"
+          >
             <span className="material-symbols-outlined">refresh</span>
             Limpar
           </button>
 
-          <button onClick={salvarMaquina} className="btn-dourado" type="button" disabled={salvando}>
-            <span className="material-symbols-outlined">{salvando ? "sync" : "add"}</span>
+          <button
+            onClick={salvarMaquina}
+            className="btn-dourado"
+            type="button"
+            disabled={salvando}
+          >
+            <span className="material-symbols-outlined">
+              {salvando ? "sync" : "add"}
+            </span>
             {salvando ? "Cadastrando..." : "Cadastrar Máquina"}
           </button>
         </div>
@@ -267,15 +316,20 @@ export default function Maquinas() {
       {/* LISTA DE CARDS CADASTRADOS */}
       <div className="cards-wrapper">
         {maquinasFiltradas.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "30px", color: "#64748b" }}>
-            Nenhuma máquina cadastrada no momento. Preencha o formulário acima para adicionar.
+          <div
+            style={{ textAlign: "center", padding: "30px", color: "#64748b" }}
+          >
+            Nenhuma máquina cadastrada no momento. Preencha o formulário acima
+            para adicionar.
           </div>
         ) : (
           maquinasFiltradas.map((m, idx) => {
             const idAtual = m.id || m.idMaquina || idx;
 
             // Leitura flexível dos campos (camelCase ou snake_case)
-            const potencia = Number(m.potenciaKw ?? m.potencia_kw ?? m.potencialKw ?? 0);
+            const potencia = Number(
+              m.potenciaKw ?? m.potencia_kw ?? m.potencialKw ?? 0,
+            );
             const tempo = Number(m.tempoOperacao ?? m.tempo_operacao ?? 2);
             const tarifaBase = Number(m.tarifaCpfl ?? m.tarifa_cpfl ?? 0.72);
             const custoHora = Number(m.custoHora ?? m.custo_hora ?? 0);
@@ -283,8 +337,13 @@ export default function Maquinas() {
             const tipoMaquina = m.tipo || "Torno CNC";
             const imagemMaquina = m.imagem;
 
+            console.log("IMAGEM DA MÁQUINA:", m.imagem);
+            console.log("MÁQUINA COMPLETA:", m);
+
             // Identifica o status atual e aplica o adicional de tarifa da bandeira
-            const statusObj = STATUS_OPCOES.find((s) => s.nome === m.status) || STATUS_OPCOES[0];
+            const statusObj =
+              STATUS_OPCOES.find((s) => s.nome === m.status) ||
+              STATUS_OPCOES[0];
             const tarifaEfetiva = tarifaBase + (statusObj.adicionalTarifa || 0);
 
             // Cálculos dinâmicos
@@ -300,22 +359,50 @@ export default function Maquinas() {
                   <div className="card-top-info">
                     <div className="thumb-container">
                       {imagemMaquina ? (
-                        <img src={imagemMaquina} alt={nomeMaquina} />
+                        <img
+                          src={`http://localhost:8000${imagemMaquina}`}
+                          alt={nomeMaquina}
+                        />
                       ) : (
-                        <span className="material-symbols-outlined thumb-icon">precision_manufacturing</span>
+                        <span className="material-symbols-outlined thumb-icon">
+                          precision_manufacturing
+                        </span>
                       )}
                     </div>
                     <div>
                       <h3 className="card-machine-title">{nomeMaquina}</h3>
                       <div className="card-machine-tags">
-                        <span><span className="material-symbols-outlined">handyman</span> {tipoMaquina}</span>
-                        <span><span className="material-symbols-outlined">bolt</span> {potencia.toLocaleString("pt-BR")} kW</span>
+                        <span>
+                          <span className="material-symbols-outlined">
+                            handyman
+                          </span>{" "}
+                          {tipoMaquina}
+                        </span>
+                        <span>
+                          <span className="material-symbols-outlined">
+                            bolt
+                          </span>{" "}
+                          {potencia.toLocaleString("pt-BR")} kW
+                        </span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="card-top-right" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                    <span className="status-badge-pill" style={{ color: statusObj.cor, backgroundColor: `${statusObj.cor}18` }}>
+                  <div
+                    className="card-top-right"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                    }}
+                  >
+                    <span
+                      className="status-badge-pill"
+                      style={{
+                        color: statusObj.cor,
+                        backgroundColor: `${statusObj.cor}18`,
+                      }}
+                    >
                       <span className="material-symbols-outlined">flag</span>
                       {statusObj.nome}
                     </span>
@@ -332,34 +419,69 @@ export default function Maquinas() {
                         borderRadius: "6px",
                         cursor: "pointer",
                         display: "flex",
-                        alignItems: "center"
+                        alignItems: "center",
                       }}
                       title="Excluir máquina"
                     >
-                      <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>delete</span>
+                      <span
+                        className="material-symbols-outlined"
+                        style={{ fontSize: "18px" }}
+                      >
+                        delete
+                      </span>
                     </button>
                   </div>
                 </div>
 
                 {/* CORPO EM 3 COLUNAS */}
                 <div className="card-body-grid">
+                  {/* COLUNA 0 - IMAGEM DA MÁQUINA */}
+                  {imagemMaquina && (
+                    <div className="grid-col-box">
+                      <CardInfo 
+                        titulo={nomeMaquina}
+                        valor={tipoMaquina}
+                        detalhe={potencia + " kW"}
+                        imagem={imagemMaquina.startsWith('http') ? imagemMaquina : `http://localhost:8000${imagemMaquina}`}
+                      />
+                    </div>
+                  )}
+
                   {/* COLUNA 1 - DADOS DA MÁQUINA */}
                   <div className="grid-col-box">
                     <h4 className="col-title">Dados da Máquina</h4>
                     <div className="info-row">
-                      <span><span className="material-symbols-outlined">bolt</span> Potência do motor</span>
+                      <span>
+                        <span className="material-symbols-outlined">bolt</span>{" "}
+                        Potência do motor
+                      </span>
                       <strong>{potencia.toLocaleString("pt-BR")} kW</strong>
                     </div>
                     <div className="info-row">
-                      <span><span className="material-symbols-outlined">payments</span> Custo / Hora</span>
+                      <span>
+                        <span className="material-symbols-outlined">
+                          payments
+                        </span>{" "}
+                        Custo / Hora
+                      </span>
                       <strong>{formatarMoeda(custoHora)}</strong>
                     </div>
                     <div className="info-row">
-                      <span><span className="material-symbols-outlined">electric_bolt</span> Tarifa + Bandeira</span>
+                      <span>
+                        <span className="material-symbols-outlined">
+                          electric_bolt
+                        </span>{" "}
+                        Tarifa + Bandeira
+                      </span>
                       <strong>{formatarMoeda(tarifaEfetiva)} / kWh</strong>
                     </div>
                     <div className="info-row">
-                      <span><span className="material-symbols-outlined">schedule</span> Tempo de operação</span>
+                      <span>
+                        <span className="material-symbols-outlined">
+                          schedule
+                        </span>{" "}
+                        Tempo de operação
+                      </span>
                       <strong>{tempo} horas</strong>
                     </div>
                   </div>
@@ -368,20 +490,47 @@ export default function Maquinas() {
                   <div className="grid-col-box">
                     <h4 className="col-title">Consumo e Custos</h4>
                     <div className="info-row">
-                      <span><span className="material-symbols-outlined">electric_meter</span> Consumo de energia</span>
-                      <strong>{consumoKwh.toLocaleString("pt-BR", { minimumFractionDigits: 2 })} kWh</strong>
+                      <span>
+                        <span className="material-symbols-outlined">
+                          electric_meter
+                        </span>{" "}
+                        Consumo de energia
+                      </span>
+                      <strong>
+                        {consumoKwh.toLocaleString("pt-BR", {
+                          minimumFractionDigits: 2,
+                        })}{" "}
+                        kWh
+                      </strong>
                     </div>
                     <div className="info-row">
-                      <span><span className="material-symbols-outlined">receipt_long</span> Custo energético</span>
+                      <span>
+                        <span className="material-symbols-outlined">
+                          receipt_long
+                        </span>{" "}
+                        Custo energético
+                      </span>
                       <strong>{formatarMoeda(custoEnergetico)}</strong>
                     </div>
                     <div className="info-row">
-                      <span><span className="material-symbols-outlined">layers</span> Custo operacional</span>
+                      <span>
+                        <span className="material-symbols-outlined">
+                          layers
+                        </span>{" "}
+                        Custo operacional
+                      </span>
                       <strong>{formatarMoeda(custoOperacional)}</strong>
                     </div>
                     <div className="total-highlight-box">
-                      <span><span className="material-symbols-outlined">attach_money</span> Custo total da usinagem</span>
-                      <strong className="total-value">{formatarMoeda(custoTotal)}</strong>
+                      <span>
+                        <span className="material-symbols-outlined">
+                          attach_money
+                        </span>{" "}
+                        Custo total da usinagem
+                      </span>
+                      <strong className="total-value">
+                        {formatarMoeda(custoTotal)}
+                      </strong>
                     </div>
                   </div>
 
@@ -398,7 +547,12 @@ export default function Maquinas() {
                             onClick={() => alterarStatus(idAtual, st.nome)}
                             className={`status-item-btn ${isSelected ? "selected" : ""}`}
                           >
-                            <span className="material-symbols-outlined" style={{ color: st.cor }}>flag</span>
+                            <span
+                              className="material-symbols-outlined"
+                              style={{ color: st.cor }}
+                            >
+                              flag
+                            </span>
                             <div className="status-item-info">
                               <div className="status-item-name">{st.nome}</div>
                               <div className="status-item-desc">{st.desc}</div>
@@ -417,11 +571,19 @@ export default function Maquinas() {
 
       {/* LEGENDA NO RODAPÉ */}
       <div className="footer-legend-bar">
-        <span className="legend-title"><span className="material-symbols-outlined">info</span> Legenda de status</span>
+        <span className="legend-title">
+          <span className="material-symbols-outlined">info</span> Legenda de
+          status
+        </span>
         <div className="legend-items">
           {STATUS_OPCOES.map((st) => (
             <div key={st.nome} className="legend-item">
-              <span className="material-symbols-outlined" style={{ color: st.cor }}>flag</span>
+              <span
+                className="material-symbols-outlined"
+                style={{ color: st.cor }}
+              >
+                flag
+              </span>
               <span>{st.nome}</span>
             </div>
           ))}
