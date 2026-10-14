@@ -140,26 +140,10 @@ export class Maquina {
     }
 
     static criar(dados) {
-        return new Maquina(
-            dados.nome,
-            dados.tipo,
-            dados.tipoUtilizacao,
-            dados.custoHora,
-            dados.potencialKw,
-            dados.imagem,
-            null
-        );
+        return new Maquina(dados.nome, dados.tipo, dados.tipoUtilizacao, dados.custoHora, dados.potencialKw, dados.imagem, null);
     }
 
     static editar(dados) {
-        return new Maquina(
-            dados.nome,
-            dados.tipo,
-            dados.tipoUtilizacao,
-            dados.custoHora,
-            dados.potencialKw,
-            dados.imagem,
-            dados.idMaquina
-        );
+        return new Maquina(dados.nome, dados.tipo, dados.tipoUtilizacao, dados.custoHora, dados.potencialKw, dados.imagem, dados.idMaquina);
     }
 }
