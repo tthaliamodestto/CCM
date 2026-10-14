@@ -5,70 +5,111 @@ import maquinaRepositories from "../repositories/maquinaRepositories.js";
 const maquinaController = {
   criar: async (req, res) => {
     try {
-      const { nome, tipoUtilizacao, custoHora, potencialKw } = req.body;
+      const { nome, tipo, tipoUtilizacao: utilizacao, custoHora, potencialKw } = req.body;
       const imagem = req.file ? `/uploads/images/${req.file.filename}` : null;
-      const maquina = Maquina.criar({ nome, tipoUtilizacao, custoHora, potencialKw, imagem });
+      // Máquina própria não precisa de custo por hora
+      const custo = utilizacao === tipoUtilizacao.PROPRIA ? null : custoHora;
+      const maquina = Maquina.criar({ nome, tipo, tipoUtilizacao: utilizacao, custoHora: custo, potencialKw, imagem });
       const result = await maquinaRepositories.criar(maquina);
-      res.status(201).json({ result });
+
+      res.status(201).json({
+        message: "Máquina cadastrada com sucesso.",
+        result
+      });
+
     } catch (error) {
-      console.log(error);
-      res.status(500).json({ message: 'Ocorreu um erro no servidor', errorMessage: error.message });
+      console.error(error);
+
+      res.status(500).json({
+        message: "Erro ao cadastrar máquina.",
+        errorMessage: error.message
+      });
     }
   },
 
   editar: async (req, res) => {
     try {
-      const id = req.params.idMaquina;
-      const { nome, tipo, custoHora, potencialKw } = req.body;
-      const maquina = Maquina.editar({
-        idMaquina: id,
-        nome,
-        tipo,
-        custoHora,
-        potencialKw,
-      });
+      const { idMaquina } = req.params;
+      const {nome, tipo, tipoUtilizacao: utilizacao, custoHora, potencialKw, imagem: imagemAtual} = req.body;
+      const custo = utilizacao === tipoUtilizacao.PROPRIA ? null : custoHora;
+      const maquina = Maquina.editar({idMaquina, nome, tipo, tipoUtilizacao: utilizacao, custoHora: custo, potencialKw});
       const result = await maquinaRepositories.editar(maquina);
-      res.status(200).json({ result });
+
+      res.status(200).json({
+        message: "Máquina atualizada com sucesso.",
+        result
+      });
+
     } catch (error) {
-      console.log(error);
-      res.status(500).json({ message: 'Ocorreu um erro no servidor', errorMessage: error.message });
+      console.error(error);
+
+      res.status(500).json({
+        message: "Erro ao editar máquina.",
+        errorMessage: error.message
+      });
     }
   },
 
   deletar: async (req, res) => {
     try {
-      const id = req.params.idMaquina;
-      const result = await maquinaRepositories.deletar(id);
-      res.status(200).json({ result });
+      const { idMaquina } = req.params;
+      const result = await maquinaRepositories.deletar(idMaquina);
+
+      res.status(200).json({
+        message: "Máquina deletada com sucesso.",
+        result
+      });
+
     } catch (error) {
-      console.log(error);
-      res.status(500).json({ message: 'Ocorreu um erro no servidor', errorMessage: error.message });
+      console.error(error);
+
+      res.status(500).json({
+        message: "Erro ao deletar máquina.",
+        errorMessage: error.message
+      });
     }
   },
 
   selecionar: async (req, res) => {
     try {
       const result = await maquinaRepositories.selecionar();
-      console.log("MÁQUINAS DO BANCO (selecionar):", result);
+
       res.status(200).json({ result });
+
     } catch (error) {
-      console.log(error);
-      res.status(500).json({ message: 'Ocorreu um erro no servidor', errorMessage: error.message });
+      console.error(error);
+
+      res.status(500).json({
+        message: "Erro ao selecionar máquinas.",
+        errorMessage: error.message
+      });
     }
   },
 
   selecionarUm: async (req, res) => {
     try {
-      const id = req.params.idMaquina;
-      const result = await maquinaRepositories.selecionarUm(id);
-      if (result.length === 0)
-        return res.status(404).json({ message: "Máquina não encontrada." });
-      res.status(200).json({ result });
+      const { idMaquina } = req.params;
+      const result = await maquinaRepositories.selecionarUm(idMaquina);
+      
+      if (!result || result.length === 0) {
+        return res.status(404).json({
+          message: "Máquina não encontrada."
+        });
+      }
+
+      res.status(200).json({
+        result: result[0]
+      });
+
     } catch (error) {
-      console.log(error);
-      res.status(500).json({ message: 'Ocorreu um erro no servidor', errorMessage: error.message });
+      console.error(error);
+
+      res.status(500).json({
+        message: "Erro ao buscar máquina.",
+        errorMessage: error.message
+      });
     }
-  },
+  }
 };
 
 export default maquinaController;
