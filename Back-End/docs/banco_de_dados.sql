@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS operacao (
 CREATE TABLE IF NOT EXISTS Maquina (
     idMaquina INT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(100) NOT NULL,
-    tipo VARCHAR(50),
+    tipoUtilizacao ENUM('propria', 'terceiros') NOT NULL
     custoHora DECIMAL(10, 2) NOT NULL,
     potencialKw DECIMAL(10, 2) NOT NULL,
     imagem VARCHAR(255)
@@ -46,9 +46,10 @@ CREATE TABLE IF NOT EXISTS ParametroCorte (
     idParametro INT PRIMARY KEY AUTO_INCREMENT,
     idMaterial INT NOT NULL,
     idOperacao INT NOT NULL,
-    velocidadeCorte DECIMAL(10, 2),
-    avanco DECIMAL(10, 3),
-    profundidadeCorte DECIMAL(10, 3),
+    velocidadeCorte DECIMAL(10, 2) NOT NULL,
+    avanco DECIMAL(10, 3) NOT NULL,
+    tipoAvanco ENUM('mm_volta', 'mm_dente') NOT NULL,
+    profundidadeCorte DECIMAL(10, 3) NOT NULL,
     FOREIGN KEY (idMaterial) 
     REFERENCES MaterialPeca(idMaterial),
     FOREIGN KEY (idOperacao) 
@@ -59,6 +60,7 @@ CREATE TABLE IF NOT EXISTS ParametroCorte (
 CREATE TABLE IF NOT EXISTS PecaFinal (
     idPecaFinal INT PRIMARY KEY AUTO_INCREMENT,
     idPeca INT NOT NULL,
+    comprimentoFinal DECIMAL(10, 3),
     alturaFinal DECIMAL(10, 3),
     diametroFinal DECIMAL(10, 3),
     larguraFinal DECIMAL(10, 3),
@@ -96,7 +98,3 @@ CREATE TABLE IF NOT EXISTS Custo (
     FOREIGN KEY (idProcesso) 
     REFERENCES processousinagem(idProcesso)
 );
-
-
-USE ccm_db;
-ALTER TABLE PecaBruta ADD COLUMN largura DECIMAL(10, 3);
