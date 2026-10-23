@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { ThemeProvider } from '../src/context/ThemeContext';
 
+import Orcamentos from './Pages/Orcamentos';
+import Header from "./components/Header";
 import Pecas from "./Pages/Pecas";
 import Materiais from "./Pages/Materiais";
 import Maquinas from "./Pages/Maquinas";
-import Configuracoes from "./pages/Configuracoes";
+import Configuracoes from "./Pages/Configuracoes";
 import Operacoes from "./Pages/Operacoes";
-import { FiTool } from "react-icons/fi";
-
 
 import {
   FiMenu,
@@ -17,6 +17,7 @@ import {
   FiSettings,
   FiUser,
   FiCpu,
+  FiTool,
 } from "react-icons/fi";
 
 import { FaCalculator } from "react-icons/fa";
@@ -27,12 +28,15 @@ export default function App() {
   const [menuAberto, setMenuAberto] = useState(false);
   const [itemAtivo, setItemAtivo] = useState("Calculadora");
 
+  // Estado para armazenar o perfil/função do usuário
+  // Opções: 'Administrador', 'Operador', 'Analista'
+  const [usuarioRole, setUsuarioRole] = useState('Administrador');
+
   const itensMenu = [
-   
     {
       nome: "Home",
       icone: FiHome,
-      desabilitado: true, // Em desenvolvimento
+      desabilitado: true,
     },
     {
       nome: "Calculadora",
@@ -42,7 +46,7 @@ export default function App() {
     {
       nome: "Orçamento",
       icone: FiDollarSign,
-      desabilitado: true, // Em desenvolvimento
+      desabilitado: false,
     },
     {
       nome: "Materiais",
@@ -54,40 +58,48 @@ export default function App() {
       icone: FiCpu,
       desabilitado: false,
     },
-     {
-   nome: "Operações",
-   icone: FiTool,
+    {
+      nome: "Operações",
+      icone: FiTool,
+      desabilitado: false,
     },
     {
       nome: "Configurações",
       icone: FiSettings,
-      desabilitado: false,  
+      desabilitado: false,
     },
     {
       nome: "Perfil",
       icone: FiUser,
-      desabilitado: true, // Em desenvolvimento
+      desabilitado: true,
     },
   ];
 
   const handleMenuClick = (item) => {
-    if (item.desabilitado) return; // Garante que não altera a página se estiver desabilitado
+    if (item.desabilitado) return;
     setItemAtivo(item.nome);
   };
 
   const renderConteudo = () => {
-    // AQUI ESTÁ O SWITCH CASE:
     switch (itemAtivo) {
       case "Calculadora":
         return <Pecas />;
+
+      case "Orçamento": // <--- ADICIONADO AQUI!
+        return <Orcamentos />;
+
       case "Materiais":
         return <Materiais />;
+
       case "Máquinas":
         return <Maquinas />;
-      case "Configurações": 
-        return <Configuracoes />;
-      case "Opereções":
+
+      case "Operações":
         return <Operacoes />;
+
+      case "Configurações":
+        return <Configuracoes />;
+
       default:
         return (
           <div style={{ padding: "20px" }}>
@@ -100,6 +112,7 @@ export default function App() {
 
   return (
     <div className="app-layout">
+
       {/* MENU LATERAL */}
       <aside
         className={`sidebar ${menuAberto ? "sidebar-open" : ""}`}
@@ -139,8 +152,17 @@ export default function App() {
 
       {/* ÁREA PRINCIPAL */}
       <main className="main-content">
-        <div className="page-content">{renderConteudo()}</div>
+        
+        {/* HEADER DE PONTA A PONTA NO TOPO DA TELA */}
+        <Header usuario="Usuário" role={usuarioRole} />
+
+        {/* CONTEÚDO DA PÁGINA ABAIXO DO HEADER */}
+        <div className="page-content">
+          {renderConteudo()}
+        </div>
+
       </main>
+
     </div>
   );
 }

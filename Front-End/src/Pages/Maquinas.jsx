@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-import Header from "../components/Header";
-import CardInfo from "../components/CardInfo";
 import { maquinaService } from "../services/maquinaService";
+import "../css/Maquinas.css"; // Certifique-se de que o nome do arquivo seja Maquina.css ou Maquinas.css
 
 const LISTA_TIPOS = [
   "Torno CNC",
@@ -13,7 +12,6 @@ const LISTA_TIPOS = [
   "Retífica",
 ];
 
-// Cada status/bandeira possui uma taxa adicional por kWh
 const STATUS_OPCOES = [
   {
     cor: "#10b981",
@@ -55,7 +53,7 @@ const FORM_INICIAL = {
   tarifaCpfl: "0.72",
   tempoOperacao: "2",
   status: "Normal",
-  imagem: "",
+  imagem: null,
 };
 
 export default function Maquinas() {
@@ -67,9 +65,12 @@ export default function Maquinas() {
 
   const carregarMaquinas = async () => {
     try {
+      if (!maquinaService?.listar) return;
       const lista = await maquinaService.listar();
       if (Array.isArray(lista)) {
         setMaquinas(lista);
+      } else if (lista?.result && Array.isArray(lista.result)) {
+        setMaquinas(lista.result);
       }
     } catch (err) {
       console.error("Erro ao carregar máquinas:", err);
@@ -86,35 +87,29 @@ export default function Maquinas() {
   };
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
-
+    const file = e.target.files?.[0];
     if (file) {
-      setForm((atual) => ({
-        ...atual,
-        imagem: file,
-      }));
+      setForm((atual) => ({ ...atual, imagem: file }));
     }
   };
 
-  // Altera o status da máquina no estado para forçar o recálculo imediato dos custos na tela
   const alterarStatus = (idMaquina, novoStatus) => {
     setMaquinas((prev) =>
       prev.map((m) => {
         const idItem = m.id || m.idMaquina;
         return idItem === idMaquina ? { ...m, status: novoStatus } : m;
-      }),
+      })
     );
   };
 
-  // Exclui a máquina
   const handleExcluir = async (idMaquina) => {
     if (window.confirm("Tem certeza que deseja excluir esta máquina?")) {
       try {
-        if (maquinaService.deletar) {
+        if (maquinaService?.deletar) {
           await maquinaService.deletar(idMaquina);
         }
         setMaquinas((prev) =>
-          prev.filter((m) => (m.id || m.idMaquina) !== idMaquina),
+          prev.filter((m) => (m.id || m.idMaquina) !== idMaquina)
         );
       } catch (err) {
         console.error("Erro ao excluir máquina:", err);
@@ -142,9 +137,29 @@ export default function Maquinas() {
 
     try {
       setSalvando(true);
-      const novaMaquinaCadastrada = await maquinaService.cadastrar(form);
-      setMaquinas((prev) => [novaMaquinaCadastrada, ...prev]);
+
+      let dadosParaEnviar;
+      if (form.imagem && form.imagem instanceof File) {
+        const formData = new FormData();
+        formData.append("nome", form.nome);
+        formData.append("tipo", form.tipo);
+        formData.append("potenciaKw", form.potenciaKw);
+        formData.append("custoHora", form.custoHora);
+        formData.append("tarifaCpfl", form.tarifaCpfl);
+        formData.append("tempoOperacao", form.tempoOperacao);
+        formData.append("status", form.status);
+        formData.append("image", form.imagem);
+        dadosParaEnviar = formData;
+      } else {
+        dadosParaEnviar = form;
+      }
+
+      if (maquinaService?.cadastrar) {
+        await maquinaService.cadastrar(dadosParaEnviar);
+      }
+
       limparFormulario();
+      carregarMaquinas();
     } catch (error) {
       setErro("Erro ao cadastrar máquina. Verifique os dados.");
       console.error(error);
@@ -153,9 +168,9 @@ export default function Maquinas() {
     }
   };
 
-  const maquinasFiltradas = maquinas.filter((item) => {
-    const nomeItem = String(item.nome || item.nomeMaquina || "").toLowerCase();
-    const tipoItem = String(item.tipo || "").toLowerCase();
+  const maquinasFiltradas = (maquinas || []).filter((item) => {
+    const nomeItem = String(item?.nome || item?.nomeMaquina || "").toLowerCase();
+    const tipoItem = String(item?.tipo || "").toLowerCase();
     const termoBusca = busca.toLowerCase();
     return nomeItem.includes(termoBusca) || tipoItem.includes(termoBusca);
   });
@@ -166,33 +181,49 @@ export default function Maquinas() {
       currency: "BRL",
     });
 
-  return (
-    <div className="maquinas-container">
-      <Header
-        titulo="Máquinas"
-        subtitulo="Cadastre e gerencie as máquinas do seu processo de usinagem."
-      />
+  const formatarUrlImagem = (img) => {
+    if (!img || typeof img !== "string") return null;
+    if (
+      img.startsWith("http://") ||
+      img.startsWith("https://") ||
+      img.startsWith("data:") ||
+      img.startsWith("blob:")
+    ) {
+      return img;
+    }
+    const caminhoFormatado = img.startsWith("/") ? img : `/${img}`;
+    return `http://localhost:8000${caminhoFormatado}`;
+  };
 
-      {erro && <div className="alerta-erro">{erro}</div>}
+  return (
+    <div className="operacoes-page">
+     
 
       {/* FORMULÁRIO DE CADASTRO */}
-      <div className="card-form-container">
-        <h2 className="section-title">DADOS DA MÁQUINA</h2>
+      <div className="operacoes-form-card">
+        <h2 className="operacoes-section-title">Cadastrar Nova Máquina</h2>
 
-        <div className="form-grid-2">
-          <div className="form-group">
+        <div className="operacoes-form-row">
+          <div className="operacoes-form-group">
             <label>Nome / Identificação</label>
             <input
+              type="text"
               name="nome"
               value={form.nome}
               onChange={handleChange}
               placeholder="Ex: Torno CNC ROMI Centur 30D"
+              autoComplete="off"
             />
           </div>
 
-          <div className="form-group">
+          <div className="operacoes-form-group">
             <label>Tipo de Máquina</label>
-            <select name="tipo" value={form.tipo} onChange={handleChange}>
+            <select
+              name="tipo"
+              value={form.tipo}
+              onChange={handleChange}
+              className="operacoes-select"
+            >
               {LISTA_TIPOS.map((t) => (
                 <option key={t} value={t}>
                   {t}
@@ -200,23 +231,22 @@ export default function Maquinas() {
               ))}
             </select>
           </div>
+        </div>
 
-          <div className="form-group">
+        <div className="operacoes-form-row">
+          <div className="operacoes-form-group">
             <label>Potência (kW)</label>
-            <div className="input-with-badge">
-              <input
-                name="potenciaKw"
-                type="number"
-                step="0.1"
-                value={form.potenciaKw}
-                onChange={handleChange}
-                placeholder="Ex: 15.5"
-              />
-              <span className="badge-unit">kW</span>
-            </div>
+            <input
+              name="potenciaKw"
+              type="number"
+              step="0.1"
+              value={form.potenciaKw}
+              onChange={handleChange}
+              placeholder="Ex: 15.5"
+            />
           </div>
 
-          <div className="form-group">
+          <div className="operacoes-form-group">
             <label>Custo / Hora (R$)</label>
             <input
               name="custoHora"
@@ -227,8 +257,10 @@ export default function Maquinas() {
               placeholder="Ex: 120.00"
             />
           </div>
+        </div>
 
-          <div className="form-group">
+        <div className="operacoes-form-row">
+          <div className="operacoes-form-group">
             <label>Tarifa Base CPFL (R$/kWh)</label>
             <input
               name="tarifaCpfl"
@@ -240,7 +272,7 @@ export default function Maquinas() {
             />
           </div>
 
-          <div className="form-group">
+          <div className="operacoes-form-group">
             <label>Tempo de Operação (horas)</label>
             <input
               name="tempoOperacao"
@@ -253,29 +285,28 @@ export default function Maquinas() {
           </div>
         </div>
 
-        <div className="form-group margin-top-sm">
+        <div className="operacoes-form-group">
           <label>Foto / Imagem da Máquina</label>
           <input
             type="file"
             accept="image/*"
             onChange={handleImageChange}
-            className="file-input"
+            style={{ paddingTop: "8px" }}
           />
         </div>
 
-        <div className="btn-row">
+        <div className="operacoes-form-buttons">
           <button
             onClick={limparFormulario}
-            className="btn-dourado"
+            className="operacoes-btn-cancelar"
             type="button"
           >
-            <span className="material-symbols-outlined">refresh</span>
             Limpar
           </button>
 
           <button
             onClick={salvarMaquina}
-            className="btn-dourado"
+            className="operacoes-btn-cadastrar"
             type="button"
             disabled={salvando}
           >
@@ -287,213 +318,185 @@ export default function Maquinas() {
         </div>
       </div>
 
-      {/* CABEÇALHO DA LISTA DE CADASTRADAS */}
-      <div className="list-header-bar">
-        <div className="list-header-title">
-          <div className="icon-list-box">
+      {/* CABEÇALHO DA LISTAGEM DE MÁQUINAS */}
+      <div className="operacoes-table-header" style={{ marginTop: "32px" }}>
+        <div className="operacoes-table-heading">
+          <div className="operacoes-table-icon">
             <span className="material-symbols-outlined">list_alt</span>
           </div>
           <div>
-            <h3>Máquinas Cadastradas</h3>
-            <p>Visualize os dados e o custo operacional de cada máquina.</p>
+            <h2>Máquinas Cadastradas</h2>
+            <p>Gerencie os custos e os status das máquinas cadastradas.</p>
           </div>
         </div>
 
-        <div className="search-box">
-          <span className="material-symbols-outlined search-icon">search</span>
+        <div className="operacoes-search">
+          <span className="material-symbols-outlined">search</span>
           <input
             type="text"
             placeholder="Buscar máquina..."
             value={busca}
             onChange={(e) => setBusca(e.target.value)}
           />
-          <button type="button" className="btn-filter-icon">
-            <span className="material-symbols-outlined">tune</span>
-          </button>
         </div>
       </div>
 
-      {/* LISTA DE CARDS CADASTRADOS */}
-      <div className="cards-wrapper">
+      {/* LISTA DE CARDS DE MÁQUINA */}
+      <div className="maquinas-cards-wrapper">
         {maquinasFiltradas.length === 0 ? (
-          <div
-            style={{ textAlign: "center", padding: "30px", color: "#64748b" }}
-          >
-            Nenhuma máquina cadastrada no momento. Preencha o formulário acima
-            para adicionar.
+          <div className="operacoes-form-card" style={{ textAlign: "center", padding: "40px" }}>
+            <p style={{ color: "#657d9d", margin: 0 }}>
+              Nenhuma máquina cadastrada até o momento.
+            </p>
           </div>
         ) : (
           maquinasFiltradas.map((m, idx) => {
-            const idAtual = m.id || m.idMaquina || idx;
+            const idAtual = m?.id || m?.idMaquina || idx;
 
-            // Leitura flexível dos campos (camelCase ou snake_case)
-            const potencia = Number(
-              m.potenciaKw ?? m.potencia_kw ?? m.potencialKw ?? 0,
-            );
-            const tempo = Number(m.tempoOperacao ?? m.tempo_operacao ?? 2);
-            const tarifaBase = Number(m.tarifaCpfl ?? m.tarifa_cpfl ?? 0.72);
-            const custoHora = Number(m.custoHora ?? m.custo_hora ?? 0);
-            const nomeMaquina = m.nome || m.nomeMaquina || "Máquina";
-            const tipoMaquina = m.tipo || "Torno CNC";
-            const imagemMaquina = m.imagem;
+            const potencia = Number(m?.potenciaKw ?? m?.potencia_kw ?? m?.potencialKw ?? 0);
+            const tempo = Number(m?.tempoOperacao ?? m?.tempo_operacao ?? 2);
+            const tarifaBase = Number(m?.tarifaCpfl ?? m?.tarifa_cpfl ?? 0.72);
+            const custoHora = Number(m?.custoHora ?? m?.custo_hora ?? 0);
+            const nomeMaquina = m?.nome || m?.nomeMaquina || "Máquina";
+            const tipoMaquina = m?.tipo || "Torno CNC";
+            const imagemUrl = formatarUrlImagem(m?.imagem);
 
-            console.log("IMAGEM DA MÁQUINA:", m.imagem);
-            console.log("MÁQUINA COMPLETA:", m);
-
-            // Identifica o status atual e aplica o adicional de tarifa da bandeira
             const statusObj =
-              STATUS_OPCOES.find((s) => s.nome === m.status) ||
-              STATUS_OPCOES[0];
+              STATUS_OPCOES.find((s) => s.nome === m?.status) || STATUS_OPCOES[0];
             const tarifaEfetiva = tarifaBase + (statusObj.adicionalTarifa || 0);
 
-            // Cálculos dinâmicos
             const consumoKwh = potencia * tempo;
             const custoEnergetico = consumoKwh * tarifaEfetiva;
             const custoOperacional = custoHora * tempo;
             const custoTotal = custoEnergetico + custoOperacional;
 
             return (
-              <div key={idAtual} className="maquina-card-item">
-                {/* TOPO DO CARD */}
-                <div className="card-top-bar">
-                  <div className="card-top-info">
-                    <div className="thumb-container">
-                      {imagemMaquina ? (
+              <div key={idAtual} className="operacoes-table-card maquina-item-card">
+                {/* TOPO DO CARD DA MÁQUINA */}
+                <div className="maquina-card-header">
+                  <div className="maquina-header-title">
+                    <div className="maquina-header-icon-box">
+                      {imagemUrl ? (
                         <img
-                          src={`http://localhost:8000${imagemMaquina}`}
+                          src={imagemUrl}
                           alt={nomeMaquina}
+                          onError={(e) => {
+                            e.target.style.display = "none";
+                          }}
                         />
                       ) : (
-                        <span className="material-symbols-outlined thumb-icon">
-                          precision_manufacturing
-                        </span>
+                        <span className="material-symbols-outlined">precision_manufacturing</span>
                       )}
                     </div>
                     <div>
-                      <h3 className="card-machine-title">{nomeMaquina}</h3>
-                      <div className="card-machine-tags">
+                      <h3 className="maquina-nome-titulo">{nomeMaquina}</h3>
+                      <div className="maquina-subtags">
                         <span>
-                          <span className="material-symbols-outlined">
-                            handyman
-                          </span>{" "}
+                          <span className="material-symbols-outlined">handyman</span>
                           {tipoMaquina}
                         </span>
                         <span>
-                          <span className="material-symbols-outlined">
-                            bolt
-                          </span>{" "}
+                          <span className="material-symbols-outlined">bolt</span>
                           {potencia.toLocaleString("pt-BR")} kW
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  <div
-                    className="card-top-right"
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "10px",
-                    }}
-                  >
+                  <div className="maquina-header-right">
                     <span
-                      className="status-badge-pill"
+                      className="maquina-status-badge"
                       style={{
                         color: statusObj.cor,
                         backgroundColor: `${statusObj.cor}18`,
+                        borderColor: `${statusObj.cor}40`,
                       }}
-                    >
-                      <span className="material-symbols-outlined">flag</span>
-                      {statusObj.nome}
-                    </span>
-
-                    {/* BOTÃO EXCLUIR MÁQUINA */}
-                    <button
-                      type="button"
-                      onClick={() => handleExcluir(idAtual)}
-                      style={{
-                        background: "rgba(239, 68, 68, 0.12)",
-                        color: "#ef4444",
-                        border: "1px solid rgba(239, 68, 68, 0.3)",
-                        padding: "6px 10px",
-                        borderRadius: "6px",
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                      }}
-                      title="Excluir máquina"
                     >
                       <span
                         className="material-symbols-outlined"
-                        style={{ fontSize: "18px" }}
+                        style={{ fontVariationSettings: "'FILL' 1" }}
                       >
-                        delete
+                        flag
                       </span>
+                      {statusObj.nome}
+                    </span>
+
+                    <button
+                      type="button"
+                      className="operacoes-btn-excluir"
+                      onClick={() => handleExcluir(idAtual)}
+                      title="Excluir máquina"
+                    >
+                      <span className="material-symbols-outlined">delete</span>
                     </button>
                   </div>
                 </div>
 
-                {/* CORPO EM 3 COLUNAS */}
-                <div className="card-body-grid">
-                  {/* COLUNA 0 - IMAGEM DA MÁQUINA */}
-                  {imagemMaquina && (
-                    <div className="grid-col-box">
-                      <CardInfo 
-                        titulo={nomeMaquina}
-                        valor={tipoMaquina}
-                        detalhe={potencia + " kW"}
-                        imagem={imagemMaquina.startsWith('http') ? imagemMaquina : `http://localhost:8000${imagemMaquina}`}
-                      />
+                {/* GRID DE 4 SUB-CARDS INTERNOS */}
+                <div className="maquina-subgrid-4">
+                  {/* SUB-CARD 1: FOTO DA MÁQUINA */}
+                  <div className="maquina-subcard-panel">
+                    <div className="maquina-subcard-img-box">
+                      {imagemUrl ? (
+                        <img
+                          src={imagemUrl}
+                          alt={nomeMaquina}
+                          onError={(e) => {
+                            e.target.style.display = "none";
+                          }}
+                        />
+                      ) : (
+                        <div className="maquina-img-empty">
+                          <span className="material-symbols-outlined">precision_manufacturing</span>
+                          <span>Sem Imagem</span>
+                        </div>
+                      )}
                     </div>
-                  )}
+                    <div className="maquina-subcard-img-info">
+                      <strong>{nomeMaquina}</strong>
+                      <p>{tipoMaquina} • {potencia} kW</p>
+                    </div>
+                  </div>
 
-                  {/* COLUNA 1 - DADOS DA MÁQUINA */}
-                  <div className="grid-col-box">
-                    <h4 className="col-title">Dados da Máquina</h4>
-                    <div className="info-row">
+                  {/* SUB-CARD 2: DADOS DA MÁQUINA */}
+                  <div className="maquina-subcard-panel">
+                    <h4 className="maquina-subcard-title">Dados da Máquina</h4>
+                    <div className="maquina-info-line">
                       <span>
-                        <span className="material-symbols-outlined">bolt</span>{" "}
+                        <span className="material-symbols-outlined">bolt</span>
                         Potência do motor
                       </span>
                       <strong>{potencia.toLocaleString("pt-BR")} kW</strong>
                     </div>
-                    <div className="info-row">
+                    <div className="maquina-info-line">
                       <span>
-                        <span className="material-symbols-outlined">
-                          payments
-                        </span>{" "}
+                        <span className="material-symbols-outlined">payments</span>
                         Custo / Hora
                       </span>
                       <strong>{formatarMoeda(custoHora)}</strong>
                     </div>
-                    <div className="info-row">
+                    <div className="maquina-info-line">
                       <span>
-                        <span className="material-symbols-outlined">
-                          electric_bolt
-                        </span>{" "}
+                        <span className="material-symbols-outlined">electric_bolt</span>
                         Tarifa + Bandeira
                       </span>
                       <strong>{formatarMoeda(tarifaEfetiva)} / kWh</strong>
                     </div>
-                    <div className="info-row">
+                    <div className="maquina-info-line">
                       <span>
-                        <span className="material-symbols-outlined">
-                          schedule
-                        </span>{" "}
+                        <span className="material-symbols-outlined">schedule</span>
                         Tempo de operação
                       </span>
                       <strong>{tempo} horas</strong>
                     </div>
                   </div>
 
-                  {/* COLUNA 2 - CONSUMO E CUSTOS */}
-                  <div className="grid-col-box">
-                    <h4 className="col-title">Consumo e Custos</h4>
-                    <div className="info-row">
+                  {/* SUB-CARD 3: CONSUMO E CUSTOS */}
+                  <div className="maquina-subcard-panel">
+                    <h4 className="maquina-subcard-title">Consumo e Custos</h4>
+                    <div className="maquina-info-line">
                       <span>
-                        <span className="material-symbols-outlined">
-                          electric_meter
-                        </span>{" "}
+                        <span className="material-symbols-outlined">electric_meter</span>
                         Consumo de energia
                       </span>
                       <strong>
@@ -503,59 +506,66 @@ export default function Maquinas() {
                         kWh
                       </strong>
                     </div>
-                    <div className="info-row">
+                    <div className="maquina-info-line">
                       <span>
-                        <span className="material-symbols-outlined">
-                          receipt_long
-                        </span>{" "}
+                        <span className="material-symbols-outlined">receipt_long</span>
                         Custo energético
                       </span>
                       <strong>{formatarMoeda(custoEnergetico)}</strong>
                     </div>
-                    <div className="info-row">
+                    <div className="maquina-info-line">
                       <span>
-                        <span className="material-symbols-outlined">
-                          layers
-                        </span>{" "}
+                        <span className="material-symbols-outlined">layers</span>
                         Custo operacional
                       </span>
                       <strong>{formatarMoeda(custoOperacional)}</strong>
                     </div>
-                    <div className="total-highlight-box">
+
+                    <div className="maquina-total-highlight">
                       <span>
-                        <span className="material-symbols-outlined">
-                          attach_money
-                        </span>{" "}
+                        <span className="material-symbols-outlined">attach_money</span>
                         Custo total da usinagem
                       </span>
-                      <strong className="total-value">
+                      <strong className="maquina-valor-dourado">
                         {formatarMoeda(custoTotal)}
                       </strong>
                     </div>
                   </div>
 
-                  {/* COLUNA 3 - SELEÇÃO DE STATUS */}
-                  <div className="grid-col-box">
-                    <h4 className="col-title">Status da Máquina</h4>
-                    <div className="status-options-list">
+                  {/* SUB-CARD 4: STATUS / BANDEIRA */}
+                  <div className="maquina-subcard-panel">
+                    <h4 className="maquina-subcard-title">Status / Bandeira</h4>
+                    <div className="maquina-flags-list">
                       {STATUS_OPCOES.map((st) => {
-                        const isSelected = m.status === st.nome;
+                        const isSelected = (m?.status || "Normal") === st.nome;
                         return (
                           <button
                             key={st.nome}
                             type="button"
                             onClick={() => alterarStatus(idAtual, st.nome)}
-                            className={`status-item-btn ${isSelected ? "selected" : ""}`}
+                            className={`flag-option-btn ${isSelected ? "selected" : ""}`}
+                            style={{
+                              backgroundColor: isSelected ? `${st.cor}18` : "#ffffff",
+                              borderColor: isSelected ? st.cor : "#d4dfed",
+                            }}
                           >
                             <span
                               className="material-symbols-outlined"
-                              style={{ color: st.cor }}
+                              style={{
+                                color: st.cor,
+                                fontVariationSettings: "'FILL' 1",
+                              }}
                             >
                               flag
                             </span>
-                            <div className="status-item-info">
-                              <div className="status-item-name">{st.nome}</div>
-                              <div className="status-item-desc">{st.desc}</div>
+                            <div className="flag-btn-text">
+                              <span
+                                className="flag-btn-name"
+                                style={{ color: isSelected ? st.cor : "#17375d" }}
+                              >
+                                {st.nome}
+                              </span>
+                              <span className="flag-btn-desc">{st.desc}</span>
                             </div>
                           </button>
                         );
@@ -567,27 +577,6 @@ export default function Maquinas() {
             );
           })
         )}
-      </div>
-
-      {/* LEGENDA NO RODAPÉ */}
-      <div className="footer-legend-bar">
-        <span className="legend-title">
-          <span className="material-symbols-outlined">info</span> Legenda de
-          status
-        </span>
-        <div className="legend-items">
-          {STATUS_OPCOES.map((st) => (
-            <div key={st.nome} className="legend-item">
-              <span
-                className="material-symbols-outlined"
-                style={{ color: st.cor }}
-              >
-                flag
-              </span>
-              <span>{st.nome}</span>
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   );
