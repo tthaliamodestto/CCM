@@ -1,55 +1,63 @@
+import { tipoOperacao } from "../enums/tipoOperacao.js";
+
 export class Operacao {
-    #idOperacao;
     #nome;
     #tipo;
+    #descricao;
+    #idOperacao;
 
-    constructor(pNome, pTipo, pIdOperacao) {
+    constructor(pNome, pTipo, pDescricao, pIdOperacao) {
         this.nome = pNome;
         this.tipo = pTipo;
+        this.descricao = pDescricao;
         this.idOperacao = pIdOperacao;
     }
 
-    get idOperacao() { 
-        return this.#idOperacao; 
-    }
-    set idOperacao(value) {
-        this.#validarIdOperacao(value);
-        this.#idOperacao = value;
-    }
-
-    get nome() { 
-        return this.#nome; 
-    }
+    get nome() { return this.#nome; }
     set nome(value) {
         this.#validarNome(value);
-        this.#nome = value;
+        this.#nome = value.trim();
     }
 
-    get tipo() { 
-        return this.#tipo; 
-    }
+    get tipo() { return this.#tipo; }
     set tipo(value) {
         this.#validarTipo(value);
-        this.#tipo = value;
+        this.#tipo = value.trim().toLowerCase();
     }
 
-    #validarIdOperacao(value) {
-        if (value && value <= 0) throw new Error("Verifique o Id da operação informado.");
+    get descricao() { return this.#descricao; }
+    set descricao(value) {
+        this.#validarDescricao(value);
+        this.#descricao = value === null || value === undefined ? null : value.trim();
+    }
+
+    get idOperacao() { return this.#idOperacao; }
+    set idOperacao(value) {
+        this.#validarIdOperacao(value);
+        this.#idOperacao = value === null || value === undefined ? null : Number(value);
     }
 
     #validarNome(value) {
-        if (!value || value.trim().length < 2 || value.trim().length > 100)throw new Error("O nome da máquina deve ter entre 2 e 100 caracteres.");
+        if (typeof value !== "string" || value.trim().length < 3 || value.trim().length > 100) throw new Error("O nome da operação deve ter entre 3 e 100 caracteres.");
     }
 
     #validarTipo(value) {
-        if (!value || value.trim().length < 3 || value.trim().length > 100)throw new Error("O tipo da máquina deve ter entre 3 e 100 caracteres.");
+        if (typeof value !== "string" || !Object.values(tipoOperacao).includes(value.trim().toLowerCase())) throw new Error("Tipo de operação inválido.");
+    }
+
+    #validarDescricao(value) {
+        if (value !== null && value !== undefined && (typeof value !== "string" || value.trim().length > 150)) throw new Error("A descrição deve ser um texto de até 150 caracteres.");
+    }
+
+    #validarIdOperacao(value) {
+        if (value !== null && value !== undefined && (!Number.isInteger(Number(value)) || Number(value) <= 0)) throw new Error("O Id da operação deve ser um inteiro maior que zero.");
     }
 
     static criar(dados) {
-        return new Operacao(dados.nome, dados.tipo, null);
+        return new Operacao(dados.nome, dados.tipo, dados.descricao, null);
     }
 
     static editar(dados) {
-        return new Operacao(dados.nome, dados.tipo, dados.idOperacao);
+        return new Operacao(dados.nome, dados.tipo, dados.descricao, dados.idOperacao);
     }
 }

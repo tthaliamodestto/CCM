@@ -1,134 +1,121 @@
+import { formato } from "../enums/forma.js";
+
 export class PecaFinal {
     #idPecaFinal;
-    #idPeca;
     #nome;
-    #profundidadeFinal;
-    #alturaFinal;
-    #diametroFinal;
+    #forma;
+    #comprimentoFinal;
+    #diametroMaximoFinal;
     #larguraFinal;
+    #alturaFinal;
     #imagem;
 
-    constructor(pIdPeca, pNome, pProfundidadeFinal, pAlturaFinal, pDiametroFinal, pLarguraFinal, pIdPecaFinal, pImagem) {
-        this.idPeca = pIdPeca;
+    constructor(pNome, pForma, pComprimentoFinal, pDiametroMaximoFinal, pLarguraFinal, pAlturaFinal, pImagem, pIdPecaFinal) {
         this.nome = pNome;
-        this.profundidadeFinal = pProfundidadeFinal;
-        this.alturaFinal = pAlturaFinal;
-        this.diametroFinal = pDiametroFinal;
+        this.forma = pForma;
+        this.comprimentoFinal = pComprimentoFinal;
+        this.diametroMaximoFinal = pDiametroMaximoFinal;
         this.larguraFinal = pLarguraFinal;
+        this.alturaFinal = pAlturaFinal;
         this.imagem = pImagem;
         this.idPecaFinal = pIdPecaFinal;
     }
 
     get idPecaFinal() { return this.#idPecaFinal; }
     set idPecaFinal(value) {
-        this.#validarId(value, "Peça Final");
-        this.#idPecaFinal = value;
+        this.#validarIdPecaFinal(value);
+        this.#idPecaFinal = value === null || value === undefined ? null : Number(value);
     }
 
-    get idPeca() { return this.#idPeca; }
-    set idPeca(value) {
-        this.#validarId(value, "Peça");
-        this.#idPeca = value;
-    }
-
-    get nome() {
-        return this.#nome;
-    }
+    get nome() { return this.#nome; }
     set nome(value) {
         this.#validarNome(value);
-        this.#nome = value;
+        this.#nome = value.trim();
     }
 
-    get profundidadeFinal() {
-        return this.#profundidadeFinal;
-    }
-    set profundidadeFinal(value) {
-        this.#validarProfundidadeFinal(value);
-        this.#profundidadeFinal = value ? Number(value) : null;
+    get forma() { return this.#forma; }
+    set forma(value) {
+        this.#validarForma(value);
+        this.#forma = value.trim().toLowerCase();
     }
 
-    get alturaFinal() {
-        return this.#alturaFinal;
-    }
-    set alturaFinal(value) {
-        this.#validarAlturaFinal(value);
-        this.#alturaFinal = value ? Number(value) : null;
+    get comprimentoFinal() { return this.#comprimentoFinal; }
+    set comprimentoFinal(value) {
+        this.#validarDimensao(value, "O comprimento final");
+        this.#comprimentoFinal = Number(value);
     }
 
-    get diametroFinal() {
-        return this.#diametroFinal;
-    }
-    set diametroFinal(value) {
-        this.#validarDiametroFinal(value);
-        this.#diametroFinal = value ? Number(value) : null;
+    get diametroMaximoFinal() { return this.#diametroMaximoFinal; }
+    set diametroMaximoFinal(value) {
+        if (this.#forma === formato.PRISMA) {
+            this.#diametroMaximoFinal = 0;
+            return;
+        }
+        this.#validarDimensao(value, "O diâmetro máximo final");
+        this.#diametroMaximoFinal = Number(value);
     }
 
-    get larguraFinal() {
-        return this.#larguraFinal;
-    }
+    get larguraFinal() { return this.#larguraFinal; }
     set larguraFinal(value) {
-        this.#validarLarguraFinal(value);
-        this.#larguraFinal = value ? Number(value) : null;
+        if (this.#forma === formato.CILINDRO) {
+            this.#larguraFinal = 0;
+            return;
+        }
+        this.#validarDimensao(value, "A largura final");
+        this.#larguraFinal = Number(value);
     }
 
-    get imagem() {
-        return this.#imagem;
+    get alturaFinal() { return this.#alturaFinal; }
+    set alturaFinal(value) {
+        if (this.#forma === formato.CILINDRO) {
+            this.#alturaFinal = 0;
+            return;
+        }
+        this.#validarDimensao(value, "A altura final");
+        this.#alturaFinal = Number(value);
     }
+
+    get imagem() { return this.#imagem; }
     set imagem(value) {
         this.#validarImagem(value);
-        this.#imagem = value;
+        this.#imagem = value === null || value === undefined ? null : value;
     }
 
-    #validarId(value, nomeCampo) {
-        if (value !== null && value !== undefined && value <= 0) {
-            throw new Error(`Verifique o Id da ${nomeCampo} informado.`);
+    #validarIdPecaFinal(value) {
+        if (value !== null && value !== undefined && (!Number.isInteger(Number(value)) || Number(value) <= 0)) {
+            throw new Error("O Id da peça final deve ser um inteiro maior que zero.");
         }
     }
 
     #validarNome(value) {
-        if (!value || value.trim().length < 3 || value.trim().length > 100) {
-            throw new Error("O Nome da peça final deve ter entre 3 e 100 caracteres.");
+        if (typeof value !== 'string' || value.trim().length < 3 || value.trim().length > 100) {
+            throw new Error("O nome da peça final deve ter entre 3 e 100 caracteres.");
         }
     }
 
-    #validarProfundidadeFinal(value) {
-        if (value && (isNaN(Number(value)) || Number(value) < 0)) {
-            throw new Error("A profundidade final, se informada, deve ser um número válido maior ou igual a zero.");
+    #validarForma(value) {
+        if (typeof value !== 'string' || !Object.values(formato).includes(value.trim().toLowerCase())) {
+            throw new Error("A forma deve ser 'cilindro' ou 'prisma'.");
         }
     }
 
-    #validarAlturaFinal(value) {
-        if (value && (isNaN(Number(value)) || Number(value) < 0)) {
-            throw new Error("A altura final, se informada, deve ser um número válido maior ou igual a zero.");
-        }
-    }
-
-    #validarDiametroFinal(value) {
-        if (value && (isNaN(Number(value)) || Number(value) < 0)) {
-            throw new Error("O diâmetro final, se informado, deve ser um número válido maior ou igual a zero.");
-        }
-    }
-
-    #validarLarguraFinal(value) {
-        if (value && (isNaN(Number(value)) || Number(value) < 0)) {
-            throw new Error("A largura final, se informada, deve ser um número válido maior ou igual a zero.");
+    #validarDimensao(value, campo) {
+        if (value === null || value === undefined || value === '' || !Number.isFinite(Number(value)) || Number(value) <= 0) {
+            throw new Error(`${campo} deve ser maior que zero.`);
         }
     }
 
     #validarImagem(value) {
-        if (value) {
-            if(value.string < 3){
-                throw new Error('O campo imagem não pode ficar vazio')
-            }
-            
+        if (value !== null && value !== undefined && (typeof value !== 'string' || value.length > 255)) {
+            throw new Error("A imagem deve ser um caminho com no máximo 255 caracteres.");
         }
     }
 
     static criar(dados) {
-        return new PecaFinal(dados.idPeca, dados.nome, dados.profundidadeFinal, dados.alturaFinal, dados.diametroFinal, dados.larguraFinal, dados.imagem, null);
+        return new PecaFinal(dados.nome, dados.forma, dados.comprimentoFinal, dados.diametroMaximoFinal, dados.larguraFinal, dados.alturaFinal, dados.imagem, null);
     }
 
     static editar(dados) {
-        return new PecaFinal(dados.idPeca, dados.nome, dados.profundidadeFinal, dados.alturaFinal, dados.diametroFinal, dados.larguraFinal, dados.imagem, dados.idPecaFinal);
+        return new PecaFinal(dados.nome, dados.forma, dados.comprimentoFinal, dados.diametroMaximoFinal, dados.larguraFinal, dados.alturaFinal, dados.imagem, dados.idPecaFinal);
     }
 }
