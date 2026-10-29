@@ -1,10 +1,10 @@
 import { tipoOperacao } from "../enums/tipoOperacao.js";
 
 export class Operacao {
+    #idOperacao;
     #nome;
     #tipo;
     #descricao;
-    #idOperacao;
 
     constructor(pNome, pTipo, pDescricao, pIdOperacao) {
         this.nome = pNome;
@@ -12,29 +12,41 @@ export class Operacao {
         this.descricao = pDescricao;
         this.idOperacao = pIdOperacao;
     }
-
-    get nome() { return this.#nome; }
-    set nome(value) {
-        this.#validarNome(value);
-        this.#nome = value.trim();
+    
+    get idOperacao() { 
+        return this.#idOperacao; 
     }
-
-    get tipo() { return this.#tipo; }
-    set tipo(value) {
-        this.#validarTipo(value);
-        this.#tipo = value.trim().toLowerCase();
-    }
-
-    get descricao() { return this.#descricao; }
-    set descricao(value) {
-        this.#validarDescricao(value);
-        this.#descricao = value === null || value === undefined ? null : value.trim();
-    }
-
-    get idOperacao() { return this.#idOperacao; }
     set idOperacao(value) {
         this.#validarIdOperacao(value);
-        this.#idOperacao = value === null || value === undefined ? null : Number(value);
+        this.#idOperacao = value;
+    }
+
+    get nome() { 
+        return this.#nome; 
+    }
+    set nome(value) {
+        this.#validarNome(value);
+        this.#nome = value;
+    }
+
+    get tipo() { 
+        return this.#tipo; 
+    }
+    set tipo(value) {
+        this.#validarTipo(value);
+        this.#tipo = value;
+    }
+
+    get descricao() { 
+        return this.#descricao; 
+    }
+    set descricao(value) {
+        this.#validarDescricao(value);
+        this.#descricao = value;
+    }
+
+    #validarIdOperacao(value) {
+        if (value !== null && value !== undefined && (!Number.isInteger(Number(value)) || Number(value) <= 0)) throw new Error("O Id da operação deve ser um inteiro maior que zero.");
     }
 
     #validarNome(value) {
@@ -47,10 +59,6 @@ export class Operacao {
 
     #validarDescricao(value) {
         if (value !== null && value !== undefined && (typeof value !== "string" || value.trim().length > 150)) throw new Error("A descrição deve ser um texto de até 150 caracteres.");
-    }
-
-    #validarIdOperacao(value) {
-        if (value !== null && value !== undefined && (!Number.isInteger(Number(value)) || Number(value) <= 0)) throw new Error("O Id da operação deve ser um inteiro maior que zero.");
     }
 
     static criar(dados) {

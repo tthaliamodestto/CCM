@@ -1,9 +1,9 @@
 export class DadosTorneamento {
+    #idDadosTorneamento;
     #idOperacaoProcesso;
     #comprimentoTorneamento;
     #diametroInicial;
     #diametroFinal;
-    #idDadosTorneamento;
 
     constructor(pIdOperacaoProcesso, pComprimentoTorneamento, pDiametroInicial, pDiametroFinal, pIdDadosTorneamento) {
         this.idOperacaoProcesso = pIdOperacaoProcesso;
@@ -13,34 +13,48 @@ export class DadosTorneamento {
         this.idDadosTorneamento = pIdDadosTorneamento;
     }
 
-    get idOperacaoProcesso() { return this.#idOperacaoProcesso; }
-    set idOperacaoProcesso(value) {
-        this.#validarIdOperacaoProcesso(value);
-        this.#idOperacaoProcesso = Number(value);
+    get idDadosTorneamento() { 
+        return this.#idDadosTorneamento; 
     }
-
-    get comprimentoTorneamento() { return this.#comprimentoTorneamento; }
-    set comprimentoTorneamento(value) {
-        this.#validarComprimentoTorneamento(value);
-        this.#comprimentoTorneamento = Number(value);
-    }
-
-    get diametroInicial() { return this.#diametroInicial; }
-    set diametroInicial(value) {
-        this.#validarDiametroInicial(value);
-        this.#diametroInicial = Number(value);
-    }
-
-    get diametroFinal() { return this.#diametroFinal; }
-    set diametroFinal(value) {
-        this.#validarDiametroFinal(value);
-        this.#diametroFinal = Number(value);
-    }
-
-    get idDadosTorneamento() { return this.#idDadosTorneamento; }
     set idDadosTorneamento(value) {
         this.#validarIdDadosTorneamento(value);
-        this.#idDadosTorneamento = value === null || value === undefined ? null : Number(value);
+        this.#idDadosTorneamento = value;
+    }
+
+    get idOperacaoProcesso() { 
+        return this.#idOperacaoProcesso; 
+    }
+    set idOperacaoProcesso(value) {
+        this.#validarIdOperacaoProcesso(value);
+        this.#idOperacaoProcesso = value;
+    }
+
+    get comprimentoTorneamento() { 
+        return this.#comprimentoTorneamento; 
+    }
+    set comprimentoTorneamento(value) {
+        this.#validarComprimentoTorneamento(value);
+        this.#comprimentoTorneamento = value;
+    }
+
+    get diametroInicial() { 
+        return this.#diametroInicial; 
+    }
+    set diametroInicial(value) {
+        this.#validarDiametroInicial(value);
+        this.#diametroInicial = value;
+    }
+
+    get diametroFinal() { 
+        return this.#diametroFinal; 
+    }
+    set diametroFinal(value) {
+        this.#validarDiametroFinal(value);
+        this.#diametroFinal = value;
+    }
+    
+    #validarIdDadosTorneamento(value) {
+        if (value !== null && value !== undefined && (!Number.isInteger(Number(value)) || Number(value) <= 0)) throw new Error("O Id dos dados de torneamento deve ser um inteiro maior que zero.");
     }
 
     #validarIdOperacaoProcesso(value) {
@@ -59,10 +73,6 @@ export class DadosTorneamento {
     #validarDiametroFinal(value) {
         if (value === null || value === undefined || value === "" || !Number.isFinite(Number(value)) || Number(value) <= 0) throw new Error("O diâmetro final deve ser maior que zero.");
         if (this.#diametroInicial !== undefined && Number(value) >= this.#diametroInicial) throw new Error("O diâmetro final deve ser menor que o inicial.");
-    }
-
-    #validarIdDadosTorneamento(value) {
-        if (value !== null && value !== undefined && (!Number.isInteger(Number(value)) || Number(value) <= 0)) throw new Error("O Id dos dados de torneamento deve ser um inteiro maior que zero.");
     }
 
     static criar(dados) {

@@ -1,8 +1,8 @@
 export class DadosFaceamento {
+    #idDadosFaceamento;
     #idOperacaoProcesso;
     #diametroFaceamento;
     #espessuraFaceada;
-    #idDadosFaceamento;
 
     constructor(pIdOperacaoProcesso, pDiametroFaceamento, pEspessuraFaceada, pIdDadosFaceamento) {
         this.idOperacaoProcesso = pIdOperacaoProcesso;
@@ -11,28 +11,36 @@ export class DadosFaceamento {
         this.idDadosFaceamento = pIdDadosFaceamento;
     }
 
-    get idOperacaoProcesso() { return this.#idOperacaoProcesso; }
-    set idOperacaoProcesso(value) {
-        this.#validarIdOperacaoProcesso(value);
-        this.#idOperacaoProcesso = Number(value);
+    get idDadosFaceamento() { 
+        return this.#idDadosFaceamento; 
     }
-
-    get diametroFaceamento() { return this.#diametroFaceamento; }
-    set diametroFaceamento(value) {
-        this.#validarDiametroFaceamento(value);
-        this.#diametroFaceamento = Number(value);
-    }
-
-    get espessuraFaceada() { return this.#espessuraFaceada; }
-    set espessuraFaceada(value) {
-        this.#validarEspessuraFaceada(value);
-        this.#espessuraFaceada = Number(value);
-    }
-
-    get idDadosFaceamento() { return this.#idDadosFaceamento; }
     set idDadosFaceamento(value) {
         this.#validarIdDadosFaceamento(value);
-        this.#idDadosFaceamento = value === null || value === undefined ? null : Number(value);
+        this.#idDadosFaceamento = value;
+    }
+
+    get idOperacaoProcesso() { 
+        return this.#idOperacaoProcesso; 
+    }
+    set idOperacaoProcesso(value) {
+        this.#validarIdOperacaoProcesso(value);
+        this.#idOperacaoProcesso = value;
+    }
+
+    get diametroFaceamento() { 
+        return this.#diametroFaceamento; 
+    }
+    set diametroFaceamento(value) {
+        this.#validarDiametroFaceamento(value);
+        this.#diametroFaceamento = value;
+    }
+
+    get espessuraFaceada() { 
+        return this.#espessuraFaceada; 
+    }
+    set espessuraFaceada(value) {
+        this.#validarEspessuraFaceada(value);
+        this.#espessuraFaceada = value;
     }
 
     #validarIdOperacaoProcesso(value) {

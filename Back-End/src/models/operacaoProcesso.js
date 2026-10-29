@@ -1,4 +1,5 @@
 export class OperacaoProcesso {
+    #idOperacaoProcesso;
     #idProcesso;
     #idMaquina;
     #idParametro;
@@ -8,7 +9,6 @@ export class OperacaoProcesso {
     #velocidadeAvancoCalculada;
     #numeroPasses;
     #tempoUsinagem;
-    #idOperacaoProcesso;
 
     constructor(pIdProcesso, pIdMaquina, pIdParametro, pOrdem, pLocalOperacao, pRpmCalculado, pVelocidadeAvancoCalculada, pNumeroPasses, pTempoUsinagem, pIdOperacaoProcesso) {
         this.idProcesso = pIdProcesso;
@@ -23,64 +23,88 @@ export class OperacaoProcesso {
         this.idOperacaoProcesso = pIdOperacaoProcesso;
     }
 
-    get idProcesso() { return this.#idProcesso; }
+    get idOperacaoProcesso() { 
+        return this.#idOperacaoProcesso; 
+    }
+    set idOperacaoProcesso(value) {
+        this.#validarIdOperacaoProcesso(value);
+        this.#idOperacaoProcesso = value === null || value === undefined ? null : Number(value);
+    }
+
+    get idProcesso() { 
+        return this.#idProcesso; 
+    }
     set idProcesso(value) {
         this.#validarIdProcesso(value);
-        this.#idProcesso = Number(value);
+        this.#idProcesso = value;
     }
 
-    get idMaquina() { return this.#idMaquina; }
+    get idMaquina() { 
+        return this.#idMaquina; 
+    }
     set idMaquina(value) {
         this.#validarIdMaquina(value);
-        this.#idMaquina = Number(value);
+        this.#idMaquina = value;
     }
 
-    get idParametro() { return this.#idParametro; }
+    get idParametro() { 
+        return this.#idParametro; 
+    }
     set idParametro(value) {
         this.#validarIdParametro(value);
-        this.#idParametro = Number(value);
+        this.#idParametro = value;
     }
 
-    get ordem() { return this.#ordem; }
+    get ordem() { 
+        return this.#ordem; 
+    }
     set ordem(value) {
         this.#validarOrdem(value);
-        this.#ordem = Number(value);
+        this.#ordem = value;
     }
 
-    get localOperacao() { return this.#localOperacao; }
+    get localOperacao() { 
+        return this.#localOperacao; 
+    }
     set localOperacao(value) {
         this.#validarLocalOperacao(value);
-        this.#localOperacao = value === null || value === undefined ? null : value.trim();
+        this.#localOperacao = value;
     }
 
-    get rpmCalculado() { return this.#rpmCalculado; }
+    get rpmCalculado() { 
+        return this.#rpmCalculado; 
+    }
     set rpmCalculado(value) {
         this.#validarRpmCalculado(value);
-        this.#rpmCalculado = value === null || value === undefined ? null : Number(value);
+        this.#rpmCalculado = value;
     }
 
-    get velocidadeAvancoCalculada() { return this.#velocidadeAvancoCalculada; }
+    get velocidadeAvancoCalculada() { 
+        return this.#velocidadeAvancoCalculada; 
+    }
     set velocidadeAvancoCalculada(value) {
         this.#validarVelocidadeAvancoCalculada(value);
         this.#velocidadeAvancoCalculada = value === null || value === undefined ? null : Number(value);
     }
 
-    get numeroPasses() { return this.#numeroPasses; }
+    get numeroPasses() { 
+        return this.#numeroPasses; 
+    }
     set numeroPasses(value) {
         this.#validarNumeroPasses(value);
         this.#numeroPasses = value === null || value === undefined ? null : Number(value);
     }
 
-    get tempoUsinagem() { return this.#tempoUsinagem; }
+    get tempoUsinagem() { 
+        return this.#tempoUsinagem; 
+    }
     set tempoUsinagem(value) {
         this.#validarTempoUsinagem(value);
         this.#tempoUsinagem = value === null || value === undefined ? null : Number(value);
     }
-
-    get idOperacaoProcesso() { return this.#idOperacaoProcesso; }
-    set idOperacaoProcesso(value) {
-        this.#validarIdOperacaoProcesso(value);
-        this.#idOperacaoProcesso = value === null || value === undefined ? null : Number(value);
+    
+    #validarIdOperacaoProcesso(value) {
+        if (value !== null && value !== undefined && (!Number.isInteger(Number(value)) || Number(value) <= 0)) throw new Error("O Id da operação do processo deve ser um inteiro maior que zero.");
     }
 
     #validarIdProcesso(value) {
@@ -119,10 +143,6 @@ export class OperacaoProcesso {
     #validarTempoUsinagem(value) {
         if (value !== null && value !== undefined && value !== "" && (!Number.isFinite(Number(value)) || Number(value) <= 0)) throw new Error("O tempo de usinagem deve ser maior que zero.");
         if (value === "") throw new Error("O tempo de usinagem não pode ser vazio.");
-    }
-
-    #validarIdOperacaoProcesso(value) {
-        if (value !== null && value !== undefined && (!Number.isInteger(Number(value)) || Number(value) <= 0)) throw new Error("O Id da operação do processo deve ser um inteiro maior que zero.");
     }
 
     static criar(dados) {
