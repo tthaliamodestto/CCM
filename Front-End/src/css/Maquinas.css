@@ -1,0 +1,316 @@
+/* =========================================
+   ESTILOS ESPECÍFICOS PARA MÁQUINAS
+========================================= */
+
+.operacoes-select {
+  width: 100%;
+  height: 45px;
+  padding: 0 16px;
+  border: 1px solid #d4dfed;
+  border-radius: 6px;
+  outline: none;
+  background: #ffffff;
+  color: #17375d;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.maquinas-cards-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.maquina-item-card {
+  margin-bottom: 0 !important;
+}
+
+/* Header superior do Card */
+.maquina-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid #e0e8f2;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.maquina-header-title {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.maquina-header-icon-box {
+  width: 46px;
+  height: 46px;
+  border-radius: 8px;
+  background: #f4f7fa;
+  border: 1px solid #d4dfed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #526780;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.maquina-header-icon-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.maquina-nome-titulo {
+  margin: 0 0 4px 0;
+  color: #0d315b;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.maquina-subtags {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 13px;
+  color: #657d9d;
+}
+
+.maquina-subtags span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.maquina-subtags .material-symbols-outlined {
+  font-size: 16px;
+  color: #657d9d;
+}
+
+.maquina-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.maquina-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  border: 1px solid transparent;
+}
+
+/* Grid com os 4 sub-cards */
+.maquina-subgrid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 1024px) {
+  .maquina-subgrid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .maquina-subgrid-4 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Painel dos Sub-Cards */
+.maquina-subcard-panel {
+  background: #f4f7fa;
+  border: 1px solid #d4dfed;
+  border-radius: 6px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.maquina-subcard-title {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #10345f;
+}
+
+/* Subcard 1 - Imagem */
+.maquina-subcard-img-box {
+  width: 100%;
+  height: 120px;
+  background: #ffffff;
+  border: 1px solid #d4dfed;
+  border-radius: 5px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.maquina-subcard-img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.maquina-img-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: #8295b0;
+  font-size: 12px;
+}
+
+.maquina-img-empty .material-symbols-outlined {
+  font-size: 28px;
+}
+
+.maquina-subcard-img-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.maquina-subcard-img-info strong {
+  color: #17375d;
+  font-size: 13px;
+}
+
+.maquina-subcard-img-info p {
+  margin: 2px 0 0 0;
+  color: #657d9d;
+  font-size: 12px;
+}
+
+/* Linhas de informação dos subcards */
+.maquina-info-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #17375d;
+}
+
+.maquina-info-line span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #657d9d;
+}
+
+.maquina-info-line .material-symbols-outlined {
+  font-size: 18px;
+  color: #8295b0;
+}
+
+.maquina-info-line strong {
+  color: #10345f;
+  font-weight: 700;
+}
+
+/* Custo Total em Destaque */
+.maquina-total-highlight {
+  margin-top: auto;
+  background: #ffffff;
+  border: 1px solid #d4dfed;
+  border-radius: 5px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #10345f;
+}
+
+.maquina-total-highlight span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+}
+
+.maquina-valor-dourado {
+  color: #ad8d49;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* =========================================
+   LISTA DE OPÇÕES DE BANDEIRA / STATUS
+========================================= */
+
+.maquina-flags-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Reseta completamente os botões para não herdarem o dourado/marrom */
+.flag-option-btn {
+  width: 100% !important;
+  min-height: initial !important;
+  padding: 8px 10px !important;
+  border-radius: 6px !important;
+  border: 1px solid #d4dfed !important;
+  background: #ffffff !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 8px !important;
+  text-align: left !important;
+  transition: all 0.2s ease !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.flag-option-btn:hover {
+  filter: brightness(0.97);
+  transform: none !important;
+}
+
+.flag-option-btn.selected {
+  border-width: 1.5px !important;
+  font-weight: 700;
+}
+
+.flag-option-btn .material-symbols-outlined {
+  font-size: 18px !important;
+  margin-top: 1px;
+}
+
+.flag-btn-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.flag-btn-name {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+}
+
+.flag-btn-desc {
+  font-size: 11px !important;
+  color: #657d9d !important;
+  line-height: 1.2 !important;
+  margin-top: 2px !important;
+}
+
+.alerta-erro {
+  background-color: #ffebeb;
+  border: 1px solid #fca5a5;
+  color: #e32222;
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
