@@ -1,6 +1,6 @@
-CREATE DATABASE IF NOT EXISTS ccm_db;
-USE ccm_db;
+CREATE DATABASE ccm_db;
 
+USE ccm_db;
 
 -- Tabela de Clientes/Usuários do Sistema
 CREATE TABLE IF NOT EXISTS Cliente (
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS PecaBruta (
     largura DECIMAL(10,3) DEFAULT 0,
     altura DECIMAL(10,2) DEFAULT 0,
     FOREIGN KEY (idMaterial) 
-    REFERENCES MaterialPeca(idMaterial)
+    REFERENCES MaterialPeca(idMaterial),
     FOREIGN KEY (idCliente)
     REFERENCES Cliente(idCliente)
 );
@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS PecaFinal (
     profundidadeFinal DECIMAL(10, 3),
     imagem VARCHAR(255),
     FOREIGN KEY (idPeca) 
-    REFERENCES PecaBruta(idPeca)
+    REFERENCES PecaBruta(idPeca),
     FOREIGN KEY (idCliente)
     REFERENCES Cliente(idCliente)
 );
@@ -102,7 +102,7 @@ CREATE TABLE IF NOT EXISTS processousinagem (
     FOREIGN KEY (idMaquina) 
     REFERENCES Maquina(idMaquina),
     FOREIGN KEY (idParametro) 
-    REFERENCES ParametroCorte(idParametro)
+    REFERENCES ParametroCorte(idParametro),
     FOREIGN KEY (idCliente)
     REFERENCES Cliente(idCliente)
 );
