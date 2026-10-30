@@ -1,34 +1,22 @@
-const API_URL = 'http://localhost:8000/material';
+import axios from "axios";
+
+const API_URL = "http://localhost:8000/material";
 
 export const materialService = {
-  cadastrar: async (dados) => {
-    try {
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dados)
-      });
 
-      if (!response.ok) {
-        const erroBody = await response.json().catch(() => ({}));
-        throw new Error(erroBody.errorMessage || erroBody.message || "Erro ao cadastrar material.");
-      }
+    criar: async (material) => {
+        const resposta = await axios.post(API_URL, material);
+        return resposta.data
+    },
 
-      return await response.json();
-    } catch (error) {
-      console.warn("API offline:", error.message);
-      return dados;
+    selecionar: async () => {
+        const resposta = await axios.get(API_URL);
+        return resposta.data;
+    },
+
+    deletar: async (idMaterial) => {
+        const resposta = await axios.delete(`${API_URL}/${idMaterial}`);
+        return resposta.data;
     }
-  },
 
-  listar: async () => {
-    try {
-      const response = await fetch(API_URL);
-      if (!response.ok) throw new Error("Erro ao buscar materiais.");
-      return await response.json();
-    } catch (error) {
-      console.warn("API offline. Retornando lista vazia.");
-      return [];
-    }
-  }
 };

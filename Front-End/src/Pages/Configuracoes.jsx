@@ -1,17 +1,12 @@
+
 import React, { useContext } from 'react';
-import Header from '../components/Header';
-import { ThemeContext } from '../contexts/ThemeContext';
+import { ThemeContext } from '../context/ThemeContext';
 
 export default function Configuracoes() {
   const { theme, toggleTheme } = useContext(ThemeContext);
 
   return (
     <div>
-      <Header
-        titulo="Configurações"
-        subtitulo="Gerencie as preferências visuais e do sistema."
-      />
-
       <main style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
         <section
           style={{
@@ -23,6 +18,7 @@ export default function Configuracoes() {
           }}
         >
           <h2>Aparência do Sistema</h2>
+
           <p style={{ margin: '10px 0 20px 0', opacity: 0.8 }}>
             Alterne entre o tema claro e escuro para ajustar a interface conforme sua preferência.
           </p>
@@ -43,9 +39,13 @@ export default function Configuracoes() {
               cursor: 'pointer',
             }}
           >
-            <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>
+            <span
+              className="material-symbols-outlined"
+              style={{ fontSize: '20px' }}
+            >
               {theme === 'dark' ? 'light_mode' : 'dark_mode'}
             </span>
+
             {theme === 'dark' ? 'Ativar Modo Claro' : 'Ativar Modo Escuro'}
           </button>
         </section>

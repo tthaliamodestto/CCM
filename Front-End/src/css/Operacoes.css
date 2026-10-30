@@ -1,0 +1,501 @@
+
+/* =========================================
+   PÁGINA DE OPERAÇÕES
+========================================= */
+
+.operacoes-page {
+  width: 100%;
+  min-width: 0;
+  padding: 26px;
+  box-sizing: border-box;
+  color: #102f55;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.operacoes-page * {
+  box-sizing: border-box;
+}
+
+/* =========================================
+   CABEÇALHO
+========================================= */
+
+.operacoes-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.operacoes-header-icon {
+  width: 54px;
+  height: 54px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: #f0e7d2;
+  color: #526780;
+}
+
+.operacoes-header-icon .material-symbols-outlined {
+  font-size: 30px;
+}
+
+.operacoes-header h1 {
+  margin: 0 0 6px;
+  color: #0d315b;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.operacoes-header p {
+  margin: 0;
+  color: #657d9d;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* =========================================
+   CARDS
+========================================= */
+
+.operacoes-form-card,
+.operacoes-table-card {
+  width: 100%;
+  min-width: 0;
+  padding: 22px;
+  margin-bottom: 22px;
+  background: #ffffff;
+  border: 1px solid #dce5f0;
+  border-radius: 9px;
+  box-shadow: 0 2px 6px rgba(17, 48, 83, 0.06);
+}
+
+/* =========================================
+   FORMULÁRIO
+========================================= */
+
+.operacoes-section-title {
+  margin: 0 0 18px;
+  padding: 7px 10px;
+  color: #10345f;
+  background: #f4f7fa;
+  border-radius: 5px;
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.operacoes-form-group {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 9px;
+  margin-bottom: 22px;
+}
+
+.operacoes-form-group label {
+  color: #163456;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.operacoes-form-group input {
+  width: 100%;
+  height: 45px;
+  padding: 0 16px;
+  border: 1px solid #d4dfed;
+  border-radius: 6px;
+  outline: none;
+  background: #ffffff;
+  color: #17375d;
+  font-family: inherit;
+  font-size: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.operacoes-form-group input::placeholder {
+  color: #8295b0;
+}
+
+.operacoes-form-group input:focus {
+  border-color: #b0924d;
+  box-shadow: 0 0 0 3px rgba(176, 146, 77, 0.12);
+}
+
+.operacoes-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.operacoes-form-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.operacoes-btn-cadastrar {
+  width: 100%;
+  min-height: 49px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
+  background: #ad8d49;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.operacoes-btn-cadastrar:hover {
+  background: #967638;
+}
+
+.operacoes-btn-cadastrar:active {
+  transform: scale(0.99);
+}
+
+.operacoes-btn-cadastrar .material-symbols-outlined {
+  font-size: 21px;
+}
+
+.operacoes-btn-cancelar {
+  min-height: 42px;
+  padding: 10px 18px;
+  border: 1px solid #d5dfeb;
+  border-radius: 6px;
+  background: #f4f7fb;
+  color: #17375d;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.operacoes-btn-cancelar:hover {
+  background: #e7edf5;
+}
+
+/* =========================================
+   CABEÇALHO DA PLANILHA
+========================================= */
+
+.operacoes-table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 26px;
+}
+
+.operacoes-table-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.operacoes-table-icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  background: #12375f;
+  color: #ffffff;
+}
+
+.operacoes-table-icon .material-symbols-outlined {
+  font-size: 23px;
+}
+
+.operacoes-table-heading h2 {
+  margin: 0 0 5px;
+  color: #10345f;
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.operacoes-table-heading p {
+  margin: 0;
+  color: #647c9b;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* =========================================
+   BUSCA
+========================================= */
+
+.operacoes-search {
+  width: 335px;
+  max-width: 100%;
+  height: 43px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  border: 1px solid #d5dfed;
+  border-radius: 6px;
+  background: #ffffff;
+  flex-shrink: 0;
+}
+
+.operacoes-search > .material-symbols-outlined {
+  color: #8195b0;
+  font-size: 21px;
+}
+
+.operacoes-search input {
+  width: 100%;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #17375d;
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.operacoes-search input::placeholder {
+  color: #8295b0;
+}
+
+/* =========================================
+   PLANILHA / TABELA
+========================================= */
+
+.operacoes-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #e0e8f2;
+  border-radius: 6px;
+}
+
+.operacoes-table {
+  width: 100%;
+  min-width: 680px;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: auto;
+  color: #15365d;
+  font-size: 13px;
+}
+
+.operacoes-table thead {
+  background: #12365e;
+  color: #ffffff;
+}
+
+.operacoes-table thead th {
+  height: 46px;
+  padding: 12px 16px;
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+  background: #12365e;
+  color: #ffffff;
+  text-align: center;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.operacoes-table thead th:first-child {
+  border-top-left-radius: 5px;
+}
+
+.operacoes-table thead th:last-child {
+  border-top-right-radius: 5px;
+  border-right: none;
+}
+
+.operacoes-table tbody td {
+  height: 57px;
+  padding: 10px 16px;
+  border-right: 1px solid #dce5ef;
+  border-bottom: 1px solid #e7edf5;
+  text-align: center;
+  vertical-align: middle;
+  background: #ffffff;
+}
+
+.operacoes-table tbody tr:nth-child(even) td {
+  background: #f3f7fb;
+}
+
+.operacoes-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.operacoes-table tbody td:last-child {
+  border-right: none;
+}
+
+.operacoes-table tbody tr:hover td {
+  background: #edf3fa;
+}
+
+.operacoes-table .operacoes-nome-celula {
+  min-width: 200px;
+  text-align: left;
+  font-weight: 500;
+}
+
+.operacoes-col-numero {
+  width: 70px;
+}
+
+.operacoes-col-preco {
+  min-width: 145px;
+}
+
+.operacoes-col-tempo {
+  min-width: 145px;
+}
+
+.operacoes-col-acoes {
+  width: 180px;
+}
+
+/* =========================================
+   BOTÕES DE AÇÃO
+========================================= */
+
+.operacoes-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.operacoes-actions button {
+  width: 39px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.operacoes-actions button:hover {
+  transform: translateY(-1px);
+}
+
+.operacoes-btn-editar {
+  background: #e7eef7;
+  color: #103d70;
+}
+
+.operacoes-btn-editar:hover {
+  background: #d4e2f2;
+}
+
+.operacoes-btn-excluir {
+  background: #ffebeb;
+  color: #e32222;
+}
+
+.operacoes-btn-excluir:hover {
+  background: #ffd8d8;
+}
+
+.operacoes-actions .material-symbols-outlined {
+  font-size: 20px;
+}
+
+/* =========================================
+   ESTADO VAZIO
+========================================= */
+
+.operacoes-table .operacoes-empty {
+  height: 100px;
+  padding: 25px;
+  color: #7588a3;
+  text-align: center;
+}
+
+/* =========================================
+   RODAPÉ DA PLANILHA
+========================================= */
+
+.operacoes-table-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 20px;
+  color: #7185a2;
+  font-size: 12px;
+}
+
+/* =========================================
+   RESPONSIVIDADE
+========================================= */
+
+@media (max-width: 900px) {
+  .operacoes-page {
+    padding: 18px;
+  }
+
+  .operacoes-table-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .operacoes-search {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .operacoes-page {
+    padding: 12px;
+  }
+
+  .operacoes-header {
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .operacoes-header-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .operacoes-header h1 {
+    font-size: 22px;
+  }
+
+  .operacoes-header p {
+    font-size: 12px;
+  }
+
+  .operacoes-form-card,
+  .operacoes-table-card {
+    padding: 14px;
+  }
+
+  .operacoes-form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .operacoes-table-heading h2 {
+    font-size: 17px;
+  }
+
+  .operacoes-table-heading p {
+    font-size: 12px;
+  }
+}

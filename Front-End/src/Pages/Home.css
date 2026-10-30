@@ -1,0 +1,29 @@
+
+.home-page {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  background: #e5e7eb;
+  color: #1e293b;
+}
+
+.home-page main {
+  width: 100%;
+}
+
+.home-page img,
+.home-page video {
+  max-width: 100%;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

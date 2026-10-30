@@ -1,14 +1,18 @@
+import { tipoOperacao } from "../enums/tipoOperacao.js";
+
 export class Operacao {
     #idOperacao;
     #nome;
     #tipo;
+    #descricao;
 
-    constructor(pNome, pTipo, pIdOperacao) {
+    constructor(pNome, pTipo, pDescricao, pIdOperacao) {
         this.nome = pNome;
         this.tipo = pTipo;
+        this.descricao = pDescricao;
         this.idOperacao = pIdOperacao;
     }
-
+    
     get idOperacao() { 
         return this.#idOperacao; 
     }
@@ -33,23 +37,35 @@ export class Operacao {
         this.#tipo = value;
     }
 
+    get descricao() { 
+        return this.#descricao; 
+    }
+    set descricao(value) {
+        this.#validarDescricao(value);
+        this.#descricao = value;
+    }
+
     #validarIdOperacao(value) {
-        if (value && value <= 0) throw new Error("Verifique o Id da operação informado.");
+        if (value !== null && value !== undefined && (!Number.isInteger(Number(value)) || Number(value) <= 0)) throw new Error("O Id da operação deve ser um inteiro maior que zero.");
     }
 
     #validarNome(value) {
-        if (!value || value.trim().length < 2 || value.trim().length > 100)throw new Error("O nome da máquina deve ter entre 2 e 100 caracteres.");
+        if (typeof value !== "string" || value.trim().length < 3 || value.trim().length > 100) throw new Error("O nome da operação deve ter entre 3 e 100 caracteres.");
     }
 
     #validarTipo(value) {
-        if (!value || value.trim().length < 3 || value.trim().length > 100)throw new Error("O tipo da máquina deve ter entre 3 e 100 caracteres.");
+        if (typeof value !== "string" || !Object.values(tipoOperacao).includes(value.trim().toLowerCase())) throw new Error("Tipo de operação inválido.");
+    }
+
+    #validarDescricao(value) {
+        if (value !== null && value !== undefined && (typeof value !== "string" || value.trim().length > 150)) throw new Error("A descrição deve ser um texto de até 150 caracteres.");
     }
 
     static criar(dados) {
-        return new Operacao(dados.nome, dados.tipo, null);
+        return new Operacao(dados.nome, dados.tipo, dados.descricao, null);
     }
 
     static editar(dados) {
-        return new Operacao(dados.nome, dados.tipo, dados.idOperacao);
+        return new Operacao(dados.nome, dados.tipo, dados.descricao, dados.idOperacao);
     }
 }

@@ -1,0 +1,538 @@
+.login-page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  background: #e5e7eb;
+}
+
+
+/* =========================
+   LADO VISUAL
+========================= */
+
+.login-visual {
+  position: relative;
+  min-height: 100vh;
+
+  background-image: url("/imagens/login-industrial.png");
+  background-size: cover;
+  background-position: center;
+
+  overflow: hidden;
+}
+
+.login-visual-overlay {
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(34, 49, 77, 0.92),
+      rgba(34, 49, 77, 0.68)
+    );
+}
+
+.login-visual-content {
+  position: relative;
+  z-index: 2;
+
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  padding: 48px;
+  box-sizing: border-box;
+}
+
+
+/* LOGO ESQUERDA */
+
+.login-logo-visual {
+  width: 145px;
+  height: auto;
+  object-fit: contain;
+}
+
+
+/* TEXTO ESQUERDA */
+
+.visual-text {
+  max-width: 560px;
+  padding-bottom: 60px;
+}
+
+.visual-text span {
+  display: block;
+
+  margin-bottom: 20px;
+
+  color: #aa8e52;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  letter-spacing: 2.5px;
+}
+
+.visual-text h2 {
+  margin: 0 0 22px;
+
+  color: #ffffff;
+
+  font-size: clamp(42px, 5vw, 72px);
+
+  font-weight: 500;
+
+  line-height: 0.98;
+
+  letter-spacing: -2.5px;
+}
+
+.visual-text p {
+  max-width: 470px;
+
+  margin: 0;
+
+  color: rgba(255, 255, 255, 0.75);
+
+  font-size: 16px;
+
+  line-height: 1.7;
+}
+
+
+/* =========================
+   LADO DO FORMULÁRIO
+========================= */
+
+.login-form-area {
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #ffffff;
+
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+.login-form-container {
+  width: 100%;
+  max-width: 430px;
+}
+
+
+/* VOLTAR */
+
+.login-back {
+  display: inline-block;
+
+  margin-bottom: 55px;
+
+  color: #64748b;
+
+  font-size: 13px;
+
+  text-decoration: none;
+
+  transition: 0.2s ease;
+}
+
+.login-back:hover {
+  color: #22314d;
+}
+
+
+/* =========================
+   CABEÇALHO
+========================= */
+
+.login-header {
+  margin-bottom: 38px;
+}
+
+
+/* LOGO AZUL */
+
+.login-logo {
+  display: block;
+
+  width: 105px;
+  height: auto;
+
+  margin-bottom: 28px;
+
+  object-fit: contain;
+}
+
+
+/* TÍTULO */
+
+.login-header h1 {
+  margin: 0 0 10px;
+
+  color: #22314d;
+
+  font-size: 32px;
+
+  font-weight: 500;
+
+  letter-spacing: -1px;
+}
+
+.login-header p {
+  margin: 0;
+
+  color: #64748b;
+
+  font-size: 14px;
+
+  line-height: 1.6;
+}
+
+
+/* =========================
+   FORMULÁRIO
+========================= */
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  color: #22314d;
+
+  font-size: 13px;
+
+  font-weight: 600;
+}
+
+
+/* LABEL DA SENHA */
+
+.password-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.password-label a {
+  color: #aa8e52;
+
+  font-size: 11px;
+
+  text-decoration: none;
+}
+
+.password-label a:hover {
+  text-decoration: underline;
+}
+
+
+/* INPUT */
+
+.form-group input[type="email"],
+.form-group input[type="password"] {
+  width: 100%;
+
+  height: 50px;
+
+  padding: 0 16px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #e2e8f0;
+
+  border-radius: 3px;
+
+  outline: none;
+
+  background: #ffffff;
+
+  color: #22314d;
+
+  font-family: inherit;
+
+  font-size: 14px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.form-group input::placeholder {
+  color: #94a3b8;
+}
+
+.form-group input:focus {
+  border-color: #aa8e52;
+
+  box-shadow:
+    0 0 0 3px rgba(170, 142, 82, 0.12);
+}
+
+
+/* AVISO DA SENHA */
+
+.password-help {
+  color: #94a3b8;
+
+  font-size: 10px;
+
+  line-height: 1.5;
+}
+
+
+/* =========================
+   LEMBRAR
+========================= */
+
+.remember-area {
+  margin-top: -3px;
+}
+
+.remember-area label {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  color: #64748b;
+
+  font-size: 12px;
+
+  cursor: pointer;
+}
+
+.remember-area input {
+  accent-color: #aa8e52;
+}
+
+
+/* =========================
+   BOTÃO ENTRAR
+========================= */
+
+.login-button {
+  width: 100%;
+
+  height: 50px;
+
+  border: none;
+
+  border-radius: 3px;
+
+  background: #22314d;
+
+  color: #ffffff;
+
+  font-family: inherit;
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+  letter-spacing: 1px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.25s ease,
+    transform 0.2s ease;
+}
+
+.login-button:hover {
+  background: #2d4163;
+
+  transform: translateY(-1px);
+}
+
+
+/* =========================
+   DIVISOR
+========================= */
+
+.login-divider {
+  display: flex;
+
+  align-items: center;
+
+  gap: 15px;
+
+  margin: 4px 0;
+}
+
+.login-divider::before,
+.login-divider::after {
+  content: "";
+
+  flex: 1;
+
+  height: 1px;
+
+  background: #e2e8f0;
+}
+
+.login-divider span {
+  color: #94a3b8;
+
+  font-size: 10px;
+
+  white-space: nowrap;
+}
+
+
+/* =========================
+   GOOGLE
+========================= */
+
+.google-button {
+  width: 100%;
+
+  height: 50px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+
+  border: 1px solid #e2e8f0;
+
+  border-radius: 3px;
+
+  background: #ffffff;
+
+  color: #22314d;
+
+  font-family: inherit;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.google-button:hover {
+  background: #f8fafc;
+
+  border-color: #cbd5e1;
+}
+
+
+/* GOOGLE COLORIDO */
+
+.google-icon {
+  width: 19px;
+  height: 19px;
+
+  flex-shrink: 0;
+}
+
+
+/* =========================
+   RODAPÉ
+========================= */
+
+.login-footer {
+  margin-top: 28px;
+
+  text-align: center;
+}
+
+.login-footer p {
+  margin: 0;
+
+  color: #94a3b8;
+
+  font-size: 12px;
+}
+
+.login-footer a {
+  color: #aa8e52;
+
+  text-decoration: none;
+
+  font-weight: 600;
+}
+
+.login-footer a:hover {
+  text-decoration: underline;
+}
+
+
+/* =========================
+   RESPONSIVO
+========================= */
+
+@media (max-width: 900px) {
+
+  .login-page {
+    grid-template-columns: 1fr;
+  }
+
+  .login-visual {
+    display: none;
+  }
+
+  .login-form-area {
+    min-height: 100vh;
+
+    padding: 35px 25px;
+  }
+
+}
+
+
+@media (max-width: 480px) {
+
+  .login-form-area {
+    padding: 30px 20px;
+  }
+
+  .login-back {
+    margin-bottom: 40px;
+  }
+
+  .login-header h1 {
+    font-size: 28px;
+  }
+
+}
+
+.role-select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #fff;
+  color: #1e293b;
+  font: inherit;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.role-select:focus {
+  border-color: #22314d;
+  box-shadow: 0 0 0 3px rgba(34, 49, 77, 0.12);
+}

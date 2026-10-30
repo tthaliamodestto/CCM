@@ -9,7 +9,7 @@ const app = express();
 app.use(cors({
     origin: 'http://localhost:5173'
 }));
-app.use('/uploads', express.static(path.join(process.cwd(), 'src', 'uploads')));
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 app.use(express.json());
 app.use('/', routes);
 

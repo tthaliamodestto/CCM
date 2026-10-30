@@ -8,6 +8,7 @@ import pecaBrutaRoutes from "./pecaBrutaRoutes.js";
 import pecaFinalRoutes from "./pecaFinalRoutes.js";
 import maquinaRoutes from "./maquinaRoutes.js";
 import operacaoRoutes from "./operacaoRoutes.js";
+import custoRoutes from "./custoRoutes.js";
 
 routes.use('/material', materialPecaRoutes)
 routes.use('/peca-bruta', pecaBrutaRoutes)
@@ -16,5 +17,6 @@ routes.use('/processo-usinagem', processoUsinagemRoutes);
 routes.use('/peca-final', pecaFinalRoutes);
 routes.use('/maquina', maquinaRoutes);
 routes.use('/operacao', operacaoRoutes);
+routes.use('/custo', custoRoutes);
 
 export default routes;
