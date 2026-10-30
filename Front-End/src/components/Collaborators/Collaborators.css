@@ -1,3 +1,4 @@
+
 /* =========================================
    COLLABORATORS
 ========================================= */
@@ -241,13 +242,6 @@
 }
 
 
-/*
-   A imagem é tratada como a própria logo.
-
-   Não usamos grayscale.
-   Não diminuímos a opacidade.
-   Não colocamos filtro.
-*/
 
 .collaborator-logo img {
   display: block;
@@ -488,21 +482,5 @@
     font-size: 11px;
 
     line-height: 1.5;
-  }
-}
-
-
-/* =========================================
-   REDUÇÃO DE MOVIMENTO
-========================================= */
-
-@media (prefers-reduced-motion: reduce) {
-
-  .collaborators-logos {
-    animation: none;
-  }
-
-  .collaborator-logo img {
-    transition: none;
   }
 }

@@ -4,9 +4,9 @@ import { Link } from "react-router-dom";
 
 
 const videos = [
-  "/videos/80356-572395734_medium.mp4",
-  "/videos/156444-812591952_medium.mp4",
-  "/videos/251931_medium.mp4",
+  "/videos/19791092-uhd_3840_2160_60fps.mp4",
+  "/videos/14566100_3840_2160_60fps.mp4",
+  "/videos/12299044-uhd_2560_1440_30fps.mp4",
   "/videos/3987526-hd_1920_1080_25fps.mp4",
   "/videos/10482839-uhd_3840_2160_30fps.mp4",
 ];
