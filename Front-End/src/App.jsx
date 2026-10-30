@@ -1,10 +1,24 @@
-import React, { useState } from 'react';
-import { ThemeProvider } from '../src/context/ThemeContext';
 
+import React, { useState } from "react";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
+
+import Header from "./components/Header";
+
+import Home from "./Pages/Home";
+import Login from "./Pages/Login";
+
+import Orcamentos from "./Pages/Orcamentos";
 import Pecas from "./Pages/Pecas";
 import Materiais from "./Pages/Materiais";
 import Maquinas from "./Pages/Maquinas";
-import Configuracoes from "./pages/Configuracoes";
+import Configuracoes from "./Pages/Configuracoes";
+import Operacoes from "./Pages/Operacoes";
 
 import {
   FiMenu,
@@ -14,123 +28,236 @@ import {
   FiSettings,
   FiUser,
   FiCpu,
+  FiTool,
 } from "react-icons/fi";
 
 import { FaCalculator } from "react-icons/fa";
 
 import "./index.css";
 
-export default function App() {
+const PERFIS = {
+  Operador: {
+    cor: "#DC2626",
+    paginas: [
+      "Home",
+      "Calculadora",
+      "Materiais",
+      "Máquinas",
+      "Operações",
+      "Configurações",
+      "Perfil",
+    ],
+  },
+
+  Financeiro: {
+    cor: "#16A34A",
+    paginas: [
+      "Home",
+      "Calculadora",
+      "Orçamento",
+      "Materiais",
+      "Máquinas",
+      "Operações",
+      "Configurações",
+      "Perfil",
+    ],
+  },
+
+  Administrador: {
+    cor: "#9333EA",
+    paginas: [
+      "Home",
+      "Calculadora",
+      "Orçamento",
+      "Materiais",
+      "Máquinas",
+      "Operações",
+      "Configurações",
+      "Perfil",
+    ],
+  },
+};
+
+function SistemaInterno() {
+  const location = useLocation();
+
+  const role = PERFIS[location.state?.role]
+    ? location.state.role
+    : "Operador";
+
+  const usuario = location.state?.usuario || "Usuário";
+
   const [menuAberto, setMenuAberto] = useState(false);
   const [itemAtivo, setItemAtivo] = useState("Calculadora");
 
+  const paginasPermitidas = PERFIS[role].paginas;
+
   const itensMenu = [
-    {
-      nome: "Home",
-      icone: FiHome,
-      desabilitado: true, // Em desenvolvimento
-    },
-    {
-      nome: "Calculadora",
-      icone: FaCalculator,
-      desabilitado: false,
-    },
-    {
-      nome: "Orçamento",
-      icone: FiDollarSign,
-      desabilitado: true, // Em desenvolvimento
-    },
-    {
-      nome: "Materiais",
-      icone: FiPackage,
-      desabilitado: false,
-    },
-    {
-      nome: "Máquinas",
-      icone: FiCpu,
-      desabilitado: false,
-    },
-    {
-      nome: "Configurações",
-      icone: FiSettings,
-      desabilitado: false,  
-    },
-    {
-      nome: "Perfil",
-      icone: FiUser,
-      desabilitado: true, // Em desenvolvimento
-    },
+    { nome: "Home", icone: FiHome },
+    { nome: "Calculadora", icone: FaCalculator },
+    { nome: "Orçamento", icone: FiDollarSign },
+    { nome: "Materiais", icone: FiPackage },
+    { nome: "Máquinas", icone: FiCpu },
+    { nome: "Operações", icone: FiTool },
+    { nome: "Configurações", icone: FiSettings },
+    { nome: "Perfil", icone: FiUser },
   ];
 
-  const handleMenuClick = (item) => {
-    if (item.desabilitado) return; // Garante que não altera a página se estiver desabilitado
-    setItemAtivo(item.nome);
-  };
+  const itensVisiveis = itensMenu.filter((item) =>
+    paginasPermitidas.includes(item.nome)
+  );
 
-  const renderConteudo = () => {
-    // AQUI ESTÁ O SWITCH CASE:
+  function selecionarPagina(nome) {
+    if (paginasPermitidas.includes(nome)) {
+      setItemAtivo(nome);
+    }
+  }
+
+  function renderConteudo() {
     switch (itemAtivo) {
+      case "Home":
+        return <Home />;
+
       case "Calculadora":
         return <Pecas />;
+
+      case "Orçamento":
+        return <Orcamentos />;
+
       case "Materiais":
         return <Materiais />;
+
       case "Máquinas":
         return <Maquinas />;
-      case "Configurações": 
+
+      case "Operações":
+        return <Operacoes />;
+
+      case "Configurações":
         return <Configuracoes />;
-      default:
+
+      case "Perfil":
         return (
           <div style={{ padding: "20px" }}>
-            <h2>{itemAtivo}</h2>
-            <p>Página em desenvolvimento...</p>
+            <h2>Perfil do usuário</h2>
+            <p>Usuário: {usuario}</p>
+            <p>Tipo de usuário: {role}</p>
           </div>
         );
+
+      default:
+        return <Pecas />;
     }
-  };
+  }
+
+  function navegarPeloHeader(pagina) {
+    const mapa = {
+      pecas: "Calculadora",
+      orcamentos: "Orçamento",
+      maquinas: "Máquinas",
+    };
+
+    const destino = mapa[pagina];
+
+    if (destino) {
+      selecionarPagina(destino);
+    }
+  }
+
+  const paginaHeader = {
+    Calculadora: "pecas",
+    Orçamento: "orcamentos",
+    Máquinas: "maquinas",
+  }[itemAtivo] || "";
 
   return (
-    <div className="app-layout">
-      {/* MENU LATERAL */}
+    <div
+      className="app-layout"
+      style={{ "--cor-perfil": PERFIS[role].cor }}
+    >
       <aside
-        className={`sidebar ${menuAberto ? "sidebar-open" : ""}`}
+        className={`sidebar ${
+          menuAberto ? "sidebar-open" : ""
+        }`}
         onMouseEnter={() => setMenuAberto(true)}
         onMouseLeave={() => setMenuAberto(false)}
       >
-        {/* BOTÃO DO MENU */}
         <div className="sidebar-top">
           <button
             className="sidebar-toggle"
             onClick={() => setMenuAberto(!menuAberto)}
+            aria-label="Abrir ou fechar menu"
           >
             <FiMenu />
           </button>
         </div>
 
         <nav className="sidebar-menu">
-          {itensMenu.map((item) => {
+          {itensVisiveis.map((item) => {
             const Icone = item.icone;
 
             return (
               <button
                 key={item.nome}
-                disabled={item.desabilitado}
                 className={`menu-item ${
                   itemAtivo === item.nome ? "active" : ""
-                } ${item.desabilitado ? "disabled" : ""}`}
-                onClick={() => handleMenuClick(item)}
+                }`}
+                onClick={() => selecionarPagina(item.nome)}
               >
-                <Icone className="menu-icon" />
-                <span className="menu-text">{item.nome}</span>
+                <Icone
+                  className="menu-icon"
+                  style={{
+                    color:
+                      itemAtivo === item.nome
+                        ? PERFIS[role].cor
+                        : undefined,
+                  }}
+                />
+
+                <span className="menu-text">
+                  {item.nome}
+                </span>
               </button>
             );
           })}
         </nav>
       </aside>
 
-      {/* ÁREA PRINCIPAL */}
       <main className="main-content">
-        <div className="page-content">{renderConteudo()}</div>
+        <Header
+          usuario={usuario}
+          role={role}
+          paginaAtiva={paginaHeader}
+          setPaginaAtiva={navegarPeloHeader}
+          paginasPermitidas={paginasPermitidas}
+        />
+
+        <div className="page-content">
+          {renderConteudo()}
+        </div>
       </main>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+
+        <Route path="/login" element={<Login />} />
+
+        <Route
+          path="/sistema"
+          element={<SistemaInterno />}
+        />
+
+        <Route
+          path="*"
+          element={<Navigate to="/" replace />}
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }

@@ -1,6 +1,7 @@
 CREATE DATABASE IF NOT EXISTS ccm_db;
 USE ccm_db;
 
+-- Tabela de Clientes/Usuários do Sistema
 CREATE TABLE IF NOT EXISTS Cliente (
     idCliente INT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(100) NOT NULL,

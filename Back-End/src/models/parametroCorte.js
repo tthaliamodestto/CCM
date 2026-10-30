@@ -1,92 +1,113 @@
+import { tipoAvanco } from "../enums/tipoAvanco.js";
+
 export class ParametroCorte {
     #idParametro;
     #idMaterial;
     #idOperacao;
     #velocidadeCorte;
     #avanco;
+    #tipoAvanco;
     #profundidadeCorte;
 
-    constructor(pIdParametro, pIdMaterial, pIdOperacao, pVelocidadeCorte, pAvanco, pProfundidadeCorte) {
+    constructor(pIdMaterial, pIdOperacao, pVelocidadeCorte, pAvanco, pTipoAvanco, pProfundidadeCorte, pIdParametro) {
         this.idMaterial = pIdMaterial;
         this.idOperacao = pIdOperacao;
         this.velocidadeCorte = pVelocidadeCorte;
         this.avanco = pAvanco;
+        this.tipoAvanco = pTipoAvanco;
         this.profundidadeCorte = pProfundidadeCorte;
-        this.idParametro = pIdParametro
+        this.idParametro = pIdParametro;
     }
 
-    get idParametro() {
-        return this.#idParametro;
+    get idParametro() { 
+        return this.#idParametro; 
     }
     set idParametro(value) {
         this.#validarIdParametro(value);
         this.#idParametro = value;
     }
 
-    get idMaterial() {
-        return this.#idMaterial;
+    get idMaterial() { 
+        return this.#idMaterial; 
     }
     set idMaterial(value) {
         this.#validarIdMaterial(value);
         this.#idMaterial = value;
     }
 
-    get idOperacao() {
-        return this.#idOperacao;
+    get idOperacao() { 
+        return this.#idOperacao; 
     }
     set idOperacao(value) {
         this.#validarIdOperacao(value);
         this.#idOperacao = value;
     }
 
-    get velocidadeCorte() {
-        return this.#velocidadeCorte;
+    get velocidadeCorte() { 
+        return this.#velocidadeCorte; 
     }
     set velocidadeCorte(value) {
         this.#validarVelocidadeCorte(value);
         this.#velocidadeCorte = value;
     }
 
-    get avanco() {
-        return this.#avanco;
+    get avanco() { 
+        return this.#avanco; 
     }
     set avanco(value) {
         this.#validarAvanco(value);
         this.#avanco = value;
     }
 
-    get profundidadeCorte() {
-        return this.#profundidadeCorte;
+    get tipoAvanco() { 
+        return this.#tipoAvanco; 
+    }
+    set tipoAvanco(value) {
+        this.#validarTipoAvanco(value);
+        this.#tipoAvanco = value;
+    }
+
+    get profundidadeCorte() { 
+        return this.#profundidadeCorte; 
     }
     set profundidadeCorte(value) {
         this.#validarProfundidadeCorte(value);
         this.#profundidadeCorte = value;
     }
-
+    
     #validarIdParametro(value) {
-        if (value && value <= 0) throw new Error("Verifique o Id do Parâmetro que foi informado");
+        if (value !== null && value !== undefined && (!Number.isInteger(Number(value)) || Number(value) <= 0)) throw new Error("O Id do parâmetro deve ser um inteiro maior que zero.");
     }
+
     #validarIdMaterial(value) {
-        if (value && value <= 0) throw new Error("Verifique o Id do Material informado");
+        if (!Number.isInteger(Number(value)) || Number(value) <= 0) throw new Error("O Id do material deve ser um inteiro maior que zero.");
     }
+
     #validarIdOperacao(value) {
-        if (value && value <= 0) throw new Error("Verifique o Id da Operação informada");
+        if (!Number.isInteger(Number(value)) || Number(value) <= 0) throw new Error("O Id da operação deve ser um inteiro maior que zero.");
     }
 
     #validarVelocidadeCorte(value) {
-        if (value && (isNaN(Number(value)) || Number(value) <= 0)) throw new Error("A Velocidade de Corte, se informada, deve ser um valor numérico maior que zero");
+        if (value === null || value === undefined || value === "" || !Number.isFinite(Number(value)) || Number(value) <= 0) throw new Error("A velocidade de corte deve ser maior que zero.");
     }
+
     #validarAvanco(value) {
-        if (value && (isNaN(Number(value)) || Number(value) <= 0)) throw new Error("O Avanço, se informado, deve ser numérico e maior que zero");
+        if (value === null || value === undefined || value === "" || !Number.isFinite(Number(value)) || Number(value) <= 0) throw new Error("O avanço deve ser maior que zero.");
     }
+
+    #validarTipoAvanco(value) {
+        if (typeof value !== "string" || !Object.values(tipoAvanco).includes(value.trim().toLowerCase())) throw new Error("Tipo de avanço inválido: use mm_volta ou mm_dente.");
+    }
+
     #validarProfundidadeCorte(value) {
-        if (value && (isNaN(Number(value)) || Number(value) <= 0)) throw new Error("A Profundidade de Corte, se informada, deve ser numérica e maior que zero");
+        if (value === null || value === undefined || value === "" || !Number.isFinite(Number(value)) || Number(value) <= 0) throw new Error("A profundidade de corte deve ser maior que zero.");
     }
 
     static criar(dados) {
-        return new ParametroCorte(dados.idMaterial, dados.idOperacao, dados.velocidadeCorte, dados.avanco, dados.profundidadeCorte, null);
+        return new ParametroCorte(dados.idMaterial, dados.idOperacao, dados.velocidadeCorte, dados.avanco, dados.tipoAvanco, dados.profundidadeCorte, null);
     }
+
     static editar(dados) {
-        return new ParametroCorte(dados.idMaterial, dados.idOperacao, dados.velocidadeCorte, dados.avanco, dados.profundidadeCorte, dados.idParametro);
+        return new ParametroCorte(dados.idMaterial, dados.idOperacao, dados.velocidadeCorte, dados.avanco, dados.tipoAvanco, dados.profundidadeCorte, dados.idParametro);
     }
 }

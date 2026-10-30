@@ -1,3 +1,4 @@
+
 export class MaterialPeca {
     #idMaterial;
     #nome;
@@ -51,10 +52,12 @@ export class MaterialPeca {
     set imagem(value) {
         this.#validarImagem(value);
         this.#imagem = value;
-    }  
+    }
 
     #validarIdMaterial(value) {
-        if (value && value <= 0) throw new Error("Verifique o Id do Material informado.");
+        if (value !== null && value !== undefined && value <= 0) {
+            throw new Error("Verifique o Id do Material informado.");
+        }
     }
 
     #validarNome(value) {
@@ -64,31 +67,40 @@ export class MaterialPeca {
     }
 
     #validarDensidade(value) {
-        if (value && (isNaN(Number(value)) || Number(value) <= 0)) {
-            throw new Error("A Densidade deve ser um número e deve ser maior que zero.");
+        if (value === null || value === undefined || value <= 0) {
+            throw new Error("A densidade deve ser maior que zero.");
         }
     }
 
     #validarCustoPerKg(value) {
-        if (value && (isNaN(Number(value)) || Number(value) <= 0)) {
-            throw new Error("O custo por Kg deve ser um número maior que zero.");
+        if (value === null || value === undefined || value < 0) {
+            throw new Error("O custo por kg não pode ser negativo.");
         }
     }
 
     #validarImagem(value) {
-        if (value) {
-            if(value.string < 3){
-                throw new Error('O campo imagem não pode ficar vazio')
-            }
-            
+        if (value && typeof value !== "string") {
+            throw new Error("O campo imagem deve ser um texto válido.");
         }
     }
 
     static criar(dados) {
-        return new MaterialPeca(dados.nome, dados.densidade, dados.custoPerKg, dados.imagem, null);
+        return new MaterialPeca(
+            dados.nome,
+            dados.densidade,
+            dados.custoPerKg,
+            null,
+            dados.imagem
+        );
     }
 
     static editar(dados) {
-        return new MaterialPeca(dados.nome, dados.densidade, dados.custoPerKg, dados.imagem, dados.idMaterial);
+        return new MaterialPeca(
+            dados.nome,
+            dados.densidade,
+            dados.custoPerKg,
+            dados.idMaterial,
+            dados.imagem
+        );
     }
 }
