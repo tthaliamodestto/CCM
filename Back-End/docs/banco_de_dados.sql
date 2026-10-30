@@ -1,6 +1,7 @@
 CREATE DATABASE IF NOT EXISTS ccm_db;
 USE ccm_db;
 
+
 -- Tabela de Clientes/Usuários do Sistema
 CREATE TABLE IF NOT EXISTS Cliente (
     idCliente INT PRIMARY KEY AUTO_INCREMENT,
@@ -11,6 +12,7 @@ CREATE TABLE IF NOT EXISTS Cliente (
     dataCriacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+
 CREATE TABLE IF NOT EXISTS MaterialPeca (
     idMaterial INT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(100) NOT NULL,
@@ -19,11 +21,13 @@ CREATE TABLE IF NOT EXISTS MaterialPeca (
     imagem VARCHAR(255)
 );
 
+
 CREATE TABLE IF NOT EXISTS operacao (
     idOperacao INT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(100) NOT NULL,
     tipo VARCHAR(50)
 );
+
 
 CREATE TABLE IF NOT EXISTS Maquina (
     idMaquina INT PRIMARY KEY AUTO_INCREMENT,
@@ -34,9 +38,11 @@ CREATE TABLE IF NOT EXISTS Maquina (
     imagem VARCHAR(255)
 );
 
+
 CREATE TABLE IF NOT EXISTS PecaBruta (
     idPeca INT AUTO_INCREMENT PRIMARY KEY,
     idMaterial INT NOT NULL,
+    idCliente INT NOT NULL,
     nome VARCHAR(100) NOT NULL,
     forma ENUM('cilindro','prisma') NOT NULL,
     comprimento DECIMAL(10,2) DEFAULT 0,
@@ -45,7 +51,10 @@ CREATE TABLE IF NOT EXISTS PecaBruta (
     altura DECIMAL(10,2) DEFAULT 0,
     FOREIGN KEY (idMaterial) 
     REFERENCES MaterialPeca(idMaterial)
+    FOREIGN KEY (idCliente)
+    REFERENCES Cliente(idCliente)
 );
+
 
 CREATE TABLE IF NOT EXISTS ParametroCorte (
     idParametro INT PRIMARY KEY AUTO_INCREMENT,
@@ -60,9 +69,11 @@ CREATE TABLE IF NOT EXISTS ParametroCorte (
     REFERENCES operacao(idOperacao)
 );
 
+
 CREATE TABLE IF NOT EXISTS PecaFinal (
     idPecaFinal INT PRIMARY KEY AUTO_INCREMENT,
     idPeca INT NOT NULL,
+    idCliente INT NOT NULL,
     alturaFinal DECIMAL(10, 3),
     diametroFinal DECIMAL(10, 3),
     larguraFinal DECIMAL(10, 3),
@@ -70,13 +81,17 @@ CREATE TABLE IF NOT EXISTS PecaFinal (
     imagem VARCHAR(255),
     FOREIGN KEY (idPeca) 
     REFERENCES PecaBruta(idPeca)
+    FOREIGN KEY (idCliente)
+    REFERENCES Cliente(idCliente)
 );
+
 
 CREATE TABLE IF NOT EXISTS processousinagem (
     idProcesso INT PRIMARY KEY AUTO_INCREMENT,
     idPecaFinal INT NOT NULL,
     idMaquina INT NOT NULL,
     idParametro INT NOT NULL,
+    idCliente INT NOT NULL,
     rpm INT,
     velocidadeAvanco DECIMAL(10, 2),
     comprimentoUsinado DECIMAL(10, 3),
@@ -88,7 +103,10 @@ CREATE TABLE IF NOT EXISTS processousinagem (
     REFERENCES Maquina(idMaquina),
     FOREIGN KEY (idParametro) 
     REFERENCES ParametroCorte(idParametro)
+    FOREIGN KEY (idCliente)
+    REFERENCES Cliente(idCliente)
 );
+
 
 CREATE TABLE IF NOT EXISTS Custo (
     idCusto INT PRIMARY KEY AUTO_INCREMENT,
