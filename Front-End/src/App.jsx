@@ -1,5 +1,4 @@
-
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   BrowserRouter,
   Routes,
@@ -19,6 +18,7 @@ import Materiais from "./Pages/Materiais";
 import Maquinas from "./Pages/Maquinas";
 import Configuracoes from "./Pages/Configuracoes";
 import Operacoes from "./Pages/Operacoes";
+import Perfil from "./Pages/perfil";
 
 import {
   FiMenu,
@@ -37,7 +37,6 @@ import "./index.css";
 
 const PERFIS = {
   Operador: {
-    cor: "#DC2626",
     paginas: [
       "Home",
       "Calculadora",
@@ -48,9 +47,7 @@ const PERFIS = {
       "Perfil",
     ],
   },
-
   Financeiro: {
-    cor: "#16A34A",
     paginas: [
       "Home",
       "Calculadora",
@@ -62,9 +59,7 @@ const PERFIS = {
       "Perfil",
     ],
   },
-
   Administrador: {
-    cor: "#9333EA",
     paginas: [
       "Home",
       "Calculadora",
@@ -78,14 +73,31 @@ const PERFIS = {
   },
 };
 
+const CORES_FUNCIONARIOS = {
+  "funcionario1@ccm.com": "#2563EB",
+  "funcionario2@ccm.com": "#9333EA",
+  "matheus.a.luiz@aluno.senai.br": "#AA8E52",
+};
+
 function SistemaInterno() {
   const location = useLocation();
 
   const role = PERFIS[location.state?.role]
     ? location.state.role
-    : "Operador";
+    : "Administrador";
 
-  const usuario = location.state?.usuario || "Usuário";
+  const usuario = location.state?.usuario || "modestonathalia52@gmail.com";
+
+  // Gera um nome inicial a partir do e-mail caso não tenha sido enviado no Login
+  const nomeInicial = location.state?.nome || 
+    (usuario.includes("@") ? usuario.split("@")[0] : usuario);
+
+  // ESTADOS DO USUÁRIO QUE SERÃO COMPARTILHADOS PELO SISTEMA
+  const [nome, setNome] = useState(nomeInicial);
+  const [foto, setFoto] = useState(null); // Armazena a foto em Base64
+
+  const corFuncionario =
+    CORES_FUNCIONARIOS[usuario.toLowerCase()] || "#AA8E52";
 
   const [menuAberto, setMenuAberto] = useState(false);
   const [itemAtivo, setItemAtivo] = useState("Calculadora");
@@ -107,16 +119,16 @@ function SistemaInterno() {
     paginasPermitidas.includes(item.nome)
   );
 
-  function selecionarPagina(nome) {
-    if (paginasPermitidas.includes(nome)) {
-      setItemAtivo(nome);
+  function selecionarPagina(nomeItem) {
+    if (paginasPermitidas.includes(nomeItem)) {
+      setItemAtivo(nomeItem);
     }
   }
 
   function renderConteudo() {
     switch (itemAtivo) {
       case "Home":
-        return <Home />;
+        return <Home usuario={usuario} nome={nome} role={role} />;
 
       case "Calculadora":
         return <Pecas />;
@@ -138,11 +150,16 @@ function SistemaInterno() {
 
       case "Perfil":
         return (
-          <div style={{ padding: "20px" }}>
-            <h2>Perfil do usuário</h2>
-            <p>Usuário: {usuario}</p>
-            <p>Tipo de usuário: {role}</p>
-          </div>
+          <Perfil
+            usuario={usuario}
+            role={role}
+            nome={nome}
+            setNome={setNome}
+            foto={foto}
+            setFoto={setFoto}
+            corFuncionario={corFuncionario}
+            paginasPermitidas={paginasPermitidas}
+          />
         );
 
       default:
@@ -158,27 +175,20 @@ function SistemaInterno() {
     };
 
     const destino = mapa[pagina];
-
-    if (destino) {
-      selecionarPagina(destino);
-    }
+    if (destino) selecionarPagina(destino);
   }
 
-  const paginaHeader = {
-    Calculadora: "pecas",
-    Orçamento: "orcamentos",
-    Máquinas: "maquinas",
-  }[itemAtivo] || "";
+  const paginaHeader =
+    {
+      Calculadora: "pecas",
+      Orçamento: "orcamentos",
+      Máquinas: "maquinas",
+    }[itemAtivo] || "";
 
   return (
-    <div
-      className="app-layout"
-      style={{ "--cor-perfil": PERFIS[role].cor }}
-    >
+    <div className="app-layout">
       <aside
-        className={`sidebar ${
-          menuAberto ? "sidebar-open" : ""
-        }`}
+        className={`sidebar ${menuAberto ? "sidebar-open" : ""}`}
         onMouseEnter={() => setMenuAberto(true)}
         onMouseLeave={() => setMenuAberto(false)}
       >
@@ -204,19 +214,8 @@ function SistemaInterno() {
                 }`}
                 onClick={() => selecionarPagina(item.nome)}
               >
-                <Icone
-                  className="menu-icon"
-                  style={{
-                    color:
-                      itemAtivo === item.nome
-                        ? PERFIS[role].cor
-                        : undefined,
-                  }}
-                />
-
-                <span className="menu-text">
-                  {item.nome}
-                </span>
+                <Icone className="menu-icon" />
+                <span className="menu-text">{item.nome}</span>
               </button>
             );
           })}
@@ -226,15 +225,16 @@ function SistemaInterno() {
       <main className="main-content">
         <Header
           usuario={usuario}
+          nome={nome}
+          foto={foto}
           role={role}
+          corFuncionario={corFuncionario}
           paginaAtiva={paginaHeader}
           setPaginaAtiva={navegarPeloHeader}
           paginasPermitidas={paginasPermitidas}
         />
 
-        <div className="page-content">
-          {renderConteudo()}
-        </div>
+        <div className="page-content">{renderConteudo()}</div>
       </main>
     </div>
   );
@@ -245,18 +245,9 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
-
         <Route path="/login" element={<Login />} />
-
-        <Route
-          path="/sistema"
-          element={<SistemaInterno />}
-        />
-
-        <Route
-          path="*"
-          element={<Navigate to="/" replace />}
-        />
+        <Route path="/sistema" element={<SistemaInterno />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );

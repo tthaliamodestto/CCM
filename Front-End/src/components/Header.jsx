@@ -1,6 +1,14 @@
 import React from 'react'
 
-export default function Header({ paginaAtiva, setPaginaAtiva, usuario = "Usuário", role = "Administrador" }) {
+export default function Header({
+  paginaAtiva,
+  setPaginaAtiva,
+  usuario = "Usuário",
+  nome,
+  foto,
+  role = "Administrador",
+  corFuncionario,
+}) {
   const getRoleBadgeClass = (userRole) => {
     switch (userRole?.toLowerCase()) {
       case 'administrador':
@@ -14,6 +22,8 @@ export default function Header({ paginaAtiva, setPaginaAtiva, usuario = "Usuári
         return 'badge-default'
     }
   }
+
+  const nomeExibicao = nome || usuario
 
   return (
     <header className="page-header">
@@ -53,12 +63,60 @@ export default function Header({ paginaAtiva, setPaginaAtiva, usuario = "Usuári
         </span>
       </nav>
 
-      <div className="profile-area">
-        <div className="profile-icon">
-          <span className="material-symbols-outlined">person</span>
+      {/* ÁREA DE PERFIL COM DIMENSÕES BLOQUEADAS VIA INLINE STYLES */}
+      <div
+        className="profile-area"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          marginLeft: 'auto',
+        }}
+      >
+        <div
+          className="profile-icon"
+          style={{
+            width: '40px',
+            height: '40px',
+            minWidth: '40px',
+            minHeight: '40px',
+            maxWidth: '40px',
+            maxHeight: '40px',
+            borderRadius: '50%',
+            overflow: 'hidden',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: corFuncionario || 'var(--accent-color, #AA8E52)',
+            color: '#ffffff',
+            fontWeight: 'bold',
+            flexShrink: 0,
+          }}
+        >
+          {foto ? (
+            <img
+              src={foto}
+              alt={nomeExibicao}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                borderRadius: '50%',
+                display: 'block',
+              }}
+            />
+          ) : (
+            <span
+              className="material-symbols-outlined"
+              style={{ fontSize: '24px', color: '#ffffff' }}
+            >
+              person
+            </span>
+          )}
         </div>
+
         <div className="profile-info">
-          <strong>{usuario}</strong>
+          <strong title={nomeExibicao}>{nomeExibicao}</strong>
           <span className={`role-badge ${getRoleBadgeClass(role)}`}>
             {role}
           </span>

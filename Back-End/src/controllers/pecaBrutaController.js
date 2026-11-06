@@ -10,17 +10,9 @@ const pecaBrutaController = {
             const { idMaterial, idCliente, nome, forma, comprimento, diametro, largura, altura } = req.body;
 
             const material = await materialPecaRepositories.selecionarUm(idMaterial);
-            if (!material || material.length === 0) {
+            if (material.length === 0) {
                 return res.status(404).json({ message: "Material não encontrado." });
             }
-            
-            const materialPeca = material[0];
-            const dimensoes = {
-                diametro: diametro || 0,
-                comprimento: comprimento || 0,
-                largura: largura || 0,
-                altura: altura || 0
-            };
 
             const resultadoCalculo = calcularVolumePeso(forma, dimensoes, materialPeca.densidade);
             const custoDaPeca = (resultadoCalculo.peso * materialPeca.custoPerKg).toFixed(2);
@@ -29,18 +21,15 @@ const pecaBrutaController = {
             const peca = PecaBruta.criar({ idMaterial, idCliente, nome, forma, comprimento, diametro, largura, altura });
             const result = await pecaBrutaRepositories.criar(peca);
 
-            res.status(201).json({
-                message: 'Peça bruta criada com sucesso',
+            const result = await pecaBrutaRepositories.criar(peca);
+            return res.status(201).json({
+                message: "Peça bruta criada com sucesso.",
                 result,
-                calculos: {
-                    volumeCm3: resultadoCalculo.volume,
-                    pesoKg: resultadoCalculo.peso,
-                    custoEstimadoReais: parseFloat(custoDaPeca)
-                }
+                calculos: { volumeCm3: calculos.volume, pesoKg: calculos.peso, custoEstimadoReais }
             });
         } catch (error) {
             console.error(error);
-            res.status(500).json({ message: 'Erro ao criar peça bruta', errorMessage: error.message });
+            return res.status(400).json({ message: "Não foi possível criar a peça bruta.", errorMessage: error.message });
         }
     },
 
@@ -50,18 +39,14 @@ const pecaBrutaController = {
             // Recebe idCliente no req.body
             const { idMaterial, idCliente, nome, forma, comprimento, diametro, largura, altura } = req.body;
 
+            const pecaAtual = await pecaBrutaRepositories.selecionarUm(idPeca);
+            if (pecaAtual.length === 0) {
+                return res.status(404).json({ message: "Peça bruta não encontrada." });
+            }
             const material = await materialPecaRepositories.selecionarUm(idMaterial);
-            if (!material || material.length === 0) {
+            if (material.length === 0) {
                 return res.status(404).json({ message: "Material não encontrado." });
             }
-            
-            const materialPeca = material[0];
-            const dimensoes = {
-                diametro: diametro || 0,
-                comprimento: comprimento || 0,
-                largura: largura || 0,
-                altura: altura || 0
-            };
 
             const resultadoCalculo = calcularVolumePeso(forma, dimensoes, materialPeca.densidade);
             const custoDaPeca = (resultadoCalculo.peso * materialPeca.custoPerKg).toFixed(2);
@@ -69,41 +54,39 @@ const pecaBrutaController = {
             // Adicionado idCliente no objeto de edição
             const peca = PecaBruta.editar({ idPeca, idMaterial, idCliente, nome, forma, comprimento, diametro, largura, altura });
             const result = await pecaBrutaRepositories.editar(peca);
-
-            res.status(200).json({
-                message: 'Peça bruta atualizada com sucesso',
+            return res.status(200).json({
+                message: "Peça bruta atualizada com sucesso.",
                 result,
-                novosCalculos: {
-                    volumeCm3: resultadoCalculo.volume,
-                    pesoKg: resultadoCalculo.peso,
-                    custoEstimadoReais: parseFloat(custoDaPeca)
-                }
+                calculos: { volumeCm3: calculos.volume, pesoKg: calculos.peso, custoEstimadoReais }
             });
         } catch (error) {
             console.error(error);
-            res.status(500).json({ message: 'Erro ao editar peça bruta', errorMessage: error.message });
+            return res.status(400).json({ message: "Não foi possível atualizar a peça bruta.", errorMessage: error.message });
         }
     },
 
     deletar: async (req, res) => {
         try {
             const { idPeca } = req.params;
+            const peca = await pecaBrutaRepositories.selecionarUm(idPeca);
+            if (peca.length === 0) {
+                return res.status(404).json({ message: "Peça bruta não encontrada." });
+            }
             const result = await pecaBrutaRepositories.deletar(idPeca);
-
-            res.status(200).json({ message: 'Peça bruta deletada com sucesso', result });
+            return res.status(200).json({ message: "Peça bruta deletada com sucesso.", result });
         } catch (error) {
             console.error(error);
-            res.status(500).json({ message: 'Erro ao deletar peça bruta', errorMessage: error.message });
+            return res.status(500).json({ message: "Erro ao deletar peça bruta.", errorMessage: error.message });
         }
     },
 
     selecionar: async (req, res) => {
         try {
             const result = await pecaBrutaRepositories.selecionar();
-            res.status(200).json({ result });
+            return res.status(200).json({ result });
         } catch (error) {
             console.error(error);
-            res.status(500).json({ message: 'Erro ao selecionar peças brutas', errorMessage: error.message });
+            return res.status(500).json({ message: "Erro ao buscar peças brutas.", errorMessage: error.message });
         }
     },
 
@@ -111,15 +94,13 @@ const pecaBrutaController = {
         try {
             const { idPeca } = req.params;
             const result = await pecaBrutaRepositories.selecionarUm(idPeca);
-            
             if (result.length === 0) {
                 return res.status(404).json({ message: "Peça bruta não encontrada." });
             }
-            
-            res.status(200).json({ result: result[0] });
+            return res.status(200).json({ result: result[0] });
         } catch (error) {
             console.error(error);
-            res.status(500).json({ message: 'Erro ao buscar peça bruta', errorMessage: error.message });
+            return res.status(500).json({ message: "Erro ao buscar peça bruta.", errorMessage: error.message });
         }
     }
 };
