@@ -4,62 +4,80 @@ import pecaFinalRepositories from "../repositories/pecaFinalRepositories.js";
 const pecaFinalController = {
     criar: async (req, res) => {
         try {
-            const { idPeca, nome, profundidadeFinal, alturaFinal, diametroFinal, larguraFinal } = req.body;
+            const { nome, forma, comprimentoFinal, diametroMaximoFinal, larguraFinal, alturaFinal } = req.body;
             const imagem = req.file ? `/uploads/images/${req.file.filename}` : null;
-            const peca = PecaFinal.criar({ idPeca, nome, profundidadeFinal, alturaFinal, diametroFinal, larguraFinal, imagem });
-            const result = await pecaFinalRepositories.criar(peca);
 
-            res.status(201).json({ result });
+            const pecaFinal = PecaFinal.criar({ nome, forma, comprimentoFinal, diametroMaximoFinal, larguraFinal, alturaFinal, imagem });
+            const result = await pecaFinalRepositories.criar(pecaFinal);
+            return res.status(201).json({ message: "Peça final cadastrada com sucesso.", result });
         } catch (error) {
-            console.log(error);
-            res.status(500).json({ message: 'Ocorreu um erro no servidor', errorMessage: error.message });
+            console.error(error);
+            return res.status(400).json({ message: "Não foi possível cadastrar a peça final.", errorMessage: error.message });
         }
     },
 
     editar: async (req, res) => {
         try {
-            const id = req.params.idPecaFinal;
-            const { idPeca, nome, profundidadeFinal, alturaFinal, diametroFinal, larguraFinal } = req.body;
-            const peca = PecaFinal.editar({ idPecaFinal: id, idPeca, nome, profundidadeFinal, alturaFinal, diametroFinal, larguraFinal });
-            const result = await pecaFinalRepositories.editar(peca);
+            const { idPecaFinal } = req.params;
+            const { nome, forma, comprimentoFinal, diametroMaximoFinal, larguraFinal, alturaFinal } = req.body;
 
-            res.status(200).json({  result });
+            const pecaAtual = await pecaFinalRepositories.selecionarUm(idPecaFinal);
+            if (pecaAtual.length === 0) {
+                return res.status(404).json({ message: "Peça final não encontrada." });
+            }
+
+            const imagem = req.file
+                ? `/uploads/images/${req.file.filename}`
+                : pecaAtual[0].imagem;
+
+            const pecaFinal = PecaFinal.editar({
+                idPecaFinal, nome, forma, comprimentoFinal,
+                diametroMaximoFinal, larguraFinal, alturaFinal, imagem
+            });
+            const result = await pecaFinalRepositories.editar(pecaFinal);
+            return res.status(200).json({ message: "Peça final atualizada com sucesso.", result });
         } catch (error) {
-            console.log(error);
-            res.status(500).json({ message: 'Ocorreu um erro no servidor', errorMessage: error.message });
+            console.error(error);
+            return res.status(400).json({ message: "Não foi possível atualizar a peça final.", errorMessage: error.message });
         }
     },
 
     deletar: async (req, res) => {
         try {
-            const id = req.params.idPecaFinal;
-            const result = await pecaFinalRepositories.deletar(id);
-
-            res.status(200).json({ result });
+            const { idPecaFinal } = req.params;
+            const peca = await pecaFinalRepositories.selecionarUm(idPecaFinal);
+            if (peca.length === 0) {
+                return res.status(404).json({ message: "Peça final não encontrada." });
+            }
+            const result = await pecaFinalRepositories.deletar(idPecaFinal);
+            return res.status(200).json({ message: "Peça final deletada com sucesso.", result });
         } catch (error) {
-            console.log(error);
-            res.status(500).json({ message: 'Ocorreu um erro no servidor', errorMessage: error.message });
+            console.error(error);
+            return res.status(500).json({ message: "Erro ao deletar peça final.", errorMessage: error.message });
         }
     },
 
     selecionar: async (req, res) => {
         try {
             const result = await pecaFinalRepositories.selecionar();
-            res.status(200).json({ result });
+            return res.status(200).json({ result });
         } catch (error) {
-            console.log(error);
-            res.status(500).json({ message: 'Ocorreu um erro no servidor', errorMessage: error.message });
+            console.error(error);
+            return res.status(500).json({ message: "Erro ao buscar peças finais.", errorMessage: error.message });
         }
     },
 
     selecionarUm: async (req, res) => {
         try {
-            const id = req.params.idPecaFinal;
-            const result = await pecaFinalRepositories.selecionarUm(id);
-            res.status(200).json({ result });
+            const { idPecaFinal } = req.params;
+            const result = await pecaFinalRepositories.selecionarUm(idPecaFinal);
+            if (result.length === 0) {
+                return res.status(404).json({ message: "Peça final não encontrada." });
+            }
+            return res.status(200).json({ result: result[0] });
         } catch (error) {
-            console.log(error);
-            res.status(500).json({ message: 'Ocorreu um erro no servidor', errorMessage: error.message });
+            console.error(error);
+            return res.status(500).json({ message: "Erro ao buscar peça final.", errorMessage: error.message });
         }
     }
 };
