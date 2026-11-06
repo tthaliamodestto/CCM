@@ -1,4 +1,3 @@
-
 import { Link, useNavigate } from "react-router-dom";
 import "./Login.css";
 
@@ -9,8 +8,9 @@ export default function Login() {
     event.preventDefault();
 
     const form = event.currentTarget;
-    const password = form.password.value;
     const email = form.email.value;
+    const nome = form.nome.value; // Captura o nome digitado
+    const password = form.password.value;
     const role = form.role.value;
 
     const senhaValida =
@@ -27,9 +27,11 @@ export default function Login() {
       return;
     }
 
+    // Envia o nome juntamente com o email e o role para o sistema
     navigate("/sistema", {
       state: {
         usuario: email,
+        nome: nome,
         role: role,
       },
     });
@@ -85,6 +87,19 @@ export default function Login() {
           </div>
 
           <form className="login-form" onSubmit={handleSubmit}>
+            {/* CAMPO NOVO: NOME DO UTILIZADOR */}
+            <div className="form-group">
+              <label htmlFor="nome">Nome Completo</label>
+
+              <input
+                type="text"
+                id="nome"
+                name="nome"
+                placeholder="Digite seu nome completo"
+                required
+              />
+            </div>
+
             <div className="form-group">
               <label htmlFor="email">E-mail</label>
 
@@ -104,7 +119,7 @@ export default function Login() {
                 id="role"
                 name="role"
                 className="role-select"
-                defaultValue="Operador"
+                defaultValue="Administrador"
                 required
               >
                 <option value="Operador">Operador</option>
