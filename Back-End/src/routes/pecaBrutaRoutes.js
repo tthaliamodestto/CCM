@@ -1,4 +1,4 @@
-import {Router} from 'express';
+import { Router } from 'express';
 import pecaBrutaController from '../controllers/pecaBrutaController.js';
 
 const pecaBrutaRoutes = Router();

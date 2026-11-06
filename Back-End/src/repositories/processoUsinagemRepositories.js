@@ -2,15 +2,15 @@ import { connection } from "../configs/Database.js";
 
 const processoUsinagemRepositories = {
     criar: async (processoUsinagem) => {
-        const sql = 'INSERT INTO processousinagem (idPeca, idPecaFinal) VALUES (?, ?)';
-        const values = [processoUsinagem.idPeca, processoUsinagem.idPecaFinal];
+        const sql = 'INSERT INTO processousinagem (idPeca, idPecaFinal, idCliente) VALUES (?, ?, ?)';
+        const values = [processoUsinagem.idPeca, processoUsinagem.idPecaFinal, processoUsinagem.idCliente];
         const [rows] = await connection.execute(sql, values);
         return rows;
     },
 
     editar: async (processoUsinagem) => {
-        const sql = 'UPDATE processousinagem SET idPeca = ?, idPecaFinal = ? WHERE idProcesso = ?';
-        const values = [processoUsinagem.idPeca, processoUsinagem.idPecaFinal, processoUsinagem.idProcesso];
+        const sql = 'UPDATE processousinagem SET idPeca = ?, idPecaFinal = ?, idCliente = ? WHERE idProcesso = ?';
+        const values = [processoUsinagem.idPeca, processoUsinagem.idPecaFinal, processoUsinagem.idCliente, processoUsinagem.idProcesso];
         const [rows] = await connection.execute(sql, values);
         return rows;
     },

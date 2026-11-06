@@ -6,7 +6,8 @@ import { calcularTempoUsinagem } from "../utils/calculoTempoUsinagem.js";
 const processoUsinagemController = {
     criar: async (req, res) => {
         try {
-            const { idPecaFinal, idMaquina, idParametro, tipoOperacao, diametroFerramenta, comprimentoUsinado, numeroPasses } = req.body;
+            // Adicionado idCliente na desestruturação
+            const { idPeca, idPecaFinal, idCliente, idMaquina, idParametro, tipoOperacao, diametroFerramenta, comprimentoUsinado, numeroPasses } = req.body;
 
             const parametrosRows = await parametroCorteRepositories.selecionarUm(idParametro);
             if (parametrosRows.length === 0) {
@@ -24,8 +25,11 @@ const processoUsinagemController = {
 
             const velocidadeAvancoCalculada = parametro.avanco * rpm;
 
+            // Passando idCliente para o construtor do model ProcessoUsinagem
             const processo = new ProcessoUsinagem(
-                idPecaFinal, 
+                idPeca,
+                idPecaFinal,
+                idCliente, 
                 idMaquina, 
                 idParametro, 
                 tipoOperacao, 
@@ -35,7 +39,7 @@ const processoUsinagemController = {
                 comprimentoUsinado, 
                 numeroPasses || 1, 
                 tempoMinutos,
-                null
+                null // id do processo para inserção
             );
 
             const result = await processoUsinagemRepositories.criar(processo);
@@ -50,16 +54,15 @@ const processoUsinagemController = {
     editar: async (req, res) => {
         try {
             const id = req.params.idProcesso;
-            const { idPecaFinal, idMaquina, idParametro, tipoOperacao, diametroFerramenta, comprimentoUsinado, numeroPasses } = req.body;
+            // Adicionado idCliente na desestruturação
+            const { idPeca, idPecaFinal, idCliente, idMaquina, idParametro, tipoOperacao, diametroFerramenta, comprimentoUsinado, numeroPasses } = req.body;
 
-            // 1. Buscar os parâmetros de corte atualizados
             const parametrosRows = await parametroCorteRepositories.selecionarUm(idParametro);
             if (parametrosRows.length === 0) {
                 return res.status(404).json({ message: 'Parâmetro de corte não encontrado para o ID informado.' });
             }
             const parametro = parametrosRows[0];
 
-            // 2. Refazer os cálculos caso o usuário tenha mudado a ferramenta ou o comprimento
             const { rpm, tempoMinutos } = calcularTempoUsinagem(
                 parametro.velocidadeCorte,
                 diametroFerramenta,
@@ -70,9 +73,10 @@ const processoUsinagemController = {
 
             const velocidadeAvancoCalculada = parametro.avanco * rpm;
 
-            // 3. Atualizar o Model
             const processo = new ProcessoUsinagem(
+                idPeca,
                 idPecaFinal, 
+                idCliente,
                 idMaquina, 
                 idParametro, 
                 tipoOperacao, 
@@ -82,7 +86,7 @@ const processoUsinagemController = {
                 comprimentoUsinado, 
                 numeroPasses || 1, 
                 tempoMinutos,
-                id
+                id // id do processo para edição
             );
 
             const result = await processoUsinagemRepositories.editar(processo);

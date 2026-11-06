@@ -2,15 +2,15 @@ import { connection } from "../configs/Database.js";
 
 const pecaBrutaRepositories = {
     criar: async (peca) => {
-        const sql = 'INSERT INTO PecaBruta (idMaterial, nome, forma, comprimento, diametro, largura, altura) VALUES (?, ?, ?, ?, ?, ?, ?)';
-        const values = [peca.idMaterial, peca.nome, peca.forma, peca.comprimento, pecaBruta.diametro ?? 0, pecaBruta.largura ?? 0, pecaBruta.altura ?? 0];
+        const sql = 'INSERT INTO PecaBruta (idMaterial, idCliente, nome, forma, comprimento, diametro, largura, altura) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+        const values = [peca.idMaterial, peca.idCliente, peca.nome, peca.forma, peca.comprimento, peca.diametro ?? 0, peca.largura ?? 0, peca.altura ?? 0];
         const [rows] = await connection.execute(sql, values);
         return rows;
     },
     
     editar: async (peca) => {
-        const sql = 'UPDATE PecaBruta SET idMaterial = ?, nome = ?, forma = ?, comprimento = ?, diametro = ?, largura = ?, altura = ? WHERE idPeca = ?';
-        const values = [peca.idMaterial, peca.nome, peca.forma, peca.comprimento, pecaBruta.diametro ?? 0, pecaBruta.largura ?? 0, pecaBruta.altura ?? 0, peca.idPeca];
+        const sql = 'UPDATE PecaBruta SET idMaterial = ?, idCliente = ?, nome = ?, forma = ?, comprimento = ?, diametro = ?, largura = ?, altura = ? WHERE idPeca = ?';
+        const values = [peca.idMaterial, peca.idCliente, peca.nome, peca.forma, peca.comprimento, peca.diametro ?? 0, peca.largura ?? 0, peca.altura ?? 0, peca.idPeca];
         const [rows] = await connection.execute(sql, values);
         return rows;
     },
@@ -27,6 +27,7 @@ const pecaBrutaRepositories = {
         const [rows] = await connection.execute(sql);
         return rows;
     },
+
     selecionarUm: async (idPeca) => {
         const sql = 'SELECT * FROM PecaBruta WHERE idPeca = ?';
         const values = [idPeca];

@@ -6,7 +6,8 @@ import { calcularVolumePeso } from "../utils/calculoVolumePeso.js";
 const pecaBrutaController = {
     criar: async (req, res) => {
         try {
-            const { idMaterial, nome, forma, comprimento, diametro, largura, altura } = req.body;
+            // Recebe idCliente no req.body
+            const { idMaterial, idCliente, nome, forma, comprimento, diametro, largura, altura } = req.body;
 
             const material = await materialPecaRepositories.selecionarUm(idMaterial);
             if (!material || material.length === 0) {
@@ -23,7 +24,9 @@ const pecaBrutaController = {
 
             const resultadoCalculo = calcularVolumePeso(forma, dimensoes, materialPeca.densidade);
             const custoDaPeca = (resultadoCalculo.peso * materialPeca.custoPerKg).toFixed(2);
-            const peca = PecaBruta.criar({ idMaterial, nome, forma, comprimento, diametro, largura, altura });
+
+            // Adicionado idCliente na criação
+            const peca = PecaBruta.criar({ idMaterial, idCliente, nome, forma, comprimento, diametro, largura, altura });
             const result = await pecaBrutaRepositories.criar(peca);
 
             res.status(201).json({
@@ -44,7 +47,8 @@ const pecaBrutaController = {
     editar: async (req, res) => {
         try {
             const { idPeca } = req.params;
-            const { idMaterial, nome, forma, comprimento, diametro, largura, altura } = req.body;
+            // Recebe idCliente no req.body
+            const { idMaterial, idCliente, nome, forma, comprimento, diametro, largura, altura } = req.body;
 
             const material = await materialPecaRepositories.selecionarUm(idMaterial);
             if (!material || material.length === 0) {
@@ -61,7 +65,9 @@ const pecaBrutaController = {
 
             const resultadoCalculo = calcularVolumePeso(forma, dimensoes, materialPeca.densidade);
             const custoDaPeca = (resultadoCalculo.peso * materialPeca.custoPerKg).toFixed(2);
-            const peca = PecaBruta.editar({ idPeca: idPeca, idMaterial, nome, forma, comprimento, diametro, largura, altura });
+
+            // Adicionado idCliente no objeto de edição
+            const peca = PecaBruta.editar({ idPeca, idMaterial, idCliente, nome, forma, comprimento, diametro, largura, altura });
             const result = await pecaBrutaRepositories.editar(peca);
 
             res.status(200).json({

@@ -3,6 +3,7 @@ import { formato } from "../enums/forma.js";
 export class PecaBruta {
     #idPeca;
     #idMaterial;
+    #idCliente;
     #nome;
     #forma;
     #comprimento;
@@ -10,8 +11,9 @@ export class PecaBruta {
     #largura;
     #altura;
 
-    constructor(pIdMaterial, pNome, pForma, pComprimento, pDiametro, pLargura, pAltura, pIdPeca) {
+    constructor(pIdMaterial, pIdCliente, pNome, pForma, pComprimento, pDiametro, pLargura, pAltura, pIdPeca) {
         this.idMaterial = pIdMaterial;
+        this.idCliente = pIdCliente;
         this.nome = pNome;
         this.forma = pForma;
         this.comprimento = pComprimento;
@@ -21,49 +23,43 @@ export class PecaBruta {
         this.idPeca = pIdPeca;
     }
 
-    get idPeca() { 
-        return this.#idPeca; 
-    }
+    get idPeca() { return this.#idPeca; }
     set idPeca(value) {
         this.#validarIdPeca(value);
         this.#idPeca = value;
     }
 
-    get idMaterial() { 
-        return this.#idMaterial; 
-    }
+    get idMaterial() { return this.#idMaterial; }
     set idMaterial(value) {
         this.#validarIdMaterial(value);
         this.#idMaterial = value;
     }
 
-    get nome() { 
-        return this.#nome; 
+    get idCliente() { return this.#idCliente; }
+    set idCliente(value) {
+        this.#validarIdCliente(value);
+        this.#idCliente = Number(value);
     }
+
+    get nome() { return this.#nome; }
     set nome(value) {
         this.#validarNome(value);
         this.#nome = value;
     }
 
-    get forma() { 
-        return this.#forma; 
-    }
+    get forma() { return this.#forma; }
     set forma(value) {
         this.#validarForma(value);
         this.#forma = value;
     }
 
-    get comprimento() { 
-        return this.#comprimento; 
-    }
+    get comprimento() { return this.#comprimento; }
     set comprimento(value) {
         this.#validarComprimento(value);
         this.#comprimento = value;
     }
 
-    get diametro() { 
-        return this.#diametro; 
-    }
+    get diametro() { return this.#diametro; }
     set diametro(value) {
         if (this.#forma === formato.PRISMA) {
             this.#diametro = null;
@@ -72,9 +68,7 @@ export class PecaBruta {
         this.#diametro = value ? Number(value) : null;
     }
 
-    get largura() { 
-        return this.#largura; 
-    }
+    get largura() { return this.#largura; }
     set largura(value) {
         if (this.#forma === formato.CILINDRO) {
             this.#largura = null;
@@ -83,9 +77,7 @@ export class PecaBruta {
         this.#largura = value ? Number(value) : null;
     }
 
-    get altura() { 
-        return this.#altura; 
-    }
+    get altura() { return this.#altura; }
     set altura(value) {
         if (this.#forma === formato.CILINDRO) {
             this.#altura = null;
@@ -101,6 +93,12 @@ export class PecaBruta {
     #validarIdMaterial(value) {
         if (!value || isNaN(Number(value)) || Number(value) <= 0) {
             throw new Error("Verifique o Id do Material associado.");
+        }
+    }
+
+    #validarIdCliente(value) {
+        if (!value || !Number.isInteger(Number(value)) || Number(value) <= 0) {
+            throw new Error("Verifique o Id do Cliente associado.");
         }
     }
 
@@ -147,10 +145,10 @@ export class PecaBruta {
     }
 
     static criar(dados) { 
-        return new PecaBruta(dados.idMaterial, dados.nome, dados.forma, dados.comprimento, dados.diametro, dados.largura, dados.altura, null); 
+        return new PecaBruta(dados.idMaterial, dados.idCliente, dados.nome, dados.forma, dados.comprimento, dados.diametro, dados.largura, dados.altura, null); 
     }
 
     static editar(dados) { 
-        return new PecaBruta(dados.idMaterial, dados.nome, dados.forma, dados.comprimento, dados.diametro, dados.largura, dados.altura, dados.idPeca); 
+        return new PecaBruta(dados.idMaterial, dados.idCliente, dados.nome, dados.forma, dados.comprimento, dados.diametro, dados.largura, dados.altura, dados.idPeca); 
     }
 }

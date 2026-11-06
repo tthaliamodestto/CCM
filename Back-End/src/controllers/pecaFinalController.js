@@ -4,9 +4,12 @@ import pecaFinalRepositories from "../repositories/pecaFinalRepositories.js";
 const pecaFinalController = {
     criar: async (req, res) => {
         try {
-            const { idPeca, nome, profundidadeFinal, alturaFinal, diametroFinal, larguraFinal } = req.body;
+            // Adicionado idCliente na desestruturação
+            const { idPeca, idCliente, nome, profundidadeFinal, alturaFinal, diametroFinal, larguraFinal } = req.body;
             const imagem = req.file ? `/uploads/images/${req.file.filename}` : null;
-            const peca = PecaFinal.criar({ idPeca, nome, profundidadeFinal, alturaFinal, diametroFinal, larguraFinal, imagem });
+
+            // Passando idCliente para o model
+            const peca = PecaFinal.criar({ idPeca, idCliente, nome, profundidadeFinal, alturaFinal, diametroFinal, larguraFinal, imagem });
             const result = await pecaFinalRepositories.criar(peca);
 
             res.status(201).json({ result });
@@ -19,11 +22,14 @@ const pecaFinalController = {
     editar: async (req, res) => {
         try {
             const id = req.params.idPecaFinal;
-            const { idPeca, nome, profundidadeFinal, alturaFinal, diametroFinal, larguraFinal } = req.body;
-            const peca = PecaFinal.editar({ idPecaFinal: id, idPeca, nome, profundidadeFinal, alturaFinal, diametroFinal, larguraFinal });
+            // Adicionado idCliente na desestruturação
+            const { idPeca, idCliente, nome, profundidadeFinal, alturaFinal, diametroFinal, larguraFinal } = req.body;
+
+            // Passando idCliente para o model
+            const peca = PecaFinal.editar({ idPecaFinal: id, idPeca, idCliente, nome, profundidadeFinal, alturaFinal, diametroFinal, larguraFinal });
             const result = await pecaFinalRepositories.editar(peca);
 
-            res.status(200).json({  result });
+            res.status(200).json({ result });
         } catch (error) {
             console.log(error);
             res.status(500).json({ message: 'Ocorreu um erro no servidor', errorMessage: error.message });

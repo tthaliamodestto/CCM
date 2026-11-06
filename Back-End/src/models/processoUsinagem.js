@@ -1,12 +1,14 @@
 export class ProcessoUsinagem {
     #idPeca;
     #idPecaFinal;
+    #idCliente;
     #dataCriacao;
     #idProcesso;
 
-    constructor(pIdPeca, pIdPecaFinal, pDataCriacao, pIdProcesso) {
+    constructor(pIdPeca, pIdPecaFinal, pIdCliente, pDataCriacao, pIdProcesso) {
         this.idPeca = pIdPeca;
         this.idPecaFinal = pIdPecaFinal;
+        this.idCliente = pIdCliente;
         this.dataCriacao = pDataCriacao;
         this.idProcesso = pIdProcesso;
     }
@@ -21,6 +23,12 @@ export class ProcessoUsinagem {
     set idPecaFinal(value) {
         this.#validarIdPecaFinal(value);
         this.#idPecaFinal = Number(value);
+    }
+
+    get idCliente() { return this.#idCliente; }
+    set idCliente(value) {
+        this.#validarIdCliente(value);
+        this.#idCliente = Number(value);
     }
 
     get dataCriacao() { return this.#dataCriacao; }
@@ -43,6 +51,12 @@ export class ProcessoUsinagem {
         if (!Number.isInteger(Number(value)) || Number(value) <= 0) throw new Error("O Id da peça final deve ser um inteiro maior que zero.");
     }
 
+    #validarIdCliente(value) {
+        if (!value || !Number.isInteger(Number(value)) || Number(value) <= 0) {
+            throw new Error("Verifique o Id do Cliente associado.");
+        }
+    }
+
     #validarDataCriacao(value) {
         if (value !== null && value !== undefined && !(value instanceof Date) && (typeof value !== "string" || value.trim() === "")) throw new Error("Data de criação inválida.");
     }
@@ -52,10 +66,10 @@ export class ProcessoUsinagem {
     }
 
     static criar(dados) {
-        return new ProcessoUsinagem(dados.idPeca, dados.idPecaFinal, dados.dataCriacao, null);
+        return new ProcessoUsinagem(dados.idPeca, dados.idPecaFinal, dados.idCliente, dados.dataCriacao, null);
     }
 
     static editar(dados) {
-        return new ProcessoUsinagem(dados.idPeca, dados.idPecaFinal, dados.dataCriacao, dados.idProcesso);
+        return new ProcessoUsinagem(dados.idPeca, dados.idPecaFinal, dados.idCliente, dados.dataCriacao, dados.idProcesso);
     }
 }

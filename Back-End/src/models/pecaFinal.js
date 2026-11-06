@@ -2,6 +2,7 @@ import { formato } from "../enums/forma.js";
 
 export class PecaFinal {
     #idPecaFinal;
+    #idCliente;
     #nome;
     #forma;
     #comprimentoFinal;
@@ -10,7 +11,8 @@ export class PecaFinal {
     #alturaFinal;
     #imagem;
 
-    constructor(pNome, pForma, pComprimentoFinal, pDiametroMaximoFinal, pLarguraFinal, pAlturaFinal, pImagem, pIdPecaFinal) {
+    constructor(pIdCliente, pNome, pForma, pComprimentoFinal, pDiametroMaximoFinal, pLarguraFinal, pAlturaFinal, pImagem, pIdPecaFinal) {
+        this.idCliente = pIdCliente;
         this.nome = pNome;
         this.forma = pForma;
         this.comprimentoFinal = pComprimentoFinal;
@@ -25,6 +27,12 @@ export class PecaFinal {
     set idPecaFinal(value) {
         this.#validarIdPecaFinal(value);
         this.#idPecaFinal = value === null || value === undefined ? null : Number(value);
+    }
+
+    get idCliente() { return this.#idCliente; }
+    set idCliente(value) {
+        this.#validarIdCliente(value);
+        this.#idCliente = Number(value);
     }
 
     get nome() { return this.#nome; }
@@ -87,6 +95,12 @@ export class PecaFinal {
         }
     }
 
+    #validarIdCliente(value) {
+        if (!value || !Number.isInteger(Number(value)) || Number(value) <= 0) {
+            throw new Error("Verifique o Id do Cliente associado.");
+        }
+    }
+
     #validarNome(value) {
         if (typeof value !== 'string' || value.trim().length < 3 || value.trim().length > 100) {
             throw new Error("O nome da peça final deve ter entre 3 e 100 caracteres.");
@@ -112,10 +126,10 @@ export class PecaFinal {
     }
 
     static criar(dados) {
-        return new PecaFinal(dados.nome, dados.forma, dados.comprimentoFinal, dados.diametroMaximoFinal, dados.larguraFinal, dados.alturaFinal, dados.imagem, null);
+        return new PecaFinal(dados.idCliente, dados.nome, dados.forma, dados.comprimentoFinal, dados.diametroMaximoFinal, dados.larguraFinal, dados.alturaFinal, dados.imagem, null);
     }
 
     static editar(dados) {
-        return new PecaFinal(dados.nome, dados.forma, dados.comprimentoFinal, dados.diametroMaximoFinal, dados.larguraFinal, dados.alturaFinal, dados.imagem, dados.idPecaFinal);
+        return new PecaFinal(dados.idCliente, dados.nome, dados.forma, dados.comprimentoFinal, dados.diametroMaximoFinal, dados.larguraFinal, dados.alturaFinal, dados.imagem, dados.idPecaFinal);
     }
 }
