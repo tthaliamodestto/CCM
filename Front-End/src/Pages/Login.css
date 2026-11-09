@@ -536,3 +536,38 @@
   border-color: #22314d;
   box-shadow: 0 0 0 3px rgba(34, 49, 77, 0.12);
 }
+
+
+.login-message {
+  padding: 12px 14px;
+  margin-bottom: 18px;
+  border-radius: 7px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.login-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+}
+
+.login-success {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+}
+
+.admin-setup-link {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #aa8e52;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.admin-setup-link:hover {
+  text-decoration: underline;
+}

@@ -1,16 +1,18 @@
+
 import { useState } from "react";
 import {
   BrowserRouter,
   Routes,
   Route,
   Navigate,
-  useLocation,
 } from "react-router-dom";
 
 import Header from "./components/Header";
 
 import Home from "./Pages/Home";
 import Login from "./Pages/Login";
+import SolicitarAcesso from "./Pages/SolicitarAcesso";
+import Aprovacoes from "./Pages/Aprovacoes";
 
 import Orcamentos from "./Pages/Orcamentos";
 import Pecas from "./Pages/Pecas";
@@ -19,6 +21,8 @@ import Maquinas from "./Pages/Maquinas";
 import Configuracoes from "./Pages/Configuracoes";
 import Operacoes from "./Pages/Operacoes";
 import Perfil from "./Pages/perfil";
+
+import { getSession } from "./services/authService";
 
 import {
   FiMenu,
@@ -29,11 +33,16 @@ import {
   FiUser,
   FiCpu,
   FiTool,
+  FiShield,
 } from "react-icons/fi";
 
 import { FaCalculator } from "react-icons/fa";
 
 import "./index.css";
+
+// ========================================
+// PERMISSÕES DE CADA TIPO DE USUÁRIO
+// ========================================
 
 const PERFIS = {
   Operador: {
@@ -47,6 +56,7 @@ const PERFIS = {
       "Perfil",
     ],
   },
+
   Financeiro: {
     paginas: [
       "Home",
@@ -59,6 +69,7 @@ const PERFIS = {
       "Perfil",
     ],
   },
+
   Administrador: {
     paginas: [
       "Home",
@@ -69,40 +80,56 @@ const PERFIS = {
       "Operações",
       "Configurações",
       "Perfil",
+      "Aprovações",
     ],
   },
 };
+
+// ========================================
+// CORES DOS FUNCIONÁRIOS
+// ========================================
 
 const CORES_FUNCIONARIOS = {
   "funcionario1@ccm.com": "#2563EB",
   "funcionario2@ccm.com": "#9333EA",
   "matheus.a.luiz@aluno.senai.br": "#AA8E52",
+  "ma3109278@gmail.com": "#9333EA",
 };
 
+// ========================================
+// SISTEMA INTERNO
+// ========================================
+
 function SistemaInterno() {
-  const location = useLocation();
+  // Recupera a sessão salva no localStorage
+  const session = getSession();
 
-  const role = PERFIS[location.state?.role]
-    ? location.state.role
-    : "Administrador";
+  // Impede acesso sem sessão ou com função inválida
+  if (!session || !PERFIS[session.role]) {
+    return <Navigate to="/login" replace />;
+  }
 
-  const usuario = location.state?.usuario || "modestonathalia52@gmail.com";
-
-  // Gera um nome inicial a partir do e-mail caso não tenha sido enviado no Login
-  const nomeInicial = location.state?.nome || 
+  const role = session.role;
+  const usuario = session.email;
+  const nomeInicial =
+    session.nome ||
     (usuario.includes("@") ? usuario.split("@")[0] : usuario);
 
-  // ESTADOS DO USUÁRIO QUE SERÃO COMPARTILHADOS PELO SISTEMA
+  // Estados compartilhados pelo sistema
   const [nome, setNome] = useState(nomeInicial);
-  const [foto, setFoto] = useState(null); // Armazena a foto em Base64
+  const [foto, setFoto] = useState(null);
+
+  const [menuAberto, setMenuAberto] = useState(false);
+  const [itemAtivo, setItemAtivo] = useState("Home");
 
   const corFuncionario =
     CORES_FUNCIONARIOS[usuario.toLowerCase()] || "#AA8E52";
 
-  const [menuAberto, setMenuAberto] = useState(false);
-  const [itemAtivo, setItemAtivo] = useState("Calculadora");
-
   const paginasPermitidas = PERFIS[role].paginas;
+
+  // ========================================
+  // ITENS DO MENU
+  // ========================================
 
   const itensMenu = [
     { nome: "Home", icone: FiHome },
@@ -113,22 +140,38 @@ function SistemaInterno() {
     { nome: "Operações", icone: FiTool },
     { nome: "Configurações", icone: FiSettings },
     { nome: "Perfil", icone: FiUser },
+    { nome: "Aprovações", icone: FiShield },
   ];
 
   const itensVisiveis = itensMenu.filter((item) =>
     paginasPermitidas.includes(item.nome)
   );
 
+  // ========================================
+  // NAVEGAÇÃO
+  // ========================================
+
   function selecionarPagina(nomeItem) {
     if (paginasPermitidas.includes(nomeItem)) {
       setItemAtivo(nomeItem);
+      setMenuAberto(false);
     }
   }
+
+  // ========================================
+  // CONTEÚDO DAS PÁGINAS
+  // ========================================
 
   function renderConteudo() {
     switch (itemAtivo) {
       case "Home":
-        return <Home usuario={usuario} nome={nome} role={role} />;
+        return (
+          <Home
+            usuario={usuario}
+            nome={nome}
+            role={role}
+          />
+        );
 
       case "Calculadora":
         return <Pecas />;
@@ -162,10 +205,21 @@ function SistemaInterno() {
           />
         );
 
+      case "Aprovações":
+        return role === "Administrador" ? (
+          <Aprovacoes />
+        ) : (
+          <Home usuario={usuario} nome={nome} role={role} />
+        );
+
       default:
-        return <Pecas />;
+        return <Home usuario={usuario} nome={nome} role={role} />;
     }
   }
+
+  // ========================================
+  // NAVEGAÇÃO PELO HEADER
+  // ========================================
 
   function navegarPeloHeader(pagina) {
     const mapa = {
@@ -175,15 +229,21 @@ function SistemaInterno() {
     };
 
     const destino = mapa[pagina];
-    if (destino) selecionarPagina(destino);
+
+    if (destino) {
+      selecionarPagina(destino);
+    }
   }
 
-  const paginaHeader =
-    {
-      Calculadora: "pecas",
-      Orçamento: "orcamentos",
-      Máquinas: "maquinas",
-    }[itemAtivo] || "";
+  const paginaHeader = {
+    Calculadora: "pecas",
+    Orçamento: "orcamentos",
+    Máquinas: "maquinas",
+  }[itemAtivo] || "";
+
+  // ========================================
+  // INTERFACE
+  // ========================================
 
   return (
     <div className="app-layout">
@@ -215,7 +275,10 @@ function SistemaInterno() {
                 onClick={() => selecionarPagina(item.nome)}
               >
                 <Icone className="menu-icon" />
-                <span className="menu-text">{item.nome}</span>
+
+                <span className="menu-text">
+                  {item.nome}
+                </span>
               </button>
             );
           })}
@@ -234,20 +297,45 @@ function SistemaInterno() {
           paginasPermitidas={paginasPermitidas}
         />
 
-        <div className="page-content">{renderConteudo()}</div>
+        <div className="page-content">
+          {renderConteudo()}
+        </div>
       </main>
     </div>
   );
 }
 
+// ========================================
+// ROTAS PRINCIPAIS
+// ========================================
+
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Página inicial pública */}
         <Route path="/" element={<Home />} />
+
+        {/* Login */}
         <Route path="/login" element={<Login />} />
-        <Route path="/sistema" element={<SistemaInterno />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+
+        {/* Solicitação de cadastro */}
+        <Route
+          path="/solicitar-acesso"
+          element={<SolicitarAcesso />}
+        />
+
+        {/* Sistema interno */}
+        <Route
+          path="/sistema"
+          element={<SistemaInterno />}
+        />
+
+        {/* Rota de segurança */}
+        <Route
+          path="*"
+          element={<Navigate to="/" replace />}
+        />
       </Routes>
     </BrowserRouter>
   );
