@@ -1,0 +1,12 @@
+import { Router } from 'express';
+import pecaFinalController from '../controllers/pecaFinalController.js';
+import uploadImagemMiddleware from '../middlewares/uploadImage.middleware.js';
+
+const pecaFinalRoutes = Router();
+pecaFinalRoutes.get('/', pecaFinalController.selecionar);
+pecaFinalRoutes.get('/:idPecaFinal', pecaFinalController.selecionarUm);
+pecaFinalRoutes.post('/', uploadImagemMiddleware, pecaFinalController.criar);
+pecaFinalRoutes.put('/:idPecaFinal', uploadImagemMiddleware, pecaFinalController.editar);
+pecaFinalRoutes.delete('/:idPecaFinal', pecaFinalController.deletar);
+
+export default pecaFinalRoutes;
