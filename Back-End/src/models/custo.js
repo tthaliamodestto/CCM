@@ -1,3 +1,4 @@
+
 import { calcularCustoTotal } from '../utils/calculoCusto.js';
 
 export class Custo {
@@ -15,53 +16,79 @@ export class Custo {
         this.tarifaEnergiaAplicada = pTarifaEnergiaAplicada;
     }
 
-    get idCusto() { return this.#idCusto; }
+    get idCusto() { 
+        return this.#idCusto; 
+    }
     set idCusto(value) {
-        if (value !== null && value !== undefined && (!Number.isInteger(Number(value)) || Number(value) <= 0)) {
-            throw new Error('Verifique o Id do Custo informado.');
-        }
+        this.#validarIdCusto(value);
         this.#idCusto = value === null || value === undefined ? null : Number(value);
     }
 
-    get idProcesso() { return this.#idProcesso; }
+    get idProcesso() { 
+        return this.#idProcesso; 
+    }
     set idProcesso(value) {
-        if (!Number.isInteger(Number(value)) || Number(value) <= 0) {
-            throw new Error('Verifique o Id do Processo de Usinagem informado.');
-        }
+        this.#validarIdProcesso(value);
         this.#idProcesso = Number(value);
     }
 
-    get custoMaterial() { return this.#custoMaterial; }
+    get custoMaterial() { 
+        return this.#custoMaterial; 
+    }
     set custoMaterial(value) {
-        this.#validarValor(value, 'O custo do material');
+        this.#validarCustoMaterial(value);
         this.#custoMaterial = Number(value);
     }
 
-    get custoMaquina() { return this.#custoMaquina; }
+    get custoMaquina() { 
+        return this.#custoMaquina; 
+    }
     set custoMaquina(value) {
-        this.#validarValor(value, 'O custo da máquina');
+        this.#validarCustoMaquina(value);
         this.#custoMaquina = Number(value);
     }
 
-    get tarifaEnergiaAplicada() { return this.#tarifaEnergiaAplicada; }
+    get tarifaEnergiaAplicada() { 
+        return this.#tarifaEnergiaAplicada; 
+    }
     set tarifaEnergiaAplicada(value) {
-        if (value === null || value === undefined || value === '') {
-            this.#tarifaEnergiaAplicada = null;
-            return;
-        }
-        if (!Number.isFinite(Number(value)) || Number(value) < 0) {
-            throw new Error('A tarifa de energia deve ser maior ou igual a zero.');
-        }
-        this.#tarifaEnergiaAplicada = Number(value);
+        this.#validarTarifaEnergia(value);
+        this.#tarifaEnergiaAplicada = value === null || value === undefined || value === '' ? null : Number(value);
     }
 
     get custoTotal() {
         return calcularCustoTotal(this.#custoMaterial, this.#custoMaquina);
     }
 
-    #validarValor(value, campo) {
+    #validarIdCusto(value) {
+        if (value !== null && value !== undefined && (!Number.isInteger(Number(value)) || Number(value) <= 0)) {
+            throw new Error('Verifique o Id do Custo informado.');
+        }
+    }
+
+    #validarIdProcesso(value) {
+        if (!Number.isInteger(Number(value)) || Number(value) <= 0) {
+            throw new Error('Verifique o Id do Processo de Usinagem informado.');
+        }
+    }
+
+    #validarCustoMaterial(value) {
         if (value === null || value === undefined || value === '' || !Number.isFinite(Number(value)) || Number(value) < 0) {
-            throw new Error(`${campo} deve ser um número maior ou igual a zero.`);
+            throw new Error('O custo do material deve ser um número maior ou igual a zero.');
+        }
+    }
+
+    #validarCustoMaquina(value) {
+        if (value === null || value === undefined || value === '' || !Number.isFinite(Number(value)) || Number(value) < 0) {
+            throw new Error('O custo da máquina deve ser um número maior ou igual a zero.');
+        }
+    }
+
+    #validarTarifaEnergia(value) {
+        if (value === null || value === undefined || value === '') return;
+
+        if (!Number.isFinite(Number(value)) || Number(value) < 0) {
+            throw new Error('A tarifa de energia deve ser maior ou igual a zero.');
         }
     }
 
