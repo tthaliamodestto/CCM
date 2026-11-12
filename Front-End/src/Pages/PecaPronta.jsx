@@ -1,345 +1,229 @@
-
-import { useEffect, useMemo, useState } from "react";
-import { pecaService } from "../services/pecaService";
-import "../css/PecaPronta.css";
-
-function normalizarLista(resposta) {
-  const dados = resposta?.result || resposta?.data || resposta;
-  return Array.isArray(dados) ? dados : [];
-}
-
-function formatarDimensoes(peca) {
-  if (peca.forma === "cilindro") {
-    return `Ø ${peca.diametro ?? "-"} × ${peca.comprimento ?? "-"} mm`;
-  }
-
-  return `${peca.comprimento ?? "-"} × ${peca.largura ?? "-"} × ${peca.altura ?? "-"} mm`;
-}
+import React, { useState, useEffect } from 'react';
+import '../css/Pecas.css';
 
 export default function PecaPronta() {
-  const [pecas, setPecas] = useState([]);
-  const [materiais, setMateriais] = useState([]);
-  const [busca, setBusca] = useState("");
-  const [filtroForma, setFiltroForma] = useState("todas");
-  const [carregando, setCarregando] = useState(true);
-  const [erro, setErro] = useState("");
-  const [pecaSelecionada, setPecaSelecionada] = useState(null);
+  const [savedPieces, setSavedPieces] = useState([]);
+  const [filteredPieces, setFilteredPieces] = useState([]);
+  const [selectedPiece, setSelectedPiece] = useState(null);
+  
+  // Estados para os filtros
+  const [formaFiltro, setFormaFiltro] = useState('todos');
 
   useEffect(() => {
-    let ativo = true;
-
-    async function carregar() {
-      setCarregando(true);
-      setErro("");
-
-      try {
-        const [resPecas, resMateriais] = await Promise.all([
-          pecaService.listar(),
-          pecaService.listarMateriais(),
-        ]);
-
-        if (!ativo) return;
-
-        setPecas(normalizarLista(resPecas));
-        setMateriais(normalizarLista(resMateriais));
-      } catch (error) {
-        if (ativo) {
-          setErro(error.message || "Não foi possível carregar as peças.");
-        }
-      } finally {
-        if (ativo) setCarregando(false);
+    const piecesFromStorage = JSON.parse(
+      localStorage.getItem('ccm_saved_pieces')
+    ) || [
+      {
+        id: '1',
+        nome: 'Eixo Principal CNC',
+        prioridade: 'Alta (4)',
+        material: 'Aço 1045',
+        forma: 'cilindro',
+        maquina: 'Torno CNC 01',
+        volume: '145.2',
+        peso: '1.14',
+        tempo: '25',
+        custo: '89.50'
       }
-    }
+    ];
 
-    carregar();
-
-    return () => {
-      ativo = false;
-    };
+    setSavedPieces(piecesFromStorage);
+    setFilteredPieces(piecesFromStorage);
   }, []);
 
-  const pecasFiltradas = useMemo(() => {
-    const termo = busca.trim().toLocaleLowerCase("pt-BR");
+  // Atualiza a lista filtrada sempre que o filtro de forma mudar
+  useEffect(() => {
+    if (formaFiltro === 'todos') {
+      setFilteredPieces(savedPieces);
+    } else {
+      setFilteredPieces(savedPieces.filter(p => p.forma === formaFiltro));
+    }
+  }, [formaFiltro, savedPieces]);
 
-    return pecas.filter((peca) => {
-      const material = materiais.find(
-        (item) =>
-          String(item.idMaterial ?? item.id) ===
-          String(peca.idMaterial)
-      );
+  const handleSelectChange = (e) => {
+    const pieceId = e.target.value;
 
-      const nomeMaterial = material?.nome || peca.material || "";
+    if (!pieceId) {
+      setSelectedPiece(null);
+      return;
+    }
 
-      const correspondeBusca =
-        !termo ||
-        String(peca.nome || "")
-          .toLocaleLowerCase("pt-BR")
-          .includes(termo) ||
-        String(peca.idPeca ?? peca.id ?? "").includes(termo) ||
-        nomeMaterial
-          .toLocaleLowerCase("pt-BR")
-          .includes(termo);
-
-      const correspondeForma =
-        filtroForma === "todas" ||
-        peca.forma === filtroForma;
-
-      return correspondeBusca && correspondeForma;
-    });
-  }, [pecas, materiais, busca, filtroForma]);
-
-  const obterMaterial = (peca) =>
-    materiais.find(
-      (item) =>
-        String(item.idMaterial ?? item.id) ===
-        String(peca.idMaterial)
+    const found = savedPieces.find(
+      (p) => (p.id || p.nome) === pieceId
     );
 
+    setSelectedPiece(found || null);
+
+    if (found) {
+      localStorage.setItem(
+        'ccm_active_report_piece',
+        JSON.stringify(found)
+      );
+    }
+  };
+
+  const handlePrint = () => {
+    window.print();
+  };
+
   return (
-    <section className="peca-pronta-page">
-      <header className="peca-pronta-header">
+    <div className="approvals-page">
+      <header className="approvals-header">
         <div>
-          <span className="peca-pronta-eyebrow">
-            ESTOQUE DE PRODUÇÃO
+          <span className="approvals-tag">
+            CONSOLIDAÇÃO E RELATÓRIO
           </span>
 
-          <h2>Peças cadastradas</h2>
+          <h1>Peça Pronta para Impressão</h1>
 
           <p>
-            Consulte as peças brutas registradas no sistema
-            e seus dados dimensionais.
+            Filtre por forma e selecione uma peça já calculada para gerar o relatório de custos.
           </p>
-        </div>
-
-        <div className="peca-pronta-total">
-          <strong>{pecas.length}</strong>
-          <span>peças cadastradas</span>
         </div>
       </header>
 
-      <div className="peca-pronta-filtros">
-        <label className="peca-pronta-busca">
-          <span className="material-symbols-outlined">
-            search
-          </span>
+      <div className="approvals-content">
+        {/* Barra de Filtros e Seleção */}
+        <div className="approvals-toolbar" style={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
+          <div>
+            <h2>Seleção de Peça</h2>
+            <p>Escolha a peça cadastrada para carregar os dados de usinagem.</p>
+          </div>
 
-          <input
-            type="search"
-            value={busca}
-            onChange={(e) => setBusca(e.target.value)}
-            placeholder="Buscar por nome, código ou material..."
-          />
-        </label>
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            {/* Seletor de Forma para Filtrar */}
+            <select 
+              value={formaFiltro} 
+              onChange={(e) => setFormaFiltro(e.target.value)}
+              style={{ minWidth: '150px', height: '42px', padding: '0 12px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#fff', color: '#22314d', fontSize: '13px' }}
+            >
+              <option value="todos">Todas as formas</option>
+              <option value="cilindro">Cilindro</option>
+              <option value="prisma">Prisma</option>
+            </select>
 
-        <select
-          value={filtroForma}
-          onChange={(e) => setFiltroForma(e.target.value)}
-          aria-label="Filtrar por forma"
-        >
-          <option value="todas">Todas as formas</option>
-          <option value="cilindro">Cilindro</option>
-          <option value="prisma">Prisma</option>
-        </select>
-      </div>
+            {/* Seletor da Peça Específica */}
+            <select onChange={handleSelectChange} defaultValue="" style={{ minWidth: '200px', height: '42px', padding: '0 12px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#fff', color: '#22314d', fontSize: '13px' }}>
+              <option value="" disabled>
+                -- Selecionar Peça --
+              </option>
 
-      {erro && (
-        <div className="peca-pronta-alerta">
-          {erro}
+              {filteredPieces.map((piece, index) => (
+                <option
+                  key={index}
+                  value={piece.id || piece.nome}
+                >
+                  {piece.nome} ({piece.forma || 'indefinido'})
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-      )}
 
-      {carregando ? (
-        <div className="peca-pronta-vazio">
-          Carregando peças cadastradas...
-        </div>
-      ) : pecasFiltradas.length === 0 ? (
-        <div className="peca-pronta-vazio">
-          <span className="material-symbols-outlined">
-            inventory_2
-          </span>
+        {selectedPiece ? (
+          <div className="piece-report-container">
+            <div
+              className="approval-card"
+              style={{
+                gridTemplateColumns: '1fr 1fr',
+                marginBottom: '20px'
+              }}
+            >
+              <div className="approval-user">
+                <div className="approval-avatar">⚙️</div>
 
-          <strong>Nenhuma peça encontrada</strong>
-
-          <span>
-            Cadastre uma peça na Calculadora ou altere os filtros.
-          </span>
-        </div>
-      ) : (
-        <div className="peca-pronta-tabela-wrap">
-          <table className="peca-pronta-tabela">
-            <thead>
-              <tr>
-                <th>Código</th>
-                <th>Nome da peça</th>
-                <th>Material</th>
-                <th>Forma</th>
-                <th>Dimensões</th>
-                <th></th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {pecasFiltradas.map((peca) => {
-                const material = obterMaterial(peca);
-
-                return (
-                  <tr
-                    key={peca.idPeca ?? peca.id}
-                  >
-                    <td className="peca-pronta-codigo">
-                      #{peca.idPeca ?? peca.id ?? "—"}
-                    </td>
-
-                    <td className="peca-pronta-nome">
-                      {peca.nome || "Peça sem nome"}
-                    </td>
-
-                    <td>
-                      {material?.nome ||
-                        peca.material ||
-                        `Material ${peca.idMaterial ?? "não informado"}`}
-                    </td>
-
-                    <td>
-                      <span className="peca-pronta-forma">
-                        {peca.forma || "—"}
-                      </span>
-                    </td>
-
-                    <td>
-                      {formatarDimensoes(peca)}
-                    </td>
-
-                    <td>
-                      <button
-                        type="button"
-                        className="peca-pronta-detalhes"
-                        onClick={() =>
-                          setPecaSelecionada(peca)
-                        }
-                      >
-                        Ver detalhes
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {pecaSelecionada && (
-        <div
-          className="peca-pronta-modal-fundo"
-          onClick={() => setPecaSelecionada(null)}
-        >
-          <section
-            className="peca-pronta-modal"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="peca-pronta-modal-titulo"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <header>
-              <div>
-                <span className="peca-pronta-eyebrow">
-                  FICHA DA PEÇA
-                </span>
-
-                <h3 id="peca-pronta-modal-titulo">
-                  {pecaSelecionada.nome || "Peça cadastrada"}
-                </h3>
+                <div className="approval-user-info">
+                  <h3>{selectedPiece.nome}</h3>
+                  <span>Prioridade: {selectedPiece.prioridade} | Forma: <strong>{selectedPiece.forma || 'N/D'}</strong></span>
+                </div>
               </div>
 
-              <button
-                type="button"
-                className="peca-pronta-fechar"
-                onClick={() => setPecaSelecionada(null)}
-                aria-label="Fechar detalhes"
+              <div
+                className="approval-details"
+                style={{ justifyContent: 'flex-end' }}
               >
-                ×
-              </button>
-            </header>
+                <div>
+                  <span className="approval-label">
+                    Material
+                  </span>
+                  <strong>{selectedPiece.material}</strong>
+                </div>
 
-            <div className="peca-pronta-detalhes-grid">
-              <div>
-                <span>Código</span>
-                <strong>
-                  {pecaSelecionada.idPeca ??
-                    pecaSelecionada.id ??
-                    "—"}
+                <div>
+                  <span className="approval-label">
+                    Máquina / Operação
+                  </span>
+                  <strong>{selectedPiece.maquina}</strong>
+                </div>
+              </div>
+            </div>
+
+            <div
+              className="metrics-grid"
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                gap: '15px',
+                marginBottom: '25px'
+              }}
+            >
+              <div className="approval-card" style={{ display: 'block', padding: '16px' }}>
+                <span className="approval-label">Volume Estimado</span>
+                <strong style={{ fontSize: '18px', display: 'block', marginTop: '4px' }}>
+                  {selectedPiece.volume} cm³
                 </strong>
               </div>
 
-              <div>
-                <span>Material</span>
-                <strong>
-                  {obterMaterial(pecaSelecionada)?.nome ||
-                    pecaSelecionada.material ||
-                    pecaSelecionada.idMaterial ||
-            "—"}
+              <div className="approval-card" style={{ display: 'block', padding: '16px' }}>
+                <span className="approval-label">Peso Total</span>
+                <strong style={{ fontSize: '18px', display: 'block', marginTop: '4px' }}>
+                  {selectedPiece.peso} kg
                 </strong>
               </div>
 
-              <div>
-                <span>Forma</span>
-                <strong>
-                  {pecaSelecionada.forma || "—"}
+              <div className="approval-card" style={{ display: 'block', padding: '16px' }}>
+                <span className="approval-label">Tempo de Usinagem</span>
+                <strong style={{ fontSize: '18px', display: 'block', marginTop: '4px' }}>
+                  {selectedPiece.tempo} min
                 </strong>
               </div>
 
-              <div>
-                <span>Comprimento</span>
-                <strong>
-                  {pecaSelecionada.comprimento ?? "—"} mm
-                </strong>
-              </div>
-
-              <div>
-                <span>Diâmetro</span>
-                <strong>
-                  {pecaSelecionada.diametro ?? "—"} mm
-                </strong>
-              </div>
-
-              <div>
-                <span>Largura</span>
-                <strong>
-                  {pecaSelecionada.largura ?? "—"} mm
-                </strong>
-              </div>
-
-              <div>
-                <span>Altura</span>
-                <strong>
-                  {pecaSelecionada.altura ?? "—"} mm
-                </strong>
-              </div>
-
-              <div>
-                <span>Cliente</span>
-                <strong>
-                  {pecaSelecionada.idCliente ?? "—"}
+              <div
+                className="approval-card"
+                style={{
+                  display: 'block',
+                  padding: '16px',
+                  background: 'rgba(170, 142, 82, 0.08)',
+                  borderColor: 'rgba(170, 142, 82, 0.3)'
+                }}
+              >
+                <span className="approval-label" style={{ color: '#aa8e52' }}>
+                  Custo Total Estimado
+                </span>
+                <strong style={{ fontSize: '20px', display: 'block', marginTop: '4px', color: '#aa8e52' }}>
+                  R$ {parseFloat(selectedPiece.custo || 0).toFixed(2)}
                 </strong>
               </div>
             </div>
 
-            <footer>
-              <span>
-                Dimensões: {formatarDimensoes(pecaSelecionada)}
-              </span>
-
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
               <button
-                type="button"
-                onClick={() => setPecaSelecionada(null)}
+                className="approval-btn"
+                style={{ background: '#22314d', color: '#fff' }}
+                onClick={handlePrint}
               >
-                Fechar
+                🖨️ Imprimir Relatório / Enviar para Dashboard
               </button>
-            </footer>
-          </section>
-        </div>
-      )}
-    </section>
+            </div>
+          </div>
+        ) : (
+          <div className="approvals-empty">
+            <div className="approvals-empty-icon">📂</div>
+            <h3>Nenhuma peça selecionada</h3>
+            <p>Utilize o menu acima para filtrar por forma e escolher uma peça cadastrada.</p>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

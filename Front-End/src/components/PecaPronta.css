@@ -1,10 +1,20 @@
+
+/* ================================
+   PÁGINA PEÇA PRONTA
+================================ */
+
 .approvals-page {
   width: 100%;
   min-height: 100%;
   padding: 35px;
   color: var(--text-dark, #1e293b);
   background: #f8fafc;
+  box-sizing: border-box;
 }
+
+/* ================================
+   CABEÇALHO
+================================ */
 
 .approvals-header {
   display: flex;
@@ -33,7 +43,12 @@
   margin: 0;
   color: var(--text-gray, #64748b);
   font-size: 14px;
+  line-height: 1.5;
 }
+
+/* ================================
+   CONTEÚDO PRINCIPAL
+================================ */
 
 .approvals-content {
   padding: 28px;
@@ -41,7 +56,12 @@
   border-radius: 16px;
   background: var(--white, #ffffff);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+  box-sizing: border-box;
 }
+
+/* ================================
+   SELEÇÃO DE PEÇA
+================================ */
 
 .approvals-toolbar {
   display: flex;
@@ -64,12 +84,14 @@
   margin: 0;
   color: #64748b;
   font-size: 13px;
+  line-height: 1.5;
 }
 
 .approvals-toolbar select {
   min-width: 220px;
   height: 42px;
   padding: 0 14px;
+  margin: 0;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
   background: #ffffff;
@@ -79,12 +101,17 @@
   outline: none;
   cursor: pointer;
   transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
 }
 
 .approvals-toolbar select:focus {
   border-color: #aa8e52;
   box-shadow: 0 0 0 3px rgba(170, 142, 82, 0.15);
 }
+
+/* ================================
+   CARD DE INFORMAÇÕES
+================================ */
 
 .approval-card {
   display: grid;
@@ -94,6 +121,7 @@
   border: 1px solid #e2e8f0;
   border-radius: 12px;
   background: #ffffff;
+  box-sizing: border-box;
 }
 
 .approval-user {
@@ -112,9 +140,13 @@
   align-items: center;
   border-radius: 50%;
   background: #22314d;
-  color: #fff;
+  color: #ffffff;
   font-size: 18px;
   box-shadow: 0 4px 10px rgba(34, 49, 77, 0.15);
+}
+
+.approval-user-info {
+  min-width: 0;
 }
 
 .approval-user-info h3 {
@@ -130,9 +162,14 @@
   font-size: 13px;
 }
 
+/* ================================
+   DETALHES
+================================ */
+
 .approval-details {
   display: flex;
   gap: 30px;
+  flex-wrap: wrap;
 }
 
 .approval-details > div {
@@ -155,8 +192,29 @@
   font-weight: 600;
 }
 
+/* ================================
+   INDICADORES E MÉTRICAS
+================================ */
+
+.metrics-grid {
+  width: 100%;
+}
+
+.metrics-grid .approval-card {
+  min-width: 0;
+}
+
+.metrics-grid .approval-card strong {
+  overflow-wrap: anywhere;
+}
+
+/* ================================
+   BOTÃO DE IMPRESSÃO
+================================ */
+
 .approval-btn {
   padding: 11px 20px;
+  margin: 0;
   border: none;
   border-radius: 7px;
   font-size: 13px;
@@ -169,6 +227,10 @@
   filter: brightness(0.9);
   transform: translateY(-1px);
 }
+
+/* ================================
+   ESTADO VAZIO
+================================ */
 
 .approvals-empty {
   padding: 60px 20px;
@@ -191,19 +253,154 @@
   margin: 0;
   color: #64748b;
   font-size: 13px;
+  line-height: 1.5;
 }
 
+/* ================================
+   RESPONSIVIDADE
+================================ */
+
+@media (max-width: 768px) {
+  .approvals-page {
+    padding: 20px;
+  }
+
+  .approvals-content {
+    padding: 20px;
+  }
+
+  .approvals-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .approvals-toolbar select {
+    width: 100%;
+  }
+
+  .approval-card {
+    grid-template-columns: 1fr !important;
+  }
+
+  .approval-details {
+    justify-content: flex-start !important;
+    gap: 20px;
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .approval-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .approvals-page {
+    padding: 14px;
+  }
+
+  .approvals-content {
+    padding: 16px;
+  }
+
+  .approvals-header h1 {
+    font-size: 23px;
+  }
+
+  .approval-details {
+    flex-direction: column;
+  }
+}
+
+/* ================================
+   IMPRESSÃO
+================================ */
+
 @media print {
-  .approvals-toolbar, .approval-btn, .approvals-header {
+  body {
+    background: #ffffff !important;
+  }
+
+  .approvals-toolbar,
+  .approval-btn,
+  .approvals-header {
     display: none !important;
   }
+
   .approvals-page {
     padding: 0;
-    background: #fff;
+    background: #ffffff;
   }
+
   .approvals-content {
+    padding: 0;
     border: none;
     box-shadow: none;
-    padding: 0;
   }
+
+  .approval-card {
+    break-inside: avoid;
+  }
+
+  .metrics-grid {
+    break-inside: avoid;
+  }
+}
+
+/* ================================
+   MODO ESCURO
+================================ */
+
+body.dark .approvals-page {
+  background: #0b111a;
+  color: #e2e8f0;
+}
+
+body.dark .approvals-content {
+  background: #131c2b;
+  border-color: #22314d;
+}
+
+body.dark .approvals-header h1,
+body.dark .approvals-toolbar h2,
+body.dark .approval-user-info h3,
+body.dark .approval-details strong,
+body.dark .approvals-empty h3 {
+  color: #f8fafc;
+}
+
+body.dark .approvals-header p,
+body.dark .approvals-toolbar p,
+body.dark .approval-user-info span,
+body.dark .approvals-empty p {
+  color: #94a3b8;
+}
+
+body.dark .approvals-toolbar {
+  border-color: #22314d;
+}
+
+body.dark .approvals-toolbar select {
+  background: #192538;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+body.dark .approval-card {
+  background: #192538;
+  border-color: #334155;
+}
+
+body.dark .approval-avatar {
+  background: #aa8e52;
+}
+
+body.dark .approval-label {
+  color: #94a3b8;
+}
+
+body.dark .approvals-empty {
+  color: #cbd5e1;
 }

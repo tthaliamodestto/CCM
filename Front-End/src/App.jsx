@@ -34,6 +34,7 @@ import {
   FiCpu,
   FiTool,
   FiShield,
+  FiLogOut,
 } from "react-icons/fi";
 
 import { FaCalculator } from "react-icons/fa";
@@ -101,7 +102,6 @@ const CORES_FUNCIONARIOS = {
 // ========================================
 
 function SistemaInterno() {
-  // Recupera a sessão salva no localStorage
   const session = getSession();
 
   // Impede acesso sem sessão ou com função inválida
@@ -111,6 +111,7 @@ function SistemaInterno() {
 
   const role = session.role;
   const usuario = session.email;
+
   const nomeInicial =
     session.nome ||
     (usuario.includes("@") ? usuario.split("@")[0] : usuario);
@@ -156,6 +157,20 @@ function SistemaInterno() {
       setItemAtivo(nomeItem);
       setMenuAberto(false);
     }
+  }
+
+  // ========================================
+  // SAIR DO SISTEMA
+  // ========================================
+
+  function sairDoSistema() {
+    // Limpa os dados de sessão conhecidos
+    localStorage.removeItem("token");
+    localStorage.removeItem("usuario");
+    localStorage.removeItem("ccm_session");
+
+    // Retorna para o login
+    window.location.href = "/login";
   }
 
   // ========================================
@@ -262,6 +277,7 @@ function SistemaInterno() {
           </button>
         </div>
 
+        {/* MENU PRINCIPAL */}
         <nav className="sidebar-menu">
           {itensVisiveis.map((item) => {
             const Icone = item.icone;
@@ -283,8 +299,24 @@ function SistemaInterno() {
             );
           })}
         </nav>
+
+        {/* BOTÃO SAIR FIXADO NA PARTE INFERIOR */}
+        <div className="sidebar-bottom">
+          <button
+            className="menu-item logout-button"
+            onClick={sairDoSistema}
+            title="Sair do sistema"
+          >
+            <FiLogOut className="menu-icon" />
+
+            <span className="menu-text">
+              Sair
+            </span>
+          </button>
+        </div>
       </aside>
 
+      {/* CONTEÚDO PRINCIPAL */}
       <main className="main-content">
         <Header
           usuario={usuario}

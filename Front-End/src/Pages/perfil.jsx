@@ -11,6 +11,8 @@ import {
   FiSave,
   FiX,
   FiLogOut,
+  FiBriefcase,
+  FiMapPin,
 } from "react-icons/fi";
 import "./Perfil.css";
 
@@ -28,12 +30,12 @@ export default function Perfil({
 
   const [tempNome, setTempNome] = useState(nome);
   const [telefone, setTelefone] = useState("");
+  const [cargo, setCargo] = useState("Especialista CNC");
+  const [departamento, setDepartamento] = useState("Produção e Usinagem");
 
-  // Estados da foto e pré-visualização
   const [fotoPreview, setFotoPreview] = useState(foto);
   const [fotoAlterada, setFotoAlterada] = useState(false);
 
-  // Estados de alteração de senha
   const [senhaAtual, setSenhaAtual] = useState("");
   const [novaSenha, setNovaSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
@@ -74,7 +76,7 @@ export default function Perfil({
   const handleSalvarDados = (e) => {
     e.preventDefault();
     setNome(tempNome);
-    setMensagemSucesso("Nome atualizado com sucesso!");
+    setMensagemSucesso("Informações pessoais atualizadas com sucesso!");
     setTimeout(() => setMensagemSucesso(""), 3000);
   };
 
@@ -105,88 +107,29 @@ export default function Perfil({
     <div className="perfil-container">
       {mensagemSucesso && (
         <div className="alert-success">
-          <FiCheckCircle /> {mensagemSucesso}
+          <FiCheckCircle className="alert-icon-svg" /> <span>{mensagemSucesso}</span>
         </div>
       )}
 
-      {/* HEADER CARD DO PERFIL COM BOTÃO DE SAIR */}
-      <div
-        className="perfil-header-card"
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          flexWrap: "wrap",
-          gap: "20px",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
-          {/* ESTRUTURA BLINDADA DO AVATAR (130px) */}
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-            <div
-              style={{
-                position: "relative",
-                width: "130px",
-                height: "130px",
-                minWidth: "130px",
-                minHeight: "130px",
-              }}
-            >
-              {/* CÍRCULO QUE CORTA A IMAGEM */}
+      {/* HEADER CARD DO PERFIL */}
+      <div className="perfil-header-card">
+        <div className="perfil-header-left">
+          <div className="avatar-section-wrapper">
+            <div className="avatar-wrapper">
               <div
+                className="avatar-circle"
                 style={{
-                  width: "130px",
-                  height: "130px",
-                  borderRadius: "50%",
-                  overflow: "hidden",
-                  border: "4px solid var(--accent-color, #AA8E52)",
-                  boxShadow: "0 4px 14px rgba(0,0,0,0.15)",
                   backgroundColor: corFuncionario || "var(--accent-color, #AA8E52)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
                 }}
               >
                 {fotoPreview ? (
-                  <img
-                    src={fotoPreview}
-                    alt="Avatar"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                      display: "block",
-                    }}
-                  />
+                  <img src={fotoPreview} alt="Avatar" className="avatar-image-large" />
                 ) : (
-                  <span style={{ fontSize: "3rem", fontWeight: "bold", color: "#ffffff" }}>
-                    {inicial}
-                  </span>
+                  <span>{inicial}</span>
                 )}
               </div>
 
-              {/* ÍCONE DE CÂMERA SOBREPOSTO NO CANTO INFERIOR DIREITO */}
-              <label
-                title="Alterar Foto"
-                style={{
-                  position: "absolute",
-                  bottom: "2px",
-                  right: "2px",
-                  width: "38px",
-                  height: "38px",
-                  borderRadius: "50%",
-                  backgroundColor: "var(--primary-color, #22314d)",
-                  color: "#ffffff",
-                  border: "3px solid #ffffff",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                  fontSize: "1.1rem",
-                  boxShadow: "0 3px 8px rgba(0,0,0,0.3)",
-                  zIndex: 10,
-                }}
-              >
+              <label title="Alterar Foto" className="btn-avatar-pick">
                 <FiCamera />
                 <input
                   type="file"
@@ -197,102 +140,37 @@ export default function Perfil({
               </label>
             </div>
 
-            {/* BOTÕES SALVAR/CANCELAR EM FORMATO DE PÍLULA */}
             {fotoAlterada && (
-              <div style={{ display: "flex", gap: "6px", marginTop: "10px" }}>
-                <button
-                  type="button"
-                  onClick={handleSalvarFoto}
-                  style={{
-                    backgroundColor: "#16a34a",
-                    color: "#ffffff",
-                    border: "none",
-                    padding: "6px 12px",
-                    borderRadius: "20px",
-                    fontSize: "0.78rem",
-                    fontWeight: "600",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "4px",
-                    boxShadow: "0 2px 6px rgba(22, 163, 74, 0.3)",
-                  }}
-                >
+              <div className="photo-actions-bar">
+                <button type="button" onClick={handleSalvarFoto} className="btn-save-photo">
                   <FiCheckCircle /> Salvar
                 </button>
-                <button
-                  type="button"
-                  onClick={handleCancelarFoto}
-                  style={{
-                    backgroundColor: "#f1f5f9",
-                    color: "#64748b",
-                    border: "1px solid #cbd5e1",
-                    padding: "6px 10px",
-                    borderRadius: "20px",
-                    fontSize: "0.78rem",
-                    fontWeight: "500",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "4px",
-                  }}
-                >
+                <button type="button" onClick={handleCancelarFoto} className="btn-cancel-photo">
                   <FiX /> Cancelar
                 </button>
               </div>
             )}
           </div>
 
-          {/* DADOS DO USUÁRIO NO BANNER */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
-              <h2 style={{ margin: 0, fontSize: "1.5rem", fontWeight: "700" }}>
-                {nome || "Usuário"}
-              </h2>
+          <div className="perfil-header-info">
+            <div className="perfil-title-badge">
+              <h2>{nome || "Usuário"}</h2>
               <span className={`badge-role badge-${role.toLowerCase()}`}>
                 {role}
               </span>
             </div>
-            <p
-              style={{
-                margin: 0,
-                color: "var(--text-gray, #64748b)",
-                fontSize: "0.9rem",
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-              }}
-            >
-              <FiMail /> {usuario}
+            <p className="perfil-email">
+              <FiMail className="inline-icon" /> {usuario}
             </p>
           </div>
         </div>
 
-        {/* BOTÃO DE SAIR */}
-        <button
-          type="button"
-          onClick={handleLogout}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-            padding: "10px 18px",
-            backgroundColor: "#ef4444",
-            color: "#ffffff",
-            border: "none",
-            borderRadius: "8px",
-            fontWeight: "600",
-            fontSize: "0.88rem",
-            cursor: "pointer",
-            boxShadow: "0 2px 8px rgba(239, 68, 68, 0.25)",
-            transition: "background-color 0.2s ease",
-          }}
-        >
+        <button type="button" onClick={handleLogout} className="btn-logout">
           <FiLogOut /> Sair da Conta
         </button>
       </div>
 
-      {/* SEÇÃO DE FORMULÁRIOS */}
+      {/* SEÇÃO DE FORMULÁRIOS LARGOS */}
       <div className="perfil-grid">
         {/* DADOS PESSOAIS */}
         <div className="perfil-card">
@@ -303,7 +181,7 @@ export default function Perfil({
 
           <form onSubmit={handleSalvarDados} className="perfil-form">
             <div className="form-group">
-              <label>Nome Completo do Usuário</label>
+              <label>Nome Completo</label>
               <input
                 type="text"
                 value={tempNome}
@@ -318,28 +196,52 @@ export default function Perfil({
               <input type="email" value={usuario} disabled className="input-disabled" />
             </div>
 
-            <div className="form-row">
-              <div className="form-group">
-                <label>Telefone / WhatsApp</label>
-                <div className="input-with-icon">
-                  <FiPhone className="input-icon" />
-                  <input
-                    type="text"
-                    value={telefone}
-                    onChange={(e) => setTelefone(e.target.value)}
-                    placeholder="(00) 00000-0000"
-                  />
-                </div>
+            <div className="form-group">
+              <label>Telefone / WhatsApp</label>
+              <div className="input-with-icon">
+                <FiPhone className="input-icon" />
+                <input
+                  type="text"
+                  value={telefone}
+                  onChange={(e) => setTelefone(e.target.value)}
+                  placeholder="(00) 00000-0000"
+                />
               </div>
+            </div>
 
-              <div className="form-group">
-                <label>Nível de Acesso</label>
-                <input type="text" value={role} disabled className="input-disabled" />
+            <div className="form-group">
+              <label>Nível de Acesso</label>
+              <input type="text" value={role} disabled className="input-disabled" />
+            </div>
+
+            <div className="form-group">
+              <label>Cargo / Função</label>
+              <div className="input-with-icon">
+                <FiBriefcase className="input-icon" />
+                <input
+                  type="text"
+                  value={cargo}
+                  onChange={(e) => setCargo(e.target.value)}
+                  placeholder="Ex: Operador CNC"
+                />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label>Departamento</label>
+              <div className="input-with-icon">
+                <FiMapPin className="input-icon" />
+                <input
+                  type="text"
+                  value={departamento}
+                  onChange={(e) => setDepartamento(e.target.value)}
+                  placeholder="Ex: Fabricação"
+                />
               </div>
             </div>
 
             <button type="submit" className="btn-primary">
-              <FiSave /> Salvar Alterações de Nome
+              <FiSave /> Salvar Informações Pessoais
             </button>
           </form>
         </div>
@@ -380,13 +282,13 @@ export default function Perfil({
                 type="password"
                 value={confirmarSenha}
                 onChange={(e) => setConfirmarSenha(e.target.value)}
-                placeholder="Repita a nova senha"
+                placeholder="Repita a senha"
                 required
               />
             </div>
 
-            <button type="submit" className="btn-secondary">
-              Atualizar Senha
+            <button type="submit" className="btn-secondary" style={{ marginTop: "34px" }}>
+              Atualizar Senha de Acesso
             </button>
           </form>
         </div>
@@ -395,7 +297,7 @@ export default function Perfil({
         <div className="perfil-card perfil-card-full">
           <div className="card-header">
             <FiShield className="card-icon" />
-            <h3>Permissões de Acesso ({role})</h3>
+            <h3>Permissões de Acesso do Perfil ({role})</h3>
           </div>
 
           <div className="permissions-grid">

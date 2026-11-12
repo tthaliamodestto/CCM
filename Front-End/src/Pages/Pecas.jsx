@@ -46,9 +46,9 @@ const RESULTADOS_INICIAIS = {
 };
 
 const COLUNAS_KANBAN = [
-  { id: "pendente", titulo: "To Do", dotClass: "todo" },
-  { id: "em_andamento", titulo: "In Progress", dotClass: "in_progress" },
-  { id: "concluida", titulo: "Completed", dotClass: "completed" },
+  { id: "pendente", titulo: "Pendente", dotClass: "todo" },
+  { id: "em_andamento", titulo: "Em produção", dotClass: "in_progress" },
+  { id: "concluida", titulo: "Concluida", dotClass: "completed" },
 ];
 
 function calcularPreview(form) {

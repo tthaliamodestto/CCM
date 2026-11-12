@@ -1,5 +1,6 @@
+
 /* ================================
-   PEÇA PRONTA - DESIGN SYSTEM REFINADO
+   PEÇA PRONTA - DESIGN SYSTEM
 ================================ */
 
 .peca-pronta-page {
@@ -49,7 +50,7 @@
 }
 
 /* ================================
-   TOTAL DE PEÇAS (CARD CONTADOR)
+   TOTAL DE PEÇAS
 ================================ */
 
 .peca-pronta-total {
@@ -64,10 +65,11 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
   position: relative;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 .peca-pronta-total::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -101,20 +103,22 @@
   align-items: center;
   gap: 16px;
   margin-bottom: 24px;
+  width: 100%;
 }
 
-.peca-pronta-busca {
-  display: flex;
-  align-items: center;
-  flex: 1;
-  min-width: 0;
-  height: 48px;
-  padding: 0 16px;
-  background: #ffffff;
-  border: 1px solid #cbd5e1;
-  border-radius: 10px;
-  transition: all 0.25s ease;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+/* Barra de pesquisa */
+
+
+
+.peca-pronta-busca input::placeholder {
+  color: #94a3b8;
+  opacity: 1;
+}
+
+.peca-pronta-busca input:focus {
+  border: none !important;
+  outline: none;
+  box-shadow: none !important;
 }
 
 .peca-pronta-busca:focus-within {
@@ -122,30 +126,14 @@
   box-shadow: 0 0 0 4px rgba(170, 142, 82, 0.12);
 }
 
-.peca-pronta-busca .material-symbols-outlined {
-  font-size: 20px;
-  color: #94a3b8;
-}
-
-.peca-pronta-busca input {
-  width: 100%;
-  height: 100%;
-  padding: 0 12px;
-  border: none;
-  outline: none;
-  background: transparent;
-  color: #1e293b;
-  font-size: 14px;
-}
-
-.peca-pronta-busca input::placeholder {
-  color: #94a3b8;
-}
+/* Filtro de forma */
 
 .peca-pronta-filtros select {
   height: 48px;
   min-width: 190px;
   padding: 0 16px;
+  margin: 0;
+  box-sizing: border-box;
   background: #ffffff;
   border: 1px solid #cbd5e1;
   border-radius: 10px;
@@ -154,7 +142,7 @@
   font-weight: 500;
   outline: none;
   cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
   transition: all 0.25s ease;
 }
 
@@ -164,7 +152,7 @@
 }
 
 /* ================================
-   TABELA PROFISSIONAL
+   TABELA
 ================================ */
 
 .peca-pronta-tabela-wrap {
@@ -246,6 +234,7 @@
 
 .peca-pronta-detalhes {
   padding: 8px 14px;
+  margin: 0;
   background: #ffffff;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
@@ -254,7 +243,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 
 .peca-pronta-detalhes:hover {
@@ -264,7 +253,7 @@
 }
 
 /* ================================
-   MENSAGENS & ESTADO VAZIO
+   MENSAGENS E ESTADO VAZIO
 ================================ */
 
 .peca-pronta-alerta {
@@ -292,6 +281,7 @@
   border-radius: 14px;
   color: #64748b;
   text-align: center;
+  box-sizing: border-box;
 }
 
 .peca-pronta-vazio .material-symbols-outlined {
@@ -306,7 +296,7 @@
 }
 
 /* ================================
-   MODAL DE DETALHES ELEGANTE
+   MODAL
 ================================ */
 
 .peca-pronta-modal-fundo {
@@ -320,6 +310,7 @@
   background: rgba(15, 23, 42, 0.6);
   backdrop-filter: blur(4px);
   animation: fadeIn 0.2s ease;
+  box-sizing: border-box;
 }
 
 .peca-pronta-modal {
@@ -336,13 +327,25 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes scaleUp {
-  from { transform: scale(0.95); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .peca-pronta-modal header {
@@ -367,6 +370,8 @@
   width: 36px;
   height: 36px;
   flex-shrink: 0;
+  padding: 0;
+  margin: 0;
   background: #f1f5f9;
   border: none;
   border-radius: 8px;
@@ -382,7 +387,7 @@
 }
 
 /* ================================
-   GRID DE DETALHES DA PEÇA
+   DETALHES DA PEÇA
 ================================ */
 
 .peca-pronta-detalhes-grid {
@@ -400,6 +405,7 @@
   background: #f8fafc;
   border: 1px solid #e2e8f0;
   border-radius: 10px;
+  box-sizing: border-box;
 }
 
 .peca-pronta-detalhes-grid span {
@@ -438,6 +444,7 @@
 
 .peca-pronta-modal footer button {
   padding: 12px 22px;
+  margin: 0;
   background: #162235;
   border: none;
   border-radius: 8px;
@@ -471,12 +478,16 @@
 
   .peca-pronta-total {
     width: 100%;
-    box-sizing: border-box;
   }
 
   .peca-pronta-filtros {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .peca-pronta-busca {
+    width: 100%;
+    flex: none;
   }
 
   .peca-pronta-filtros select {
@@ -509,7 +520,7 @@
 }
 
 /* ================================
-   MODO ESCURO POLIDO
+   MODO ESCURO
 ================================ */
 
 body.dark .peca-pronta-page {
@@ -545,6 +556,14 @@ body.dark .peca-pronta-vazio {
 body.dark .peca-pronta-busca input,
 body.dark .peca-pronta-filtros select {
   color: #f8fafc;
+}
+
+body.dark .peca-pronta-busca input::placeholder {
+  color: #94a3b8;
+}
+
+body.dark .peca-pronta-busca .material-symbols-outlined {
+  color: #94a3b8;
 }
 
 body.dark .peca-pronta-tabela thead {
@@ -612,4 +631,31 @@ body.dark .peca-pronta-fechar {
 body.dark .peca-pronta-fechar:hover {
   background: #22314d;
   color: #ffffff;
+}
+/* CORREÇÃO DEFINITIVA DO POSICIONAMENTO DA LUPA */
+
+.peca-pronta-busca {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.peca-pronta-busca .material-symbols-outlined {
+  position: absolute !important;
+  left: 14px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  width: 22px !important;
+  height: 22px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+
+  font-size: 20px !important;
+  line-height: 1 !important;
+  text-align: center !important;
 }
