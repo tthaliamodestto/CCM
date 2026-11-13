@@ -255,51 +255,53 @@ export default function Pecas() {
   const salvarPeca = async () => {
     setErro("");
 
-    if (!form.nome.trim()) {
-      setErro("Preencha o nome da peça.");
+    if (!form.nome.trim() || form.nome.trim().length < 3) {
+      setErro("O nome da peça deve ter pelo menos 3 caracteres.");
       return;
     }
     if (!form.idMaterial) {
-      setErro("Selecione um material.");
+      setErro("Selecione um material. Cadastre um na aba Materiais, se não houver.");
       return;
     }
     if (!form.comprimento || Number(form.comprimento) <= 0) {
       setErro("Informe um comprimento maior que zero.");
       return;
     }
+    if (form.forma === "cilindro" && (!form.diametro || Number(form.diametro) <= 0)) {
+      setErro("Informe um diâmetro maior que zero.");
+      return;
+    }
+    if (
+      form.forma === "prisma" &&
+      (!form.largura || Number(form.largura) <= 0 || !form.altura || Number(form.altura) <= 0)
+    ) {
+      setErro("Informe largura e altura maiores que zero.");
+      return;
+    }
 
+    // Somente os campos que o back-end e o banco realmente aceitam
     const payload = {
       idMaterial: Number(form.idMaterial),
       nome: form.nome.trim(),
-      idPrioridade: form.idPrioridade,
-      status: "pendente",
       forma: form.forma,
       comprimento: Number(form.comprimento),
       diametro: form.forma === "cilindro" ? Number(form.diametro) : null,
       largura: form.forma === "prisma" ? Number(form.largura) : null,
       altura: form.forma === "prisma" ? Number(form.altura) : null,
-      maquina: form.maquina,
-      operacao: form.operacao,
-      ferramenta: form.ferramenta,
-      vc: Number(form.vc) || 0,
-      avanco: Number(form.avanco) || 0,
-      ap: Number(form.ap) || 0,
-      tempoMinutos: Number(resultados.tempoMinutos) || 0,
-      tempoUsinagem: Number(resultados.tempoMinutos) || 0,
     };
 
     try {
       setSalvando(true);
       await pecaService.cadastrar(payload);
 
-      // Salva também no localStorage para sincronizar com a aba de Peça Pronta se necessário
+      // Mantém o espelho local para a aba Peça Pronta
       const pecasLocais = JSON.parse(localStorage.getItem("ccm_saved_pieces")) || [];
       pecasLocais.push({
         id: Date.now().toString(),
         nome: payload.nome,
-        prioridade: payload.idPrioridade,
+        prioridade: form.idPrioridade,
         material: payload.idMaterial,
-        maquina: payload.maquina,
+        maquina: form.maquina,
         volume: resultados.volume.toFixed(1),
         peso: resultados.peso.toFixed(2),
         tempo: resultados.tempoMinutos.toFixed(0),
