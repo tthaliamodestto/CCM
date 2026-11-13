@@ -18,48 +18,56 @@ export class Maquina {
         this.idMaquina = pIdMaquina;
     }
 
-    get idMaquina() { 
-        return this.#idMaquina; 
+    get idMaquina() {
+        return this.#idMaquina;
     }
     set idMaquina(value) {
         this.#validarIdMaquina(value);
         this.#idMaquina = value === null || value === undefined ? null : Number(value);
     }
 
-    get nome() { 
-        return this.#nome; 
+    get nome() {
+        return this.#nome;
     }
     set nome(value) {
         this.#validarNome(value);
         this.#nome = value.trim();
     }
 
-    get tipoUtilizacao() { 
-        return this.#tipoUtilizacao; 
+    get tipoUtilizacao() {
+        return this.#tipoUtilizacao;
     }
     set tipoUtilizacao(value) {
         this.#validarTipoUtilizacao(value);
         this.#tipoUtilizacao = value.trim().toLowerCase();
     }
 
-    get custoHora() { 
-        return this.#custoHora; 
+    get custoHora() {
+        return this.#custoHora;
     }
+
     set custoHora(value) {
         this.#validarCustoHora(value);
-        this.#custoHora = this.#tipoUtilizacao === tipoUtilizacao.PROPRIA ? null : Number(value);
+
+        this.#custoHora = this.#tipoUtilizacao === 'propria'
+            ? null
+            : Number(value);
     }
 
-    get potencialKw() { 
-        return this.#potencialKw; 
+    get potencialKw() {
+        return this.#potencialKw;
     }
+
     set potencialKw(value) {
         this.#validarPotencialKw(value);
-        this.#potencialKw = this.#tipoUtilizacao === tipoUtilizacao.TERCEIROS ? null : Number(value);
+
+        this.#potencialKw = this.#tipoUtilizacao === 'terceiros'
+            ? null
+            : Number(value);
     }
 
-    get imagem() { 
-        return this.#imagem; 
+    get imagem() {
+        return this.#imagem;
     }
     set imagem(value) {
         this.#validarImagem(value);
@@ -87,7 +95,7 @@ export class Maquina {
     }
 
     #validarCustoHora(value) {
-        if (this.#tipoUtilizacao === tipoUtilizacao.PROPRIA) return;
+        if (this.#tipoUtilizacao === 'propria') return;
 
         if (value === null || value === undefined || value === '' || !Number.isFinite(Number(value)) || Number(value) <= 0) {
             throw new Error('Para máquinas de terceiros, o custo por hora deve ser maior que zero.');
@@ -95,7 +103,7 @@ export class Maquina {
     }
 
     #validarPotencialKw(value) {
-        if (this.#tipoUtilizacao === tipoUtilizacao.TERCEIROS) return;
+        if (this.#tipoUtilizacao === 'terceiros') return;
 
         if (value === null || value === undefined || value === '' || !Number.isFinite(Number(value)) || Number(value) <= 0) {
             throw new Error('Para máquinas próprias, a potência em kW deve ser maior que zero.');
