@@ -12,36 +12,41 @@ const LISTA_TIPOS = [
   "Retífica",
 ];
 
-const STATUS_OPCOES = [
+const BANDEIRAS_TARIFARIAS = [
   {
+    valor: "verde",
     cor: "#10b981",
-    nome: "Normal",
-    desc: "Operação dentro do padrão (sem adicional).",
-    adicionalTarifa: 0.0,
+    nome: "Verde",
+    descricao: "Sem adicional tarifário.",
+    adicional: 0,
   },
   {
+    valor: "amarela",
     cor: "#f59e0b",
-    nome: "Atenção",
-    desc: "Bandeira Amarela (+R$ 0,02/kWh).",
-    adicionalTarifa: 0.02,
+    nome: "Amarela",
+    descricao: "Adicional de R$ 0,02/kWh.",
+    adicional: 0.02,
   },
   {
+    valor: "laranja",
     cor: "#f97316",
-    nome: "Alerta",
-    desc: "Bandeira Vermelha 1 (+R$ 0,05/kWh).",
-    adicionalTarifa: 0.05,
+    nome: "Laranja",
+    descricao: "Adicional de R$ 0,05/kWh.",
+    adicional: 0.05,
   },
   {
+    valor: "vermelha",
     cor: "#ef4444",
-    nome: "Crítico",
-    desc: "Bandeira Vermelha 2 (+R$ 0,08/kWh).",
-    adicionalTarifa: 0.08,
+    nome: "Vermelha",
+    descricao: "Adicional de R$ 0,08/kWh.",
+    adicional: 0.08,
   },
   {
+    valor: "preta",
     cor: "#1e293b",
-    nome: "Vida útil em risco",
-    desc: "Sobretaxa de risco industrial (+R$ 0,15/kWh).",
-    adicionalTarifa: 0.15,
+    nome: "Preta",
+    descricao: "Adicional de R$ 0,15/kWh.",
+    adicional: 0.15,
   },
 ];
 
@@ -60,6 +65,7 @@ export default function Maquinas() {
   const [busca, setBusca] = useState("");
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState("");
+  const [bandeiras, setBandeiras] = useState({});
 
   const carregarMaquinas = async () => {
     try {
@@ -109,6 +115,13 @@ export default function Maquinas() {
         return idItem === idMaquina ? { ...m, status: novoStatus } : m;
       })
     );
+  };
+
+  const alterarBandeira = (idMaquina, novaBandeira) => {
+    setBandeiras((atual) => ({
+      ...atual,
+      [idMaquina]: novaBandeira
+    }));
   };
 
   const handleExcluir = async (idMaquina) => {
@@ -348,6 +361,11 @@ export default function Maquinas() {
         ) : (
           maquinasFiltradas.map((m, idx) => {
             const idAtual = m.idMaquina || idx;
+            const bandeiraAtual = bandeiras[idAtual] || "verde";
+
+            const bandeiraSelecionada = BANDEIRAS_TARIFARIAS.find(
+              (b) => b.valor === bandeiraAtual
+            );
             const nomeMaquina = m.nome || "Máquina";
             const imagemUrl = formatarUrlImagem(m.imagem);
 
@@ -355,72 +373,72 @@ export default function Maquinas() {
               <div key={idAtual} className="operacoes-table-card maquina-item-card">
 
                 <div className="maquina-card-header">
-                  <div className="maquina-header-title">
-                    <div className="maquina-header-icon-box">
-                      {imagemUrl ? (
-                        <img
-                          src={imagemUrl}
-                          alt={nomeMaquina}
-                          onError={(e) => {
-                            e.target.style.display = "none";
-                          }}
-                        />
-                      ) : (
-                        <span className="material-symbols-outlined">
-                          precision_manufacturing
-                        </span>
-                      )}
-                    </div>
+                  <div className="maquina-header-right">
+                    <span
+                      className="maquina-status-badge"
+                      style={{
+                        color: bandeiraSelecionada.cor,
+                        backgroundColor: `${bandeiraSelecionada.cor}18`,
+                        borderColor: `${bandeiraSelecionada.cor}40`
+                      }}
+                    >
+                      <span
+                        className="material-symbols-outlined"
+                        style={{ fontVariationSettings: "'FILL' 1" }}
+                      >
+                        flag
+                      </span>
 
-                    <div>
-                      <h3 className="maquina-nome-titulo">{nomeMaquina}</h3>
+                      Bandeira {bandeiraSelecionada.nome}
+                    </span>
 
-                      <div className="maquina-subtags">
-                        <span>
-                          {m.tipoUtilizacao === "propria" ? "Própria" : "Terceiros"}
-                        </span>
-                      </div>
-                    </div>
+                    <button
+                      type="button"
+                      className="operacoes-btn-excluir"
+                      onClick={() => handleExcluir(idAtual)}
+                      title="Excluir máquina"
+                    >
+                      <span className="material-symbols-outlined">delete</span>
+                    </button>
                   </div>
-
-                  <button
-                    type="button"
-                    className="operacoes-btn-excluir"
-                    onClick={() => handleExcluir(idAtual)}
-                    title="Excluir máquina"
-                  >
-                    <span className="material-symbols-outlined">delete</span>
-                  </button>
                 </div>
 
                 <div className="maquina-subgrid-4">
 
+                  {/* Imagem e nome */}
                   <div className="maquina-subcard-panel">
                     <div className="maquina-subcard-img-box">
-                      {imagemUrl ? (
-                        <img
-                          src={imagemUrl}
-                          alt={nomeMaquina}
-                          onError={(e) => {
-                            e.target.style.display = "none";
-                          }}
-                        />
-                      ) : (
-                        <div className="maquina-img-empty">
-                          <span className="material-symbols-outlined">
-                            precision_manufacturing
-                          </span>
-                          <span>Sem Imagem</span>
+                      <div className="maquina-subcard-panel">
+                        <div className="maquina-subcard-img-box">
+                          {imagemUrl ? (
+                            <img
+                              src={imagemUrl}
+                              alt={nomeMaquina}
+                              onError={(e) => {
+                                console.error("Erro ao carregar imagem:", imagemUrl);
+                                e.target.style.display = "none";
+                              }}
+                            />
+                          ) : (
+                            <div className="maquina-img-empty">
+                              <span className="material-symbols-outlined">
+                                precision_manufacturing
+                              </span>
+                              <span>Sem Imagem</span>
+                            </div>
+                          )}
                         </div>
-                      )}
+
+                        <div className="maquina-subcard-img-info">
+                          <strong>{nomeMaquina}</strong>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="maquina-subcard-img-info">
                       <strong>{nomeMaquina}</strong>
                     </div>
-                  </div>
 
-                  <div className="maquina-subcard-panel">
                     <h4 className="maquina-subcard-title">Dados da Máquina</h4>
 
                     <div className="maquina-info-line">
@@ -441,6 +459,61 @@ export default function Maquinas() {
                         <strong>{formatarMoeda(m.custoHora)}</strong>
                       </div>
                     )}
+
+                  </div>
+
+                  
+                  {/* Bandeiras tarifárias */}
+                  <div className="maquina-subcard-panel">
+                    <h4 className="maquina-subcard-title">Bandeiras Tarifárias</h4>
+
+                    <div className="maquina-flags-list">
+                      {BANDEIRAS_TARIFARIAS.map((bandeira) => {
+                        const selecionada = bandeiraAtual === bandeira.valor;
+
+                        return (
+                          <button
+                            key={bandeira.valor}
+                            type="button"
+                            onClick={() => alterarBandeira(idAtual, bandeira.valor)}
+                            className={`flag-option-btn ${selecionada ? "selected" : ""}`}
+                            style={{
+                              backgroundColor: selecionada
+                                ? `${bandeira.cor}18`
+                                : "#ffffff",
+                              borderColor: selecionada
+                                ? bandeira.cor
+                                : "#d4dfed",
+                            }}
+                          >
+                            <span
+                              className="material-symbols-outlined"
+                              style={{
+                                color: bandeira.cor,
+                                fontVariationSettings: "'FILL' 1",
+                              }}
+                            >
+                              flag
+                            </span>
+
+                            <div className="flag-btn-text">
+                              <span
+                                className="flag-btn-name"
+                                style={{
+                                  color: selecionada ? bandeira.cor : "#17375d",
+                                }}
+                              >
+                                {bandeira.nome}
+                              </span>
+
+                              <span className="flag-btn-desc">
+                                {bandeira.descricao}
+                              </span>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
 
                 </div>
